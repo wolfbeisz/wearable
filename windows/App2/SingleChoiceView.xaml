@@ -1,0 +1,27 @@
+﻿<Page
+    x:Class="App2.SingleChoiceView"
+    DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App2"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel>
+            <TextBlock Text="{Binding Title}" FontSize="30"></TextBlock>
+
+            <ItemsControl ItemsSource="{Binding Outcomes.Keys}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <RadioButton GroupName="group" Content="{Binding }" Checked="RadioButton_Checked"></RadioButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
+        </StackPanel>
+
+    </Grid>
+</Page>
