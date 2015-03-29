@@ -11,6 +11,7 @@ using App2.model;
 using App2.Common;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 
 namespace App2.service
@@ -45,6 +46,7 @@ namespace App2.service
             MultipleChoiceScreen screen = CurrentScreen as MultipleChoiceScreen;
             var vm = new SelectMultipleViewModel();
             vm.Title = screen.Title;
+            vm.FontColor = new SolidColorBrush(screen.FontColor);
             vm.Outcomes = buildOutcomes();
             return vm;
         }
@@ -57,6 +59,7 @@ namespace App2.service
             SingleChoiceScreen screen = CurrentScreen as SingleChoiceScreen;
             var vm = new SelectSingleViewModel();
             vm.Title = screen.Title;
+            vm.FontColor = new SolidColorBrush(screen.FontColor);
             vm.Outcomes = buildOutcomes();
             return vm;
         }
@@ -69,6 +72,7 @@ namespace App2.service
             ImageScreen screen = CurrentScreen as ImageScreen;
             var vm = new ImageViewModel();
             vm.Title = screen.Title;
+            vm.FontColor = new SolidColorBrush(screen.FontColor);
             vm.Image = screen.Image;
             vm.Text = screen.Text;
             vm.Outcomes = buildOutcomes();

@@ -8,13 +8,14 @@ using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Media.Imaging;
 using App2.Common;
 using System.Windows.Input;
+using Windows.UI.Xaml.Media;
 
 namespace App2.model.viewmodel
 {
     class ImageViewModel : IImageViewModel
     {
         public string Title { get; set; }
-        public Color FontColor { get; set; }
+        public Brush FontColor { get; set; }
         public BitmapSource BackgroundImage { get; set; }
         public Dictionary<string, RelayCommand> Outcomes { get; set;  }
         public ICommand NextCommand { get; set; }

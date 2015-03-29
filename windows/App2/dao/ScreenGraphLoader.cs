@@ -10,6 +10,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 using SQLite.SQL_TABLES;
 using App2.Common;
+using System.Globalization;
+using Windows.UI.Xaml.Media;
 
 namespace App2.dao
 {
@@ -75,10 +77,28 @@ namespace App2.dao
             return image;
         }
 
+        /*private Brush getBrush(string colorAsLiteral)
+        {
+            if (colorAsLiteral != null)
+            {
+                return new SolidColorBrush(convertColorLiteral(colorAsLiteral));
+            }
+            return new SolidColorBrush(Colors.Black);
+        }*/
+
         private Color convertColorLiteral(string colorAsLiteral)
         {
-            //throw new NotImplementedException();
+            if (colorAsLiteral != null) 
+            {
+                Color color = new Color();
+                color.R = byte.Parse(colorAsLiteral.Substring(1, 2), NumberStyles.AllowHexSpecifier);
+                color.G = byte.Parse(colorAsLiteral.Substring(3, 2), NumberStyles.AllowHexSpecifier);
+                color.B = byte.Parse(colorAsLiteral.Substring(5, 2), NumberStyles.AllowHexSpecifier);
+                color.A = (byte)255;
+                return color;
+            }
             return Colors.Black;
+            
         }
 
         private sql_View loadImageView(SQLiteConnector s, int viewId)

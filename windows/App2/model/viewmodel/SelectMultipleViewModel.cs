@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace App2.model.viewmodel
@@ -13,7 +14,7 @@ namespace App2.model.viewmodel
     public class SelectMultipleViewModel : IBaseViewModel
     {
         public string Title { get; set; }
-        public Color FontColor { get; set; }
+        public Brush FontColor { get; set; }
         public BitmapSource BackgroundImage { get; set; }
         public Dictionary<string, RelayCommand> Outcomes { get; set; }
         public ICommand NextCommand { get; set; }
