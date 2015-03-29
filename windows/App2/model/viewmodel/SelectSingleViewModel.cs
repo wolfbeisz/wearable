@@ -8,37 +8,46 @@ using System.Windows.Input;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using App2.service;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using System.Collections.ObjectModel;
 
 namespace App2.model.viewmodel
 {
-    class SelectSingleViewModel : IBaseViewModel
+    class SelectSingleViewModel : BaseViewModel
     {
-        public string Title { get; set; }
-        public Brush FontColor { get; set; }
-        public BitmapSource BackgroundImage { get; set; }
-        public Dictionary<string, RelayCommand> Outcomes { get; set; }
-        public ICommand NextCommand { get; set; }
-
+        //TODO: by default none is selected
         public string SelectedOutcome { get; set; }
+        public List<string> Outcomes { get; set; }
 
-        public SelectSingleViewModel()
+        public SelectSingleViewModel(ScreenGraphTraverser screenGraphTraverser)
         {
+            this.screenGraphTraverser = screenGraphTraverser;
+            Init();
             NextCommand = new RelayCommand(() => { Next(); });
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Outcomes = screenGraphTraverser.getOutcomes();
         }
 
         private void Next()
         {
-            if (Outcomes == null)
+            if (SelectedOutcome == null)
+                return;
+
+            List<string> outcomes = screenGraphTraverser.getOutcomes();
+            if (outcomes == null || outcomes.Count == 0)
             {
-                throw new InvalidOperationException(); //TODO: actually invalid state
+                throw new InvalidOperationException("no successor found for node: NodeId=" + screenGraphTraverser.CurrentScreen.Id);
             }
-            else if (Outcomes.Values.Count == 0)
+            else
             {
-                //TODO: Handle this case (probably the end of the demo is reached)
-            }
-            else {
-                var command = Outcomes[SelectedOutcome];
-                command.Execute(null);
+                Screen successor = screenGraphTraverser.goToSucessor(SelectedOutcome);
+                ScreenGraphTraverser.NavigateToView(Window.Current.Content as Frame, successor, screenGraphTraverser);
             }
         }
     }

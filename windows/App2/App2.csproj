@@ -140,7 +140,6 @@
     <Compile Include="model\ScreenGraph.cs" />
     <Compile Include="model\SingleChoiceScreen.cs" />
     <Compile Include="model\viewmodel\IBaseViewModel.cs" />
-    <Compile Include="model\viewmodel\IImageViewModel.cs" />
     <Compile Include="model\viewmodel\ImageViewModel.cs" />
     <Compile Include="model\viewmodel\SelectMultipleViewModel.cs" />
     <Compile Include="model\viewmodel\SelectSingleViewModel.cs" />

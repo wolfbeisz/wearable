@@ -35,11 +35,11 @@ namespace App2
             frame.Navigate(typeof(MainPage), "01");
         }*/
 
-        IImageViewModel ViewModel { get; set; }
+        ImageViewModel ViewModel { get; set; }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            IImageViewModel vm = (e.Parameter as ScreenGraphTraverser).getImageViewModel();
+            ImageViewModel vm = new ImageViewModel(e.Parameter as ScreenGraphTraverser);
             this.DataContext = vm;
         }
     }

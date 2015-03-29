@@ -9,36 +9,44 @@ using Windows.UI.Xaml.Media.Imaging;
 using App2.Common;
 using System.Windows.Input;
 using Windows.UI.Xaml.Media;
+using App2.service;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace App2.model.viewmodel
 {
-    class ImageViewModel : IImageViewModel
+    class ImageViewModel : BaseViewModel
     {
-        public string Title { get; set; }
-        public Brush FontColor { get; set; }
-        public BitmapSource BackgroundImage { get; set; }
-        public Dictionary<string, RelayCommand> Outcomes { get; set;  }
-        public ICommand NextCommand { get; set; }
-
         public BitmapSource Image { get; set; }
         public string Text { get; set; }
 
-
-
-        public ImageViewModel()
+        public ImageViewModel(ScreenGraphTraverser screenGraphTraverser)
         {
+            this.screenGraphTraverser = screenGraphTraverser;
+            Init();
             NextCommand = new RelayCommand(() => { Next(); });
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Image = (this.screenGraphTraverser.CurrentScreen as ImageScreen).Image;
+            Text = (this.screenGraphTraverser.CurrentScreen as ImageScreen).Text;
         }
 
         private void Next()
         {
-            if (Outcomes == null || Outcomes.Values.Count == 0 || Outcomes.Values.Count > 1)
+            List<string> outcomes = screenGraphTraverser.getOutcomes();
+            if (outcomes == null || outcomes.Count == 0 || outcomes.Count > 1)
             {
-                throw new InvalidOperationException(); //TODO: actually invalid state
+                throw new InvalidOperationException("invalid number of successors for node: NodeId=" + screenGraphTraverser.CurrentScreen.Id);
             }
-
-            var outcome = Outcomes.Values.First();
-            outcome.Execute(null);
+            else
+            {
+                var command = outcomes.First();
+                Screen successor = screenGraphTraverser.goToSucessor(command);
+                ScreenGraphTraverser.NavigateToView(Window.Current.Content as Frame, successor, screenGraphTraverser);
+            }
         }
     }
 }

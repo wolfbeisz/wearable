@@ -9,16 +9,25 @@ using Windows.UI.Xaml.Media.Imaging;
 using App2.Common;
 using System.Windows.Input;
 using Windows.UI.Xaml.Media;
+using App2.service;
 
 namespace App2.model.viewmodel
 {
-    public interface IBaseViewModel
+    public abstract class BaseViewModel
     {
-        string Title { get; }
-        Brush FontColor { get;  }
-        BitmapSource BackgroundImage { get;  }
-//        ObservableCollection<string> Actions { get; }
-        Dictionary<string, RelayCommand> Outcomes { get; }
-        ICommand NextCommand { get; }
+        public string Title { get; set;  }
+        public Brush FontColor { get; set; }
+        public BitmapSource BackgroundImage { get; set; }
+        public ICommand NextCommand { get; set; }
+
+        protected ScreenGraphTraverser screenGraphTraverser;
+
+        protected virtual void Init()
+        {
+            Screen screen = screenGraphTraverser.CurrentScreen;
+            Title = screen.Title;
+            FontColor = new SolidColorBrush(screen.FontColor);
+            BackgroundImage = screen.BackgroundImage;
+        }
     }
 }
