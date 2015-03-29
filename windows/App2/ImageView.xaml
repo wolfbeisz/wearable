@@ -16,7 +16,11 @@
             <Image Source="{Binding Image}"></Image>
             <TextBlock Text="{Binding Text}"></TextBlock>
 
-            <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Zurück" Command="{Binding BackCommand}"></Button>
+                <Button Content="Weiter" Command="{Binding NextCommand}"></Button>    
+            </StackPanel>
+            
         </StackPanel>
     </Grid>
 </Page>
