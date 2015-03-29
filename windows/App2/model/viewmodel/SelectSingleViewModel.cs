@@ -25,7 +25,6 @@ namespace App2.model.viewmodel
         {
             this.screenGraphTraverser = screenGraphTraverser;
             Init();
-            NextCommand = new RelayCommand(() => { Next(); });
         }
 
         protected override void Init()
@@ -34,7 +33,7 @@ namespace App2.model.viewmodel
             Outcomes = screenGraphTraverser.getOutcomes();
         }
 
-        private void Next()
+        protected override void Next()
         {
             if (SelectedOutcome == null)
                 return;
