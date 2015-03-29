@@ -20,7 +20,7 @@ namespace App2.service
     /// Navigates within a Screengraph.
     /// The state contains the currently selected screen of a Screengraph.
     /// </summary>
-    class ScreenGraphTraverser //: IImageViewModel, ISelectionViewModel
+    public class ScreenGraphTraverser
     {
         private ScreenGraph graph;
         public Screen CurrentScreen { get; private set; }
@@ -38,6 +38,18 @@ namespace App2.service
             return CurrentScreen;
         }
 
+        public List<string> getOutcomes()
+        {
+            List<string> outcomes = new List<string>();
+            List<Edge> outgoingEdges = graph.Edges.FindAll(edge => { return edge.From == CurrentScreen; });
+            foreach (Edge e in outgoingEdges)
+            {
+                outcomes.Add(e.Action);
+            }
+            return outcomes;
+        }
+
+        /*
         internal SelectMultipleViewModel getMultipleChoiceViewModel()
         {
             if (!(CurrentScreen is MultipleChoiceScreen))
@@ -95,7 +107,7 @@ namespace App2.service
             }
 
             return actions;
-        }
+        }*/
 
         public static void NavigateToView(Frame frame, Screen screen, ScreenGraphTraverser traverser)
         {

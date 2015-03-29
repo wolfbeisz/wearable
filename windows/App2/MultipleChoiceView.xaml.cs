@@ -33,7 +33,7 @@ namespace App2
         public SelectMultipleViewModel ViewModel { get; set; }
 
         protected override void OnNavigatedTo(NavigationEventArgs e) {
-            ViewModel = (e.Parameter as ScreenGraphTraverser).getMultipleChoiceViewModel();
+            ViewModel = new SelectMultipleViewModel(e.Parameter as ScreenGraphTraverser);
             this.DataContext = ViewModel;
 
         }

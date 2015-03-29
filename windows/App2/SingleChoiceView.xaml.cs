@@ -33,7 +33,7 @@ namespace App2
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ViewModel = (e.Parameter as ScreenGraphTraverser).getSingleChoiceViewModel();
+            ViewModel = new SelectSingleViewModel(e.Parameter as ScreenGraphTraverser);
             this.DataContext = ViewModel;
         }
 

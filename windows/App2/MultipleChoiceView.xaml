@@ -13,7 +13,7 @@
         <StackPanel>
             <TextBlock Text="{Binding Title}" FontSize="30"></TextBlock>
             
-            <ItemsControl ItemsSource="{Binding Outcomes.Keys}">
+            <ItemsControl ItemsSource="{Binding Outcomes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <CheckBox Content="{Binding}"></CheckBox>

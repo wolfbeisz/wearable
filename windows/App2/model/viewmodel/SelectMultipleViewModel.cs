@@ -8,36 +8,41 @@ using System.Windows.Input;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using App2.service;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace App2.model.viewmodel
 {
-    public class SelectMultipleViewModel : IBaseViewModel
+    public class SelectMultipleViewModel : BaseViewModel
     {
-        public string Title { get; set; }
-        public Brush FontColor { get; set; }
-        public BitmapSource BackgroundImage { get; set; }
-        public Dictionary<string, RelayCommand> Outcomes { get; set; }
-        public ICommand NextCommand { get; set; }
+        public List<string> Outcomes { get; set; }
 
-        public SelectMultipleViewModel()
+        public SelectMultipleViewModel(ScreenGraphTraverser screenGraphTraverser)
         {
+            this.screenGraphTraverser = screenGraphTraverser;
+            Init();
             NextCommand = new RelayCommand(() => { Next(); });
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Outcomes = screenGraphTraverser.getOutcomes();
         }
 
         private void Next()
         {
-            if (Outcomes == null)
+            List<string> outcomes = screenGraphTraverser.getOutcomes();
+            if (outcomes == null || outcomes.Count == 0)
             {
-                throw new InvalidOperationException(); //TODO: actually invalid state
-            }
-            else if (Outcomes.Values.Count == 0)
-            {
-                //TODO: handle this case properly
+                throw new InvalidOperationException("no successor found for node: NodeId=" + screenGraphTraverser.CurrentScreen.Id);
             }
             else
             {
-                var command = Outcomes.Values.First();
-                command.Execute(null);
+                var command = outcomes.First();
+                Screen successor = screenGraphTraverser.goToSucessor(command);
+                ScreenGraphTraverser.NavigateToView(Window.Current.Content as Frame, successor, screenGraphTraverser);
             }
         }
     }
