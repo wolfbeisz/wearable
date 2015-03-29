@@ -21,7 +21,10 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Zurück" Command="{Binding BackCommand}"></Button>
+                <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
+            </StackPanel>
         </StackPanel>
 
     </Grid>

@@ -24,16 +24,19 @@ namespace App2.service
     {
         private ScreenGraph graph;
         public Screen CurrentScreen { get; private set; }
+        private Stack<Screen> history = new Stack<Screen>();
 
         public ScreenGraphTraverser(ScreenGraph graph, Screen startScreen)
         {
             this.graph = graph;
             this.CurrentScreen = startScreen; //TODO: check whether startScreen is present in graph
+            this.history.Push(startScreen);
         }
 
         public Screen goToSucessor(string action) 
         {
             Edge e = graph.Edges.Find(edge => { return edge.From == CurrentScreen && edge.Action == action; });
+            history.Push(CurrentScreen);
             CurrentScreen = e.To;
             return CurrentScreen;
         }
@@ -47,6 +50,15 @@ namespace App2.service
                 outcomes.Add(e.Action);
             }
             return outcomes;
+        }
+
+        public Screen Back()
+        {
+            if (history.Count == 1)
+                return CurrentScreen;
+
+            CurrentScreen = history.Pop();
+            return CurrentScreen;
         }
 
         /*

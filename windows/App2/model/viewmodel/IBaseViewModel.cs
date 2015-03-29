@@ -10,6 +10,8 @@ using App2.Common;
 using System.Windows.Input;
 using Windows.UI.Xaml.Media;
 using App2.service;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace App2.model.viewmodel
 {
@@ -19,6 +21,7 @@ namespace App2.model.viewmodel
         public Brush FontColor { get; set; }
         public BitmapSource BackgroundImage { get; set; }
         public ICommand NextCommand { get; set; }
+        public ICommand BackCommand { get; set; }
 
         protected ScreenGraphTraverser screenGraphTraverser;
 
@@ -28,6 +31,14 @@ namespace App2.model.viewmodel
             Title = screen.Title;
             FontColor = new SolidColorBrush(screen.FontColor);
             BackgroundImage = screen.BackgroundImage;
+
+            BackCommand = new RelayCommand(() => { Back(); });
+        }
+
+        protected virtual void Back()
+        {
+            Screen previous = screenGraphTraverser.Back();
+            ScreenGraphTraverser.NavigateToView(Window.Current.Content as Frame, previous, screenGraphTraverser);
         }
     }
 }

@@ -31,7 +31,10 @@
         
         <!--<TextBox x:Name="textBox1" Text="{Binding}"></TextBox>
         <ComboBox x:Name="comboBox1" ItemsSource="{Binding}"></ComboBox>-->
-            <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Zurück" Command="{Binding BackCommand}"></Button>
+                <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
