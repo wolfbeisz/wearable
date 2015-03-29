@@ -56,6 +56,8 @@ namespace App2.dao
                     case 2: //multiple choice
                         current = new MultipleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = loadImage(s, node.IMAGEID) };
                         break;
+                    default:
+                        throw new InvalidOperationException("node type " + node.TYPEID + " is not supported");
                 }
                 screens.Add(current);
                 //System.Diagnostics.Debug.WriteLine("node: " + current.Id);
