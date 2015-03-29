@@ -32,7 +32,8 @@ namespace App2.model.viewmodel
             FontColor = new SolidColorBrush(screen.FontColor);
             BackgroundImage = screen.BackgroundImage;
 
-            BackCommand = new RelayCommand(() => { Back(); });
+            BackCommand = new RelayCommand(() => { Back(); }, () => { return screenGraphTraverser.canGoBack(); });
+            NextCommand = new RelayCommand(() => { Next(); }, () => { return screenGraphTraverser.canProceed(); });
         }
 
         protected virtual void Back()
@@ -40,5 +41,7 @@ namespace App2.model.viewmodel
             Screen previous = screenGraphTraverser.Back();
             ScreenGraphTraverser.NavigateToView(Window.Current.Content as Frame, previous, screenGraphTraverser);
         }
+
+        protected abstract void Next();
     }
 }

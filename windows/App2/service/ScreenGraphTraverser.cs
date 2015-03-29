@@ -35,10 +35,18 @@ namespace App2.service
 
         public Screen goToSucessor(string action) 
         {
+            if (!canProceed())
+                throw new InvalidOperationException();
+
             Edge e = graph.Edges.Find(edge => { return edge.From == CurrentScreen && edge.Action == action; });
             history.Push(CurrentScreen);
             CurrentScreen = e.To;
             return CurrentScreen;
+        }
+
+        internal bool canProceed()
+        {
+            return graph.Edges.Find(edge => { return edge.From == CurrentScreen; }) != null;
         }
 
         public List<string> getOutcomes()
@@ -54,7 +62,7 @@ namespace App2.service
 
         public Screen Back()
         {
-            if (history.Count == 1)
+            if (!canGoBack())
                 return CurrentScreen;
 
             CurrentScreen = history.Pop();
@@ -131,6 +139,11 @@ namespace App2.service
                 frame.Navigate(typeof(MultipleChoiceView), traverser);
             else
                 throw new InvalidOperationException();
+        }
+
+        internal bool canGoBack()
+        {
+            return history.Count > 1;
         }
     }
 }
