@@ -69,66 +69,6 @@ namespace App2.service
             return CurrentScreen;
         }
 
-        /*
-        internal SelectMultipleViewModel getMultipleChoiceViewModel()
-        {
-            if (!(CurrentScreen is MultipleChoiceScreen))
-                throw new InvalidOperationException();
-
-            MultipleChoiceScreen screen = CurrentScreen as MultipleChoiceScreen;
-            var vm = new SelectMultipleViewModel();
-            vm.Title = screen.Title;
-            vm.FontColor = new SolidColorBrush(screen.FontColor);
-            vm.Outcomes = buildOutcomes();
-            return vm;
-        }
-
-        internal SelectSingleViewModel getSingleChoiceViewModel()
-        {
-            if (!(CurrentScreen is SingleChoiceScreen))
-                throw new InvalidOperationException();
-
-            SingleChoiceScreen screen = CurrentScreen as SingleChoiceScreen;
-            var vm = new SelectSingleViewModel();
-            vm.Title = screen.Title;
-            vm.FontColor = new SolidColorBrush(screen.FontColor);
-            vm.Outcomes = buildOutcomes();
-            return vm;
-        }
-
-        internal IImageViewModel getImageViewModel()
-        {
-            if (!(CurrentScreen is ImageScreen))
-                throw new InvalidOperationException();
-
-            ImageScreen screen = CurrentScreen as ImageScreen;
-            var vm = new ImageViewModel();
-            vm.Title = screen.Title;
-            vm.FontColor = new SolidColorBrush(screen.FontColor);
-            vm.Image = screen.Image;
-            vm.Text = screen.Text;
-            vm.Outcomes = buildOutcomes();
-            return vm;
-        }
-
-        private Dictionary<string, RelayCommand> buildOutcomes()
-        {
-            Dictionary<string, RelayCommand> actions = new Dictionary<string, RelayCommand>();
-            List<Edge> outgoingEdges = graph.Edges.FindAll(edge => { return edge.From == CurrentScreen; });
-            foreach (Edge e in outgoingEdges)
-            {
-                RelayCommand command = new RelayCommand(
-                    () => {
-                        this.CurrentScreen = e.To;
-                        Frame current = Window.Current.Content as Frame;
-                        ScreenGraphTraverser.NavigateToView(current, e.To, this);
-                    });
-                actions.Add(e.Action, command);
-            }
-
-            return actions;
-        }*/
-
         public static void NavigateToView(Frame frame, Screen screen, ScreenGraphTraverser traverser)
         {
             if (screen is ImageScreen)
