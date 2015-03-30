@@ -10,7 +10,7 @@ namespace App2.dao
 {
     public class DummyScreenGraphLoader : IScreenGraphLoader
     {
-        public ScreenGraph LoadFromFile(Windows.Storage.StorageFile file)
+        public async Task<ScreenGraph> LoadFromFile(Windows.Storage.StorageFile file)
         {
             List<Screen> screens = new List<Screen>();
             BitmapImage image = new BitmapImage();
