@@ -12,23 +12,20 @@ using Windows.UI.Xaml.Media;
 using App2.service;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.ComponentModel;
 
 namespace App2.model.viewmodel
 {
-    class ImageViewModel : BaseViewModel
+    public class ImageViewModel : BaseViewModel
     {
-        public BitmapSource Image { get; set; }
-        public string Text { get; set; }
+        private BitmapSource image;
+        public BitmapSource Image { get { return image; } set { image = value; OnPropertyChanged(new PropertyChangedEventArgs("Image")); } }
+        private string text;
+        public string Text { get { return text; } set { text = value; OnPropertyChanged(new PropertyChangedEventArgs("Text")); } }
 
-        public ImageViewModel(ScreenGraphTraverser screenGraphTraverser)
+        public override void Init(ScreenGraphTraverser screenGraphTraverser)
         {
-            this.screenGraphTraverser = screenGraphTraverser;
-            Init();
-        }
-
-        protected override void Init()
-        {
-            base.Init();
+            base.Init(screenGraphTraverser);
             Image = (this.screenGraphTraverser.CurrentScreen as ImageScreen).Image;
             Text = (this.screenGraphTraverser.CurrentScreen as ImageScreen).Text;
         }

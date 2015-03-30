@@ -16,17 +16,12 @@ namespace App2.model.viewmodel
 {
     public class SelectMultipleViewModel : BaseViewModel
     {
-        public List<string> Outcomes { get; set; }
+        private List<string> outcomes = new List<string>();
+        public List<string> Outcomes { get { return outcomes; } set { outcomes = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Outcomes")); } }
 
-        public SelectMultipleViewModel(ScreenGraphTraverser screenGraphTraverser)
+        public override void Init(ScreenGraphTraverser screenGraphTraverser)
         {
-            this.screenGraphTraverser = screenGraphTraverser;
-            Init();
-        }
-
-        protected override void Init()
-        {
-            base.Init();
+            base.Init(screenGraphTraverser);
             Outcomes = screenGraphTraverser.getOutcomes();
         }
 

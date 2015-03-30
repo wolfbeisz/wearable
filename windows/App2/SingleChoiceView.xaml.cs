@@ -29,19 +29,19 @@ namespace App2
             this.InitializeComponent();
         }
 
-        SelectSingleViewModel ViewModel { get; set; }
+        private SelectSingleViewModel viewModel = new SelectSingleViewModel();
+        public SelectSingleViewModel ViewModel { 
+            get{ return viewModel;} 
+        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ViewModel = new SelectSingleViewModel(e.Parameter as ScreenGraphTraverser);
-            this.DataContext = ViewModel;
+            ViewModel.Init(e.Parameter as ScreenGraphTraverser);
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             ViewModel.SelectedOutcome = (sender as RadioButton).Content as string;
         }
-
-
     }
 }

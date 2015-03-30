@@ -12,24 +12,21 @@ using App2.service;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace App2.model.viewmodel
 {
-    class SelectSingleViewModel : BaseViewModel
+    public class SelectSingleViewModel : BaseViewModel
     {
         //TODO: by default none is selected
-        public string SelectedOutcome { get; set; }
-        public List<string> Outcomes { get; set; }
+        private string selectedOutcome;
+        public string SelectedOutcome { get { return selectedOutcome; } set { selectedOutcome = value; OnPropertyChanged(new PropertyChangedEventArgs("SelectedOutcome")); } }
+        private List<string> outcomes = new List<string>();
+        public List<string> Outcomes { get { return outcomes; } set { outcomes = value; OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Outcomes")); } }
 
-        public SelectSingleViewModel(ScreenGraphTraverser screenGraphTraverser)
+        public override void Init(ScreenGraphTraverser screenGraphTraverser)
         {
-            this.screenGraphTraverser = screenGraphTraverser;
-            Init();
-        }
-
-        protected override void Init()
-        {
-            base.Init();
+            base.Init(screenGraphTraverser);
             Outcomes = screenGraphTraverser.getOutcomes();
         }
 

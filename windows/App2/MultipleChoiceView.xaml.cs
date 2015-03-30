@@ -30,12 +30,11 @@ namespace App2
             this.InitializeComponent();
         }
 
-        public SelectMultipleViewModel ViewModel { get; set; }
+        private SelectMultipleViewModel viewModel = new SelectMultipleViewModel();
+        public SelectMultipleViewModel ViewModel { get { return viewModel; } }
 
         protected override void OnNavigatedTo(NavigationEventArgs e) {
-            ViewModel = new SelectMultipleViewModel(e.Parameter as ScreenGraphTraverser);
-            this.DataContext = ViewModel;
-
+            ViewModel.Init(e.Parameter as ScreenGraphTraverser);
         }
     }
 }
