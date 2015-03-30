@@ -47,7 +47,7 @@ namespace App2
             var copy = await file.CopyAsync(tempFolder, file.Name, NameCollisionOption.ReplaceExisting);
             
             dao.IScreenGraphLoader loader = new dao.ScreenGraphLoader();
-            model.ScreenGraph sg = loader.LoadFromFile(copy);
+            model.ScreenGraph sg = await loader.LoadFromFile(copy);
             service.ScreenGraphTraverser traverser = new service.ScreenGraphTraverser(sg, sg.Nodes.Find(screen => { return screen.Id == 0; }));
 
             service.ScreenGraphTraverser.NavigateToView(Window.Current.Content as Frame, traverser.CurrentScreen, traverser);

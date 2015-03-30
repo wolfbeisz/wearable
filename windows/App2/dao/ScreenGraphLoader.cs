@@ -12,16 +12,17 @@ using SQLite.SQL_TABLES;
 using App2.Common;
 using System.Globalization;
 using Windows.UI.Xaml.Media;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace App2.dao
 {
     class ScreenGraphLoader : IScreenGraphLoader
     {
-        public model.ScreenGraph LoadFromFile(Windows.Storage.StorageFile file)
+        public async Task<model.ScreenGraph> LoadFromFile(Windows.Storage.StorageFile file)
         {
             SQLiteConnector s = new SQLiteConnector(file.Path);
             //SQLiteConnector s = new SQLiteConnector(null);
-            List<Screen> screens = loadScreens(s);
+            List<Screen> screens = await loadScreens(s);
             List<Edge> edges = loadEdges(s, screens);
 
             return new model.ScreenGraph(screens, edges);
@@ -41,7 +42,7 @@ namespace App2.dao
             return edges;
         }
 
-        private List<Screen> loadScreens(SQLiteConnector s)
+        private async Task<List<Screen>> loadScreens(SQLiteConnector s)
         {
             List<Screen> screens = new List<Screen>();
             foreach (var node in s.sql_Nodes)
@@ -50,13 +51,13 @@ namespace App2.dao
                 switch (node.TYPEID) {
                     case 0: //image + text
                         sql_View imageView = loadImageView(s, node.VIEWID);
-                        current = new ImageScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = loadImage(s, node.IMAGEID), Image = loadImage(s, imageView.IMAGEID), Text = imageView.TEXT };
+                        current = new ImageScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = await loadImage(s, node.IMAGEID), Image = await loadImage(s, imageView.IMAGEID), Text = imageView.TEXT };
                         break;
                     case 1: //single
-                        current = new SingleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = loadImage(s, node.IMAGEID)};
+                        current = new SingleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = await loadImage(s, node.IMAGEID) };
                         break;
                     case 2: //multiple choice
-                        current = new MultipleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = loadImage(s, node.IMAGEID) };
+                        current = new MultipleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = await loadImage(s, node.IMAGEID) };
                         break;
                     default:
                         throw new InvalidOperationException("node type " + node.TYPEID + " is not supported");
@@ -67,13 +68,18 @@ namespace App2.dao
             return screens;
         }
 
-        private BitmapSource loadImage(SQLiteConnector s, int p)
+        private async Task<BitmapSource> loadImage(SQLiteConnector s, int p)
         {
             sql_Image imageRecord = s.sql_Images.FirstOrDefault((img) => { return img.IMAGEID == p; });
             if (imageRecord == null)
                 return null;
+
+            IBuffer buffer = imageRecord.IMAGE.AsBuffer();
+            var stream = new InMemoryRandomAccessStream();
+            await stream.WriteAsync(buffer);
+            stream.Seek(0);
             BitmapImage image = new BitmapImage();
-            image.SetSource(new MemoryRandomAccessStream(imageRecord.IMAGE));
+            image.SetSource(stream);
             return image;
         }
 

@@ -16,6 +16,6 @@ namespace App2.dao
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        ScreenGraph LoadFromFile(StorageFile file);
+        Task<ScreenGraph> LoadFromFile(StorageFile file);
     }
 }
