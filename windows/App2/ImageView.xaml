@@ -18,30 +18,27 @@
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <!-- Back button and page title -->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Margin="39,59,39,0" Command="{Binding BackCommand}"
-                        Style="{StaticResource NavigationBackButtonNormalStyle}"
-                        VerticalAlignment="Top"
-                        AutomationProperties.Name="Back"
-                        AutomationProperties.AutomationId="BackButton"
-                        AutomationProperties.ItemType="Navigation Button"/>
-            <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="120"/>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Row="0" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
-        </Grid>
-        <StackPanel Grid.Row="1" Margin="120,30,0,0">
+        
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0">
             <Image Source="{Binding Image}"></Image>
             <TextBlock Text="{Binding Text}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
-
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Weiter" Command="{Binding NextCommand}"></Button>
-            </StackPanel>
-
         </StackPanel>
     </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar IsOpen="True" IsSticky="True">
+            <AppBarButton Label="Weiter" Icon="Forward" Command="{Binding NextCommand}"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Zurück" Icon="Back" Command="{Binding BackCommand}"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>
