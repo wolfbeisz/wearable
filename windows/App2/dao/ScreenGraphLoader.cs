@@ -51,13 +51,13 @@ namespace App2.dao
                 switch (node.TYPEID) {
                     case 0: //image + text
                         sql_View imageView = loadImageView(s, node.VIEWID);
-                        current = new ImageScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = await loadImage(s, node.IMAGEID), Image = await loadImage(s, imageView.IMAGEID), Text = imageView.TEXT };
+                        current = new ImageScreen() { Id = node.NODEID, Title = node.TITLE, ForwardText = node.FORWARDTEXT, BackgroundImage = await loadImage(s, node.IMAGEID), Image = await loadImage(s, imageView.IMAGEID), Text = imageView.TEXT };
                         break;
                     case 1: //single
-                        current = new SingleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = await loadImage(s, node.IMAGEID) };
+                        current = new SingleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, ForwardText = node.FORWARDTEXT, BackgroundImage = await loadImage(s, node.IMAGEID) };
                         break;
                     case 2: //multiple choice
-                        current = new MultipleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, FontColor = convertColorLiteral(node.FONTCOLOR), BackgroundImage = await loadImage(s, node.IMAGEID) };
+                        current = new MultipleChoiceScreen() { Id = node.NODEID, Title = node.TITLE, ForwardText = node.FORWARDTEXT, BackgroundImage = await loadImage(s, node.IMAGEID) };
                         break;
                     default:
                         throw new InvalidOperationException("node type " + node.TYPEID + " is not supported");

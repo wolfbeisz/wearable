@@ -14,7 +14,7 @@ namespace SQLite
         public int IMAGEID { get; set; }
         public int TYPEID { get; set; }
         public int VIEWID { get; set; }
-        public string FONTCOLOR { get; set; }
+        public string FORWARDTEXT { get; set; }
 
     }
 }

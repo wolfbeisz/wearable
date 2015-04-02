@@ -12,7 +12,7 @@ namespace App2.model
     {
         public int Id { get;  set; }
         public string Title { get;  set; }
-        public Color FontColor { get;  set; }
+        public string ForwardText { get; set; }
         public BitmapSource BackgroundImage { get;  set; }
     }
 }

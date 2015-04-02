@@ -40,7 +40,7 @@
 
     <Page.BottomAppBar>
         <CommandBar IsOpen="True" IsSticky="True">
-            <AppBarButton Label="Weiter" Icon="Forward" Command="{Binding NextCommand}"/>
+            <AppBarButton Label="{Binding ForwardText}" Icon="Forward" Command="{Binding NextCommand}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Zurück" Icon="Back" Command="{Binding BackCommand}"/>
             </CommandBar.SecondaryCommands>
