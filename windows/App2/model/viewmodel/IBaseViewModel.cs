@@ -29,14 +29,15 @@ namespace App2.model.viewmodel
             } 
         }
 
-        private Brush fontColor = new SolidColorBrush(Colors.Black);
-        public Brush FontColor {
+        private string forwardText = "";
+        public string ForwardText
+        {
             get {
-                return fontColor;
+                return forwardText;
             }
             set {
-                fontColor = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("FontColor"));
+                forwardText = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("ForwardText"));
             }
         }
         private BitmapSource backgroundImage;
@@ -53,7 +54,7 @@ namespace App2.model.viewmodel
             this.screenGraphTraverser = screenGraphTraverser;
             Screen screen = screenGraphTraverser.CurrentScreen;
             Title = screen.Title;
-            FontColor = new SolidColorBrush(screen.FontColor);
+            ForwardText = screen.ForwardText;
             BackgroundImage = screen.BackgroundImage;
 
             BackCommand = new RelayCommand(() => { Back(); }, () => { return screenGraphTraverser.canGoBack(); });

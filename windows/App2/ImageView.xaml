@@ -7,6 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Symbol x:Key="Symbol1">Back</Symbol>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ChildrenTransitions>
@@ -23,21 +26,26 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="120"/>
         </Grid.ColumnDefinitions>
-        
+
         <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Row="0" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
-        
+
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0">
             <Image Source="{Binding Image}"></Image>
             <TextBlock Text="{Binding Text}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
+            
         </StackPanel>
     </Grid>
 
     <Page.BottomAppBar>
         <CommandBar IsOpen="True" IsSticky="True">
-            <AppBarButton Label="Weiter" Icon="Forward" Command="{Binding NextCommand}"/>
+            <AppBarButton Label="{Binding ForwardText}" Icon="Forward" Command="{Binding NextCommand}"/>
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Zurück" Icon="Back" Command="{Binding BackCommand}"/>
+                <AppBarButton Label="Zurück" Command="{Binding BackCommand}">
+                    <AppBarButton.Icon>
+                        <SymbolIcon Symbol="{StaticResource Symbol1}"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
