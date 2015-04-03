@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -89,6 +90,19 @@ namespace App2
         protected override void OnFileActivated(FileActivatedEventArgs args)
         {
             //args.Files[0].Path
+            IStorageItem file = args.Files.FirstOrDefault((item) => { return item is StorageFile; });
+            if (file != null)
+            {
+                Frame rootFrame = new Frame();
+                App2.service.Bootstrap.DisplayMockup(file as StorageFile, rootFrame);
+                Window.Current.Content = rootFrame;
+                Window.Current.Activate();
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("no valid file selected");
+            }
+
         }
 
         /// <summary>

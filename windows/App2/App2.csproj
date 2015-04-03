@@ -150,6 +150,7 @@
     <Compile Include="dao\IScreenGraphLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="model\Screen.cs" />
+    <Compile Include="service\Bootstrap.cs" />
     <Compile Include="service\ScreenGraphTraverser.cs" />
     <Compile Include="SingleChoiceView.xaml.cs">
       <DependentUpon>SingleChoiceView.xaml</DependentUpon>
