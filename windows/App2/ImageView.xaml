@@ -29,14 +29,11 @@
 
         <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Row="0" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
-
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0">
-            <Image Source="{Binding Image}"></Image>
-            <TextBlock Text="{Binding Text}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
-            
-        </StackPanel>
+        <Image Source="{Binding BackgroundImage}" x:Name="imgLogo" Grid.Column="1" HorizontalAlignment="Right" Height="120" VerticalAlignment="Top" Width="120" Stretch="Fill" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Grid.ColumnSpan="2" Margin="0,9,15,0"/>
+        <Image Source="{Binding Image}" Grid.Column="1" HorizontalAlignment="Left" Height="463" Margin="330,135,0,0" VerticalAlignment="Top" Width="463" Stretch="Fill" Grid.RowSpan="2"/>
+        <TextBox TextAlignment="Center" Text="{Binding Text}" Grid.Column="1" HorizontalAlignment="Left" Margin="147,463,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="5" RenderTransformOrigin="0.5,0.5" Width="844" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTabStop="False" IsTapEnabled="False" IsTextPredictionEnabled="False" IsEnabled="False">
+        </TextBox>
     </Grid>
-
     <Page.BottomAppBar>
         <CommandBar IsOpen="True" IsSticky="True">
             <AppBarButton Label="{Binding ForwardText}" Icon="Forward" Command="{Binding NextCommand}"/>
