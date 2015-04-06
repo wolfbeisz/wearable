@@ -70,17 +70,19 @@ namespace App2.dao
 
         private async Task<BitmapSource> loadImage(SQLiteConnector s, int p)
         {
-            sql_Image imageRecord = s.sql_Images.FirstOrDefault((img) => { return img.IMAGEID == p; });
-            if (imageRecord == null)
-                return null;
-
-            IBuffer buffer = imageRecord.IMAGE.AsBuffer();
-            var stream = new InMemoryRandomAccessStream();
-            await stream.WriteAsync(buffer);
-            stream.Seek(0);
-            BitmapImage image = new BitmapImage();
-            image.SetSource(stream);
-            return image;
+            foreach (sql_Image img in s.sql_Images)
+            {
+                if (img.IMAGEID == p) {
+                    IBuffer buffer = img.IMAGE.AsBuffer();
+                    var stream = new InMemoryRandomAccessStream();
+                    await stream.WriteAsync(buffer);
+                    stream.Seek(0);
+                    BitmapImage image = new BitmapImage();
+                    image.SetSource(stream);
+                    return image;
+                }
+            }
+            return null;
         }
 
         /*private Brush getBrush(string colorAsLiteral)

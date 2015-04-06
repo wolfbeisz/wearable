@@ -38,6 +38,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
+        <Image Source="{Binding BackgroundImage}" x:Name="imgLogo" Grid.Column="1" HorizontalAlignment="Left" Height="120" VerticalAlignment="Top" Width="120" Stretch="Fill" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Grid.ColumnSpan="2" Margin="1111,9,0,0"/>
     </Grid>
 
     <Page.BottomAppBar>
