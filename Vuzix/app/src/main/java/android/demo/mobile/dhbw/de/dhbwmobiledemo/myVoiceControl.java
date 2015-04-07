@@ -1,6 +1,7 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.vuzix.speech.VoiceControl;
@@ -20,7 +21,21 @@ class myVoiceControl extends VoiceControl {
         super(context, grammars, wordlist);
     }
 
+
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        vc = new VoiceControl(this) {
+            @Override
+            protected void onRecognition(String word) {
+
+            }
+        };
+    }
+
     private final String TAG = "Voice";
+
     @Override
     protected void onRecognition(String result){
         Log.i(TAG, result);
