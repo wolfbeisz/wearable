@@ -29,7 +29,7 @@
 
         <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Row="0" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
-        <Image Source="{Binding BackgroundImage}" x:Name="imgLogo" Grid.Column="1" HorizontalAlignment="Right" Height="120" VerticalAlignment="Top" Width="120" Stretch="Fill" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Grid.ColumnSpan="2" Margin="0,9,15,0"/>
+        <Image Source="{Binding BackgroundImage}" x:Name="imgLogo" Grid.Column="2" HorizontalAlignment="Right" Height="120" VerticalAlignment="Top" Width="120" Stretch="Fill" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False"/>
         <Image Source="{Binding Image}" Grid.Column="1" Height="463"  Stretch="Uniform" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center"/>
         <TextBox TextAlignment="Center" Text="{Binding Text}" Grid.Column="1" HorizontalAlignment="Center" Margin="0,468,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="5" RenderTransformOrigin="0.5,0.5" Width="844" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTabStop="False" IsTapEnabled="False" IsTextPredictionEnabled="False" IsEnabled="False">
         </TextBox>

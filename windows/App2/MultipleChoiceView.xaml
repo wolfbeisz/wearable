@@ -28,6 +28,7 @@
 
         <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Row="0" Grid.Column="1" 
                     IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
+        <Image Source="{Binding BackgroundImage}" x:Name="imgLogo" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Height="120" VerticalAlignment="Top" Width="120" Stretch="Fill" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False"/>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0">
             <ItemsControl ItemsSource="{Binding Outcomes}">
@@ -38,7 +39,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
-        <Image Source="{Binding BackgroundImage}" x:Name="imgLogo" Grid.Column="1" HorizontalAlignment="Left" Height="120" VerticalAlignment="Top" Width="120" Stretch="Fill" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" Grid.ColumnSpan="2" Margin="1111,9,0,0"/>
     </Grid>
 
     <Page.BottomAppBar>
