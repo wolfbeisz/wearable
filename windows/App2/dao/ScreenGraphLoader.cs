@@ -68,21 +68,22 @@ namespace App2.dao
             return screens;
         }
 
-        private async Task<BitmapSource> loadImage(SQLiteConnector s, int p)
+        private async Task<BitmapSource> loadImage(SQLiteConnector s, int? p)
         {
-            foreach (sql_Image img in s.sql_Images)
-            {
-                if (img.IMAGEID == p) {
-                    IBuffer buffer = img.IMAGE.AsBuffer();
-                    var stream = new InMemoryRandomAccessStream();
-                    await stream.WriteAsync(buffer);
-                    stream.Seek(0);
-                    BitmapImage image = new BitmapImage();
-                    image.SetSource(stream);
-                    return image;
-                }
-            }
-            return null;
+            if (p == null)
+                return null;
+
+            sql_Image imageRecord = s.sql_Images.FirstOrDefault((img) => { return img.IMAGEID == p; });
+            if (imageRecord == null)
+                return null;
+
+            IBuffer buffer = imageRecord.IMAGE.AsBuffer();
+            var stream = new InMemoryRandomAccessStream();
+            await stream.WriteAsync(buffer);
+            stream.Seek(0);
+            BitmapImage image = new BitmapImage();
+            image.SetSource(stream);
+            return image;
         }
 
         /*private Brush getBrush(string colorAsLiteral)
