@@ -11,7 +11,7 @@ namespace SQLite
         [SQLite.PrimaryKey]
         public int NODEID { get; set; }
         public string TITLE { get; set; }
-        public int IMAGEID { get; set; }
+        public int? IMAGEID { get; set; }
         public int TYPEID { get; set; }
         public int VIEWID { get; set; }
         public string FORWARDTEXT { get; set; }
