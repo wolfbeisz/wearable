@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.example.silke.vuzix.R;
+import com.vuzix.speech.VoiceControl;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -15,10 +19,23 @@ import java.io.OutputStream;
 
 public class MainActivity extends Activity {
 
+    myVoiceControl myVc;
+
+    VoiceControl vc;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        vc = new VoiceControl(this) {
+            @Override
+            protected void onRecognition(String result) {
+                ((TextView)findViewById(R.id.voice_text)).setText(result);
+
+            }
+        };
 
     }
 
@@ -44,6 +61,25 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        vc.on();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        vc.off();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        vc.destroy();
+    }
+
 
     void checkDB() throws Exception {
         try {
