@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="android.demo.mobile.dhbw.de.dhbwmobiledemo" >
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+=======
+    package="com.example.silke.vuzix" >
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+>>>>>>> 3b3bae79fd56b3ddb37fa90dbec886306da892b9
 
     <application
         android:allowBackup="true"
