@@ -1,19 +1,17 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
-import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.example.silke.vuzix.R;
 import com.vuzix.speech.VoiceControl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,10 +32,29 @@ public class MainActivity extends Activity {
         vc = new VoiceControl(this) {
             @Override
             protected void onRecognition(String result) {
-                ((TextView)findViewById(R.id.voice_text)).setText(result);
+                //((TextView)findViewById(R.id.voice_text)).setText(result);
 
             }
         };
+        if(isExternalStorageReadable()){
+            File directory = getStorageDir("example-db.sqlite");
+
+            /*
+            File choose shuld be implemented later
+             */
+
+            try {
+                checkDB(directory);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            Log.i("Info", "Storage not available for any reason.");
+            /*
+            User should be informed.
+             */
+        }
 
     }
 
@@ -74,11 +91,11 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    public File getAlbumStorageDir(String albumName) {
-        // Get the directory for the user's public pictures directory.
+    public File getStorageDir(String folderName) {
+        // Get the directory for the user's public Downloads directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), albumName);
-        Log.e("Log", "DIRECTORY_PICTURES");
+                Environment.DIRECTORY_DOWNLOADS), folderName);
+        Log.e("Log", "DIRECTORY");
         if (!file.mkdirs()) {
             Log.e("Error", "Directory not created");
         }
@@ -103,24 +120,21 @@ public class MainActivity extends Activity {
     }
 
 
-    void checkDB() throws Exception {
+    void checkDB(File file) throws Exception {
         try {
             SQLiteDatabase dbe = SQLiteDatabase
-                    .openDatabase(
-                            getAssets().openFd("example-db.sqlite").toString(),
-                            null, 1
-                    );
+                    .openOrCreateDatabase(file, null);
+
             Log.d("opendb", "EXIST");
             dbe.close();
         } catch (Exception e) {
 
-            AssetManager am = getApplicationContext().getAssets();
-            OutputStream os = new FileOutputStream(
-                    "/res/sqlite/example-db.sqlite");
+            OutputStream os = new FileOutputStream(File.createTempFile(
+                    "example-db","sqlite"));
             byte[] b = new byte[100];
 
             int r;
-            InputStream is = am.open("yourfile.sqlite");
+            InputStream is = new FileInputStream(file);
             while ((r = is.read(b)) != -1) {
                 os.write(b, 0, r);
             }
