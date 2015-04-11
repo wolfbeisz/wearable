@@ -39,20 +39,24 @@ public class MainActivity extends Activity {
             File directory = getStorageDir("example-db.sqlite");
 
             /*
-            File choose shuld be implemented later
+            File choose should be implemented later
              */
 
             try {
                 dbh = openDatase(directory);
                 Log.i("Log", "Database opened successfully");
             } catch(IOException e){
-                Log.e("Error", "Database could not be copied");
+                Log.e("Error", "Database could not be copied: " + e.getMessage());
             } catch (SQLException e){
-                Log.e("Error", "Database could not be opened");
+                Log.e("Error", "Database could not be opened: " + e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            dbh.getNodes();
+            try {
+                Node.init(dbh);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+            }
 
 
         }

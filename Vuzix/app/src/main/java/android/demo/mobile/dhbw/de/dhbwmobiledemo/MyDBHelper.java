@@ -120,11 +120,18 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void getNodes(){
+    public Cursor getNodes() throws Exception {
         if(myDataBase != null){
-            Cursor myCursor = myDataBase.rawQuery("Select * from NODE", null);
+            Cursor myCursor = myDataBase.rawQuery("Select * from NODE;", null);
             Log.i("Info", "Selection works.");
+            return myCursor;
+        } else{
+            throw new Exception("Database not initialized");
         }
+    }
+
+    public Cursor executeRawQuery(String query){
+        return myDataBase.rawQuery(query, null);
     }
 
     // Add your public helper methods to access and get content from the database.
