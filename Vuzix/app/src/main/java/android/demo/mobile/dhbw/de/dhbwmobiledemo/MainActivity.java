@@ -1,7 +1,7 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -11,10 +11,7 @@ import android.view.MenuItem;
 import com.vuzix.speech.VoiceControl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 
 
 public class MainActivity extends Activity {
@@ -22,6 +19,8 @@ public class MainActivity extends Activity {
     myVoiceControl myVc;
 
     VoiceControl vc;
+
+    MyDBHelper dbh;
 
 
     @Override
@@ -44,10 +43,18 @@ public class MainActivity extends Activity {
              */
 
             try {
-                checkDB(directory);
+                dbh = openDatase(directory);
+                Log.i("Log", "Database opened successfully");
+            } catch(IOException e){
+                Log.e("Error", "Database could not be copied");
+            } catch (SQLException e){
+                Log.e("Error", "Database could not be opened");
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            dbh.getNodes();
+
+
         }
         else{
             Log.i("Info", "Storage not available for any reason.");
@@ -119,29 +126,29 @@ public class MainActivity extends Activity {
         vc.destroy();
     }
 
+    private MyDBHelper openDatase(File file) throws IOException, SQLException {
+        MyDBHelper myDBHelper = new MyDBHelper(this);
 
-    void checkDB(File file) throws Exception {
         try {
-            SQLiteDatabase dbe = SQLiteDatabase
-                    .openOrCreateDatabase(file, null);
 
-            Log.d("opendb", "EXIST");
-            dbe.close();
-        } catch (Exception e) {
+            myDBHelper.createDataBase(file);
 
-            OutputStream os = new FileOutputStream(File.createTempFile(
-                    "example-db","sqlite"));
-            byte[] b = new byte[100];
+        } catch (IOException ioe) {
 
-            int r;
-            InputStream is = new FileInputStream(file);
-            while ((r = is.read(b)) != -1) {
-                os.write(b, 0, r);
-            }
-            Log.i("DATABASE_HELPER", "Copying the database ");
-            is.close();
-            os.close();
+            throw  ioe;
+
         }
 
+        try {
+
+            myDBHelper.openDataBase();
+
+        }catch(SQLException sqle){
+
+            throw sqle;
+
+        }
+        return myDBHelper;
     }
+
 }
