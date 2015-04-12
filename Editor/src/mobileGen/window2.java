@@ -20,8 +20,12 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 public class window2 implements ActionListener,ComponentListener{
@@ -31,13 +35,12 @@ public class window2 implements ActionListener,ComponentListener{
 	JLabel slideNr1 = new JLabel("Slide "+(slidenumberCur+1)+ " of "+slidenumberMax), slideNr2 = new JLabel("Slide "+slidenumberCur+ " of "+slidenumberMax);
 	JInternalFrame l1,l2;
 	static DBController dbc;
-
-
-
-
-
-
-
+	JMenuBar menuBar;
+	JMenu fileMenu;
+	JMenuItem openItem;
+	JMenuItem saveItem;
+	
+	Slide[] slideArray;
 	//ELEMENTS////
 	JLabel disabled1 = new JLabel("");
 	JLabel contentCaption1 = new JLabel("Caption");
@@ -99,6 +102,20 @@ public class window2 implements ActionListener,ComponentListener{
 		Container content = f.getContentPane();
 		JLayeredPane desktop = new JDesktopPane();
 		desktop.setOpaque(true);
+
+
+		//Menu
+
+		menuBar = new JMenuBar();
+		fileMenu = new JMenu("File");
+		openItem = new JMenuItem("Open");
+		openItem.addActionListener(this);
+		saveItem = new JMenuItem("Save");
+		saveItem.addActionListener(this);
+		menuBar.add(fileMenu);
+		fileMenu.add(openItem);
+		fileMenu.add(saveItem);
+		f.add(menuBar, BorderLayout.NORTH);
 		//Create Layers
 		l1 = createLayer("Slide: Q&A");
 		l1.addComponentListener(this);
@@ -549,6 +566,8 @@ public class window2 implements ActionListener,ComponentListener{
 		f.setSize(800, 600);
 		f.setVisible(true);
 		loadData();
+		l1.setVisible(false);
+		l2.setVisible(false);
 	}
 
 	private void updateSlideNumberLabel(){
@@ -653,7 +672,7 @@ public class window2 implements ActionListener,ComponentListener{
 			// If type = 0 -> Multiple Choice
 			l1.toFront();
 			multipleBox1.setSelected(true);
-			
+
 			try {
 				contentCaption1.setText(dbc.loadDBData("TITLE", "NODE", 0, nodeId));
 				propertiesCapField1.setText(dbc.loadDBData("TITLE", "NODE", 0, nodeId));
@@ -792,8 +811,18 @@ public class window2 implements ActionListener,ComponentListener{
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		System.out.println("Clicked");
+	public void actionPerformed(ActionEvent object) {
+		fileDialog fd = new fileDialog();
+		if (object.getSource() == openItem){
+			System.out.println("Öffnen wurde angeklickt");
+			fd.openDialog();
+			slideArray = dbc.loadDB();
+			
+		}
+		if (object.getSource() == saveItem){
+			fd.saveDBDialog();
+			System.out.println("Save wurde angeklickt");
+		}
 	}
 	@Override
 	public void componentResized(ComponentEvent e) {
@@ -802,6 +831,7 @@ public class window2 implements ActionListener,ComponentListener{
 	}
 	@Override
 	public void componentMoved(ComponentEvent e) {
+		//Prevent move of panes
 		l1.setLocation(0, 0);
 		l2.setLocation(0, 0);
 		//l3.setLocation(0, 0);

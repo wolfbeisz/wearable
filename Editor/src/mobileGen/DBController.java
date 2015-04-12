@@ -15,7 +15,7 @@ class DBController {
 
 	private static final DBController dbcontroller = new DBController(); 
 	private static Connection connection; 
-	private static final String DB_PATH = System.getProperty("user.home") + "/" + "prototyper.sqlite"; 
+	public static final String DB_PATH = "example-db.sqlite";//System.getProperty("user.home") + "/" + "example-db.sqlite"; 
 	private final String INSERT_PICTURE = "insert into IMAGE(IMAGEID, IMAGE) values (?, ?, ?)";
 	FileInputStream fis = null;
 	PreparedStatement ps = null;
@@ -454,6 +454,16 @@ class DBController {
 			e.printStackTrace();
 			return false;
 		}*/
+	}
+
+	public Slide[] loadDB() {
+		Slide[] slideArray = null;
+		try {
+			slideArray = new Slide[this.getSlideMaxNr()];
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return slideArray;
 	}
 
 }
