@@ -5,6 +5,7 @@ import android.graphics.Picture;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -12,13 +13,27 @@ import java.util.List;
  */
 public abstract class Node {
     private static List<Node> nodesList;
+    private static HashMap<Integer, byte[]> logoBlobMap = new HashMap<>();
+    private static MyDBHelper mdh;
+
+    public static byte[] getImageBlobById(int id){
+        if(!logoBlobMap.containsKey(id)) {
+            Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID == '" + id + "';");
+            imageCursor.moveToFirst();
+            logoBlobMap.put(id, imageCursor.getBlob(0));
+            imageCursor.close();
+        }
+        return logoBlobMap.get(id);
+    }
 
     public static void init(MyDBHelper mdh) {
         try {
+            Node.mdh = mdh;
+
             int nodeId;
             String title;
             String logoId;
-            HashMap<Integer, byte[]> logoBlobMap = new HashMap<>();
+
             int intLogoId;
             int typeId;
             int viewId;
@@ -40,12 +55,36 @@ public abstract class Node {
 
                 if(logoId != null){
                     intLogoId = Integer.parseInt(logoId);
-                    if(!logoBlobMap.containsKey(intLogoId)) {
-                        Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID == '" + logoId + "';");
-                        imageCursor.moveToFirst();
-                        logoBlobMap.put(intLogoId, imageCursor.getBlob(0));
-                        imageCursor.close();
-                    }
+
+                }
+
+                nodesList = new LinkedList<Node>();
+                Node tmp;
+                switch (typeId) {
+                    case 0:
+                        try {
+                            Cursor viewCursor = mdh.executeRawQuery("SELECT IMAGEID, TEXT FROM VIEW WHERE VIEWID = '"
+                                    + viewId + "';");
+                            viewCursor.moveToFirst();
+                            int imageId = viewCursor.getInt(0);
+                            String text = viewCursor.getString(1);
+
+                            tmp = new ImageTextNode(nodeId, title, logoId, imageId, text, forwardText);
+                            nodesList.add(tmp);
+                        } catch(Exception e){
+                            Log.e("Error", e.getMessage());
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 1:
+                        tmp = new SingleChoiceNode(nodeId,title,logoId,forwardText);
+                        break;
+                    case 2:
+                        tmp = new MultipleChoiceNode(nodeId,title,logoId,forwardText);
+                        break;
+                    default:
+                        Log.e("Error", "Inconsistent Data, read error, no such node type");
+                        throw new Exception("Inconsistent Data, read error, no such node type");
                 }
 
 
@@ -59,31 +98,14 @@ public abstract class Node {
     }
 
 
-    private static void addNewNode(int nodeId, String title, Picture logo, int typeId, Picture picture, String text, String forwardText) throws Exception {
-        Node tmp;
-        switch (typeId) {
-            case 0:
-                tmp = new ImageTextNode(nodeId, title, logo, picture, text, forwardText);
-                break;
-            case 1:
-                tmp = new SingleChoiceNode(nodeId,title,logo,forwardText);
-                break;
-            case 2:
-                tmp = new MultipleChoiceNode(nodeId,title,logo,forwardText);
-                break;
-            default:
-                Log.e("Error", "Inconsistent Data, read error, no such node type");
-                throw new Exception("Inconsistent Data, read error, no such node type");
-        }
-        nodesList.add(tmp);
-    }
+
 
     private int nodeId;
     private String title;
-    private Picture logo;
+    private String logo;
     private String forwardText;
 
-    protected Node(int nodeId, String title, Picture logo, String forwardText) {
+    protected Node(int nodeId, String title, String logo, String forwardText) {
         this.nodeId = nodeId;
         this.title = title;
         this.logo = logo;
