@@ -15,15 +15,10 @@ public class ImageTextNode extends Node {
     private Picture picture;
     private String text;
 
-<<<<<<< HEAD
 
-
-    public ImageTextNode(int nodeId, String title, Picture logo, Picture picture, String text, String forwardText){
-        super(nodeId, title, logo, forwardText);
-=======
     public ImageTextNode(int nodeId, String title, String logoId, int pictureId, String text, String forwardText){
         super(nodeId, title, logoId, forwardText);
->>>>>>> origin/vuzix
+
         this.picture = picture;
         this.text = text;
     }
