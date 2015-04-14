@@ -2,20 +2,20 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
  * Created by Silke on 14.04.2015.
  */
-public class ImageTextActivity extends Activity {
-
+public class MultipleChoiceActivity extends Activity{
     private static ImageTextNode node;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_imagetext);
+        setContentView(R.layout.activity_multiplechoice);
 
     }
 
@@ -24,11 +24,14 @@ public class ImageTextActivity extends Activity {
     }
 
     public void setData(){
-        TextView t = (TextView) findViewById(R.id.textViewText);
-        t.setText();
-        ImageView i = (ImageView) findViewById(R.id.imageViewImage);
-        i.setImageResource();
+        CheckBox c = (CheckBox)findViewById(R.id.checkBox);
+        c.setText();
+
+        CheckBox c = (CheckBox)findViewById(R.id.checkBox2);
+        c.setText();
+
+        CheckBox c = (CheckBox)findViewById(R.id.checkBox3);
+        c.setText();
 
     }
-
 }
