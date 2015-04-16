@@ -21,13 +21,7 @@ public class SingleChoiceActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlechoice);
 
-        Button b = (Button) findViewById(R.id.buttonForward);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SingleChoiceActivity.this, ));
-            }
-        }
+        
     }
 
 
@@ -38,16 +32,16 @@ public class SingleChoiceActivity extends Activity{
 
     public void setData(){
         RadioButton r = (RadioButton)findViewById(R.id.radioButton);
-        r.setText();
+        r.setText(node.getEdgeList().get(0).toString());
 
-        RadioButton r = (RadioButton)findViewById(R.id.radioButton2);
-        r.setText();
+        r = (RadioButton)findViewById(R.id.radioButton2);
+        r.setText(node.getEdgeList().get(1).toString());
 
-        RadioButton r = (RadioButton)findViewById(R.id.radioButton3);
-        r.setText();
+        r = (RadioButton)findViewById(R.id.radioButton3);
+        r.setText(node.getEdgeList().get(2).toString());
 
         Button b = (Button) findViewById(R.id.buttonForward);
-        b.setText();
+        b.setText(node.getForwardText());
 
     }
 }

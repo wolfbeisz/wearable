@@ -26,16 +26,16 @@ public class MultipleChoiceActivity extends Activity{
 
     public void setData(){
         CheckBox c = (CheckBox)findViewById(R.id.checkBox);
-        c.setText(node.ge);
+        c.setText(node.getEdgeList().get(0).toString());
 
-        CheckBox c = (CheckBox)findViewById(R.id.checkBox2);
-        c.setText();
+        c = (CheckBox)findViewById(R.id.checkBox2);
+        c.setText(node.getEdgeList().get(1).toString());
 
-        CheckBox c = (CheckBox)findViewById(R.id.checkBox3);
-        c.setText();
+        c = (CheckBox)findViewById(R.id.checkBox3);
+        c.setText(node.getEdgeList().get(2).toString());
 
         Button b = (Button) findViewById(R.id.buttonForward);
-        b.setText();
+        b.setText(node.getForwardText());
 
     }
 }

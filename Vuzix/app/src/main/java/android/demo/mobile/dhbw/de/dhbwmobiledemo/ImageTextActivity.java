@@ -27,7 +27,7 @@ public class ImageTextActivity extends Activity {
         TextView t = (TextView) findViewById(R.id.textViewText);
         t.setText(node.getText());
         ImageView i = (ImageView) findViewById(R.id.imageViewImage);
-        i.setImageResource(node.getPicture());
+        //i.setImageResource();
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
