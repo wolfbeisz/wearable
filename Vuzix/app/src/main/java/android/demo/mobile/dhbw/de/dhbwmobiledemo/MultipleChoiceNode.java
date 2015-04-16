@@ -20,6 +20,11 @@ public class MultipleChoiceNode extends Node {
     }
 
     @Override
+    public void show() {
+
+    }
+
+    @Override
     public int getNextNodeId(int id){
         id = getEdgeList().get(0).successor;
         return id;
@@ -27,8 +32,8 @@ public class MultipleChoiceNode extends Node {
 
     public List<Edge> edgeList;
 
-    protected MultipleChoiceNode(int nodeId, String title, String logoId, String forwardText, List<Edge> edgeList) {
-        super(nodeId, title, logoId, forwardText);
+    protected MultipleChoiceNode(int nodeId, int typeId, String title, String logoId, String forwardText, List<Edge> edgeList) {
+        super(nodeId, typeId, title, logoId, forwardText);
         this.edgeList = edgeList;
     }
 

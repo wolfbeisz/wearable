@@ -1,13 +1,9 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 /**
  * Created by Silke on 14.04.2015.
@@ -30,13 +26,13 @@ public class SingleChoiceActivity extends Activity{
 
     public void setData(){
         RadioButton r = (RadioButton)findViewById(R.id.radioButton);
-        r.setText(node.getEdgeList().get(0).toString());
+        r.setText(node.getEdgeList().get(0).text);
 
         r = (RadioButton)findViewById(R.id.radioButton2);
-        r.setText(node.getEdgeList().get(1).toString());
+        r.setText(node.getEdgeList().get(1).text);
 
         r = (RadioButton)findViewById(R.id.radioButton3);
-        r.setText(node.getEdgeList().get(2).toString());
+        r.setText(node.getEdgeList().get(2).text);
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());

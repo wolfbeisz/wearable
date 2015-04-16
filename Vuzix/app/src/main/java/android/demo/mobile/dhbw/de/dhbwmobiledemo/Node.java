@@ -16,8 +16,9 @@ public abstract class Node {
     private static List<Node> nodesList;
     private static HashMap<Integer, byte[]> logoBlobMap = new HashMap<>();
     private static MyDBHelper mdh;
+    public static int activeNode;
 
-
+    public abstract void show();
 
     public static void init(MyDBHelper mdh) {
         try {
@@ -69,7 +70,7 @@ public abstract class Node {
                         int imageId = viewCursor.getInt(0);
                         String text = viewCursor.getString(1);
 
-                        tmp = new ImageTextNode(nodeId, title, logoId, imageId, text, forwardText);
+                        tmp = new ImageTextNode(nodeId, typeId, title, logoId, imageId, text, forwardText);
                         nodesList.add(tmp);
                     } catch (Exception e) {
                         Log.e("Error", e.getMessage());
@@ -92,10 +93,10 @@ public abstract class Node {
                         edgeCursor.moveToNext();
                     }
                     if (typeId == 1) {
-                        tmp = new SingleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
+                        tmp = new SingleChoiceNode(nodeId, typeId, title, logoId, forwardText, edgeList);
                         nodesList.add(tmp);
                     } else if (typeId == 2) {
-                        tmp = new MultipleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
+                        tmp = new MultipleChoiceNode(nodeId, typeId, title, logoId, forwardText, edgeList);
                         nodesList.add(tmp);
                     }
                 }
@@ -118,17 +119,26 @@ public abstract class Node {
     }
 
     public Picture getLogo() {
-        if(logo != null && logo != "null") {
+        if (logo != null && logo != "null") {
             return Picture.createFromStream(new ByteArrayInputStream(getImageBlobById(Integer.parseInt(logo))));
-        }else{
+        } else {
             return null;
         }
+    }
+
+    public static Node getNodeById(int id) {
+        for (Node node : nodesList) {
+            if (node.getNodeId() == id) {
+                return node;
+            }
+        }
+        return null;
     }
 
     /*
 
      */
-    public int getNextNodeId(int id){
+    public int getNextNodeId(int id) {
         return this.getNodeId() + 1;
     }
 
@@ -149,11 +159,18 @@ public abstract class Node {
     private String logo;
     private String forwardText;
 
-    protected Node(int nodeId, String title, String logo, String forwardText) {
+    public int getTypeId() {
+        return typeId;
+    }
+
+    private int typeId;
+
+    protected Node(int nodeId, int typeId, String title, String logo, String forwardText) {
         this.nodeId = nodeId;
         this.title = title;
         this.logo = logo;
         this.forwardText = forwardText;
+        this.typeId = typeId;
     }
 
 

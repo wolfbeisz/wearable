@@ -21,12 +21,15 @@ public class ImageTextNode extends Node {
         return text;
     }
 
-    public ImageTextNode(int nodeId, String title, String logoId, int pictureId, String text, String forwardText){
-        super(nodeId, title, logoId, forwardText);
+    public ImageTextNode(int nodeId, int typeId, String title, String logoId, int pictureId, String text, String forwardText){
+        super(nodeId, typeId, title, logoId, forwardText);
 
         this.pictureId = pictureId;
         this.text = text;
     }
 
 
+    @Override
+    public void show() {
+    }
 }

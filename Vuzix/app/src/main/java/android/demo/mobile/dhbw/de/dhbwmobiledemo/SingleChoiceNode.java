@@ -21,9 +21,14 @@ public class SingleChoiceNode extends Node {
         return null;
     }
 
+    @Override
+    public void show() {
+
+    }
+
     /*
-    @param edgeId
-     */
+        @param edgeId
+         */
     @Override
     public int getNextNodeId(int id){
         return getNextNodeIdByEdgeId(id);
@@ -39,8 +44,8 @@ public class SingleChoiceNode extends Node {
 
 
 
-    protected SingleChoiceNode(int nodeId, String title, String logoId, String forwardText, List<Edge> edgeList) {
-        super(nodeId, title, logoId, forwardText);
+    protected SingleChoiceNode(int nodeId, int typeId, String title, String logoId, String forwardText, List<Edge> edgeList) {
+        super(nodeId, typeId, title, logoId, forwardText);
         this.edgeList = edgeList;
     }
 }

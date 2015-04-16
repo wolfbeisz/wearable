@@ -16,6 +16,8 @@ public class ImageTextActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        setNode((ImageTextNode)Node.getNodeById(Node.activeNode));
+        setData();
         setContentView(R.layout.activity_imagetext);
     }
 

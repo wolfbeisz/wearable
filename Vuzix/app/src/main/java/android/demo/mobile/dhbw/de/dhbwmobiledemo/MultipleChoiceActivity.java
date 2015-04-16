@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * Created by Silke on 14.04.2015.
@@ -26,13 +24,13 @@ public class MultipleChoiceActivity extends Activity{
 
     public void setData(){
         CheckBox c = (CheckBox)findViewById(R.id.checkBox);
-        c.setText(node.getEdgeList().get(0).toString());
+        c.setText(node.getEdgeList().get(0).text);
 
         c = (CheckBox)findViewById(R.id.checkBox2);
-        c.setText(node.getEdgeList().get(1).toString());
+        c.setText(node.getEdgeList().get(1).text);
 
         c = (CheckBox)findViewById(R.id.checkBox3);
-        c.setText(node.getEdgeList().get(2).toString());
+        c.setText(node.getEdgeList().get(2).text);
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());

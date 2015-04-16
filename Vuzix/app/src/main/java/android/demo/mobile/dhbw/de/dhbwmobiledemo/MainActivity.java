@@ -1,6 +1,7 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,6 +55,19 @@ public class MainActivity extends Activity {
             }
             try {
                 Node.init(dbh);
+                switch(Node.getNodeById(3).getTypeId()){
+                    case 0 :
+                        startActivity(new Intent(MainActivity.this, ImageTextActivity.class));
+
+                        break;
+                    case 1 :
+
+                        break;
+                    case 2 :
+                        break;
+                    default :
+
+                }
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
             }
