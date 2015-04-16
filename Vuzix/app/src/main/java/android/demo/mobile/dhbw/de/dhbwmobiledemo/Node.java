@@ -110,7 +110,7 @@ public abstract class Node {
 
     public static byte[] getImageBlobById(int id) {
         if (!logoBlobMap.containsKey(id)) {
-            Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID == '" + id + "';");
+            Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID = '" + id + "';");
             imageCursor.moveToFirst();
             logoBlobMap.put(id, imageCursor.getBlob(0));
             imageCursor.close();
