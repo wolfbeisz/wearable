@@ -21,6 +21,24 @@ public class SingleChoiceNode extends Node {
         return null;
     }
 
+    /*
+    @param edgeId
+     */
+    @Override
+    public int getNextNodeId(int id){
+        return getNextNodeIdByEdgeId(id);
+    }
+
+    public int getNextNodeIdByEdgeId(int id){
+        return getEdgeById(id).successor;
+    }
+
+    public int getNextNodeIdByEdgeNr(int id){
+        return getEdgeList().get(id).successor;
+    }
+
+
+
     protected SingleChoiceNode(int nodeId, String title, String logoId, String forwardText, List<Edge> edgeList) {
         super(nodeId, title, logoId, forwardText);
         this.edgeList = edgeList;

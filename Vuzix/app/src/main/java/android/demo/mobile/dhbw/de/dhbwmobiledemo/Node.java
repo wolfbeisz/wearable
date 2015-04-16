@@ -125,6 +125,13 @@ public abstract class Node {
         }
     }
 
+    /*
+
+     */
+    public int getNextNodeId(int id){
+        return this.getNodeId() + 1;
+    }
+
     public int getNodeId() {
         return nodeId;
     }

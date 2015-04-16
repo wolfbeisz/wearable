@@ -19,6 +19,12 @@ public class MultipleChoiceNode extends Node {
         return null;
     }
 
+    @Override
+    public int getNextNodeId(int id){
+        id = getEdgeList().get(0).successor;
+        return id;
+    }
+
     public List<Edge> edgeList;
 
     protected MultipleChoiceNode(int nodeId, String title, String logoId, String forwardText, List<Edge> edgeList) {
