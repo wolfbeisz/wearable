@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by Manuel on 11.04.2015.
@@ -16,8 +17,8 @@ public abstract class Node {
     private static HashMap<Integer, byte[]> logoBlobMap = new HashMap<>();
     private static MyDBHelper mdh;
 
-    public static byte[] getImageBlobById(int id){
-        if(!logoBlobMap.containsKey(id)) {
+    public static byte[] getImageBlobById(int id) {
+        if (!logoBlobMap.containsKey(id)) {
             Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID == '" + id + "';");
             imageCursor.moveToFirst();
             logoBlobMap.put(id, imageCursor.getBlob(0));
@@ -38,8 +39,14 @@ public abstract class Node {
             int typeId;
             int viewId;
             String forwardText;
-
-            Cursor c = mdh.getNodes();
+            List<Edge> edgeList;
+            nodesList = new LinkedList<Node>();
+            Cursor c = null;
+            try {
+                c = mdh.getNodes();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             c.moveToFirst();
             while (c.isAfterLast() == false) {
                 nodeId = c.getInt(0);
@@ -53,64 +60,67 @@ public abstract class Node {
                 viewId = c.getInt(4);
                 forwardText = c.getString(5);
 
-                if(logoId != null){
+                if (logoId != null) {
                     intLogoId = Integer.parseInt(logoId);
-
                 }
 
-                nodesList = new LinkedList<Node>();
+
                 Node tmp;
-                switch (typeId) {
-                    case 0:
-                        try {
-                            Cursor viewCursor = mdh.executeRawQuery("SELECT IMAGEID, TEXT FROM VIEW WHERE VIEWID = '"
-                                    + viewId + "';");
-                            viewCursor.moveToFirst();
-                            int imageId = viewCursor.getInt(0);
-                            String text = viewCursor.getString(1);
+                if (typeId == 0) {
+                    try {
+                        Cursor viewCursor = mdh.executeRawQuery("SELECT IMAGEID, TEXT FROM VIEW WHERE VIEWID = '"
+                                + viewId + "';");
+                        viewCursor.moveToFirst();
+                        int imageId = viewCursor.getInt(0);
+                        String text = viewCursor.getString(1);
 
-                            tmp = new ImageTextNode(nodeId, title, logoId, imageId, text, forwardText);
-                            nodesList.add(tmp);
-                        } catch(Exception e){
-                            Log.e("Error", e.getMessage());
-                            e.printStackTrace();
-                        }
-                        break;
-                    case 1:
-                        tmp = new SingleChoiceNode(nodeId,title,logoId,forwardText);
-                        break;
-                    case 2:
-                        tmp = new MultipleChoiceNode(nodeId,title,logoId,forwardText);
-                        break;
-                    default:
-                        Log.e("Error", "Inconsistent Data, read error, no such node type");
-                        throw new Exception("Inconsistent Data, read error, no such node type");
+                        tmp = new ImageTextNode(nodeId, title, logoId, imageId, text, forwardText);
+                        nodesList.add(tmp);
+                    } catch (Exception e) {
+                        Log.e("Error", e.getMessage());
+                        e.printStackTrace();
+                    }
+                } else {
+                    edgeList = new LinkedList<>();
+                    Cursor edgeCursor = mdh.executeRawQuery("SELECT SUCCESSORID, DESCRIPTION, EDGEID FROM EDGE WHERE NODEID = '" + nodeId + "';");
+                    edgeCursor.moveToFirst();
+
+                    while (edgeCursor.isAfterLast() == false) {
+                        int succId = c.getInt(0);
+                        String edgeText = c.getString(1);
+                        int edgeId = c.getInt(2);
+                        edgeList.add( new Edge(succId, edgeText, edgeId));
+                        edgeCursor.moveToNext();
+                    }
+                if(typeId == 1){
+                    tmp = new SingleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
+                    nodesList.add(tmp);
+                } else if (typeId == 2){
+                    tmp = new MultipleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
+                    nodesList.add(tmp);
                 }
 
-
-
-                c.moveToNext();
+                }
+                    c.moveToNext();
+                }
+                c.close();
+            }catch(Exception e){
+                Log.e("Error", "Database not initialized");
             }
-            c.close();
-        } catch (Exception e) {
-            Log.e("Error", "Database not initialized");
         }
+
+
+        private int nodeId;
+        private String title;
+        private String logo;
+        private String forwardText;
+
+        protected Node( int nodeId, String title, String logo, String forwardText){
+            this.nodeId = nodeId;
+            this.title = title;
+            this.logo = logo;
+            this.forwardText = forwardText;
+        }
+
+
     }
-
-
-
-
-    private int nodeId;
-    private String title;
-    private String logo;
-    private String forwardText;
-
-    protected Node(int nodeId, String title, String logo, String forwardText) {
-        this.nodeId = nodeId;
-        this.title = title;
-        this.logo = logo;
-        this.forwardText = forwardText;
-    }
-
-
-}
