@@ -26,7 +26,7 @@ public class MultipleChoiceActivity extends Activity{
 
     public void setData(){
         CheckBox c = (CheckBox)findViewById(R.id.checkBox);
-        c.setText();
+        c.setText(node.ge);
 
         CheckBox c = (CheckBox)findViewById(R.id.checkBox2);
         c.setText();

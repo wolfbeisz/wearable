@@ -25,13 +25,12 @@ public class ImageTextActivity extends Activity {
 
     public void setData(){
         TextView t = (TextView) findViewById(R.id.textViewText);
-        t.setText();
+        t.setText(node.getText());
         ImageView i = (ImageView) findViewById(R.id.imageViewImage);
-        i.setImageResource();
+        i.setImageResource(node.getPicture());
         Button b = (Button) findViewById(R.id.buttonBack);
         b.setText();
         Button b = (Button) findViewById(R.id.buttonForward);
-        b.setText();
+        b.setText(node.getForwardText());
     }
-
 }

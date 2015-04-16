@@ -26,7 +26,7 @@ public class SingleChoiceActivity extends Activity{
 
     public void setData(){
         RadioButton r = (RadioButton)findViewById(R.id.radioButton);
-        r.setText();
+        r.setText(node.g);
 
         RadioButton r = (RadioButton)findViewById(R.id.radioButton2);
         r.setText();
