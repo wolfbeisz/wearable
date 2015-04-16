@@ -34,8 +34,6 @@ public class MultipleChoiceActivity extends Activity{
         CheckBox c = (CheckBox)findViewById(R.id.checkBox3);
         c.setText();
 
-        Button b = (Button) findViewById(R.id.buttonBack);
-        b.setText();
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText();
 
