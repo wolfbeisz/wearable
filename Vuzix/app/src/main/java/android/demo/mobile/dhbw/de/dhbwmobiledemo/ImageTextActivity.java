@@ -2,6 +2,7 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ public class ImageTextActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_imagetext);
-
     }
 
     public void setNode(ImageTextNode node){
@@ -28,7 +28,10 @@ public class ImageTextActivity extends Activity {
         t.setText();
         ImageView i = (ImageView) findViewById(R.id.imageViewImage);
         i.setImageResource();
-
+        Button b = (Button) findViewById(R.id.buttonBack);
+        b.setText();
+        Button b = (Button) findViewById(R.id.buttonForward);
+        b.setText();
     }
 
 }

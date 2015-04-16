@@ -2,6 +2,7 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -10,7 +11,7 @@ import android.widget.TextView;
  * Created by Silke on 14.04.2015.
  */
 public class SingleChoiceActivity extends Activity{
-    private static ImageTextNode node;
+    private static SingleChoiceNode node;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -19,7 +20,7 @@ public class SingleChoiceActivity extends Activity{
 
     }
 
-    public void setNode(ImageTextNode node){
+    public void setNode(SingleChoiceNode node){
         this.node = node;
     }
 
@@ -32,6 +33,11 @@ public class SingleChoiceActivity extends Activity{
 
         RadioButton r = (RadioButton)findViewById(R.id.radioButton3);
         r.setText();
+
+        Button b = (Button) findViewById(R.id.buttonBack);
+        b.setText();
+        Button b = (Button) findViewById(R.id.buttonForward);
+        b.setText();
 
     }
 }
