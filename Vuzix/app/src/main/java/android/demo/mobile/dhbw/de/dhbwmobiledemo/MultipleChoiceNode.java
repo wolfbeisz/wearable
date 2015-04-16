@@ -14,4 +14,6 @@ public class MultipleChoiceNode extends Node {
         super(nodeId, title, logoId, forwardText);
         this.edgeList = edgeList;
     }
+
+
 }
