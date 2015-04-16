@@ -4,10 +4,10 @@ import android.database.Cursor;
 import android.graphics.Picture;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by Manuel on 11.04.2015.
@@ -17,15 +17,7 @@ public abstract class Node {
     private static HashMap<Integer, byte[]> logoBlobMap = new HashMap<>();
     private static MyDBHelper mdh;
 
-    public static byte[] getImageBlobById(int id) {
-        if (!logoBlobMap.containsKey(id)) {
-            Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID == '" + id + "';");
-            imageCursor.moveToFirst();
-            logoBlobMap.put(id, imageCursor.getBlob(0));
-            imageCursor.close();
-        }
-        return logoBlobMap.get(id);
-    }
+
 
     public static void init(MyDBHelper mdh) {
         try {
@@ -66,6 +58,9 @@ public abstract class Node {
 
 
                 Node tmp;
+                /*
+                If typeId == 0 an additional imageId and text has to selected from another table
+                 */
                 if (typeId == 0) {
                     try {
                         Cursor viewCursor = mdh.executeRawQuery("SELECT IMAGEID, TEXT FROM VIEW WHERE VIEWID = '"
@@ -81,6 +76,10 @@ public abstract class Node {
                         e.printStackTrace();
                     }
                 } else {
+                    /*
+                    If typeId == 1 || typeId == 2 => Code and data is in the same format.
+                    Select edges from Table EDGES
+                     */
                     edgeList = new LinkedList<>();
                     Cursor edgeCursor = mdh.executeRawQuery("SELECT SUCCESSORID, DESCRIPTION, EDGEID FROM EDGE WHERE NODEID = '" + nodeId + "';");
                     edgeCursor.moveToFirst();
@@ -89,38 +88,66 @@ public abstract class Node {
                         int succId = c.getInt(0);
                         String edgeText = c.getString(1);
                         int edgeId = c.getInt(2);
-                        edgeList.add( new Edge(succId, edgeText, edgeId));
+                        edgeList.add(new Edge(succId, edgeText, edgeId));
                         edgeCursor.moveToNext();
                     }
-                if(typeId == 1){
-                    tmp = new SingleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
-                    nodesList.add(tmp);
-                } else if (typeId == 2){
-                    tmp = new MultipleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
-                    nodesList.add(tmp);
+                    if (typeId == 1) {
+                        tmp = new SingleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
+                        nodesList.add(tmp);
+                    } else if (typeId == 2) {
+                        tmp = new MultipleChoiceNode(nodeId, title, logoId, forwardText, edgeList);
+                        nodesList.add(tmp);
+                    }
                 }
-
-                }
-                    c.moveToNext();
-                }
-                c.close();
-            }catch(Exception e){
-                Log.e("Error", "Database not initialized");
+                c.moveToNext();
             }
+            c.close();
+        } catch (Exception e) {
+            Log.e("Error", "Database not initialized");
         }
-
-
-        private int nodeId;
-        private String title;
-        private String logo;
-        private String forwardText;
-
-        protected Node( int nodeId, String title, String logo, String forwardText){
-            this.nodeId = nodeId;
-            this.title = title;
-            this.logo = logo;
-            this.forwardText = forwardText;
-        }
-
-
     }
+
+    public static byte[] getImageBlobById(int id) {
+        if (!logoBlobMap.containsKey(id)) {
+            Cursor imageCursor = mdh.executeRawQuery("SELECT IMAGE FROM IMAGE WHERE IMAGEID == '" + id + "';");
+            imageCursor.moveToFirst();
+            logoBlobMap.put(id, imageCursor.getBlob(0));
+            imageCursor.close();
+        }
+        return logoBlobMap.get(id);
+    }
+
+    public Picture getLogo() {
+        if(logo != null && logo != "null") {
+            return Picture.createFromStream(new ByteArrayInputStream(getImageBlobById(Integer.parseInt(logo))));
+        }else{
+            return null;
+        }
+    }
+
+    public int getNodeId() {
+        return nodeId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getForwardText() {
+        return forwardText;
+    }
+
+    private int nodeId;
+    private String title;
+    private String logo;
+    private String forwardText;
+
+    protected Node(int nodeId, String title, String logo, String forwardText) {
+        this.nodeId = nodeId;
+        this.title = title;
+        this.logo = logo;
+        this.forwardText = forwardText;
+    }
+
+
+}
