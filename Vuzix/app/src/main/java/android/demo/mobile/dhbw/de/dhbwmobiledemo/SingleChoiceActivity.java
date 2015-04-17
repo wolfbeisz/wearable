@@ -2,6 +2,7 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 
@@ -34,8 +35,13 @@ public class SingleChoiceActivity extends Activity{
         r = (RadioButton)findViewById(R.id.radioButton2);
         r.setText(node.getEdgeList().get(1).text);
 
-        r = (RadioButton)findViewById(R.id.radioButton3);
-        r.setText(node.getEdgeList().get(2).text);
+
+        try {
+            r = (RadioButton)findViewById(R.id.radioButton3);
+            r.setText(node.getEdgeList().get(2).text);
+        } catch (Exception e) {
+            ((RadioButton)findViewById(R.id.radioButton3)).setVisibility(View.INVISIBLE);
+        }
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
