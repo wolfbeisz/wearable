@@ -55,7 +55,8 @@ public class MainActivity extends Activity {
             }
             try {
                 Node.init(dbh);
-                switch(Node.getNodeById(3).getTypeId()){
+                Node.activeNode = 3;
+                switch(Node.getNodeById(Node.activeNode).getTypeId()){
                     case 0 :
                         startActivity(new Intent(MainActivity.this, ImageTextActivity.class));
 
