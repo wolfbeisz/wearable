@@ -62,9 +62,10 @@ public class MainActivity extends Activity {
 
                         break;
                     case 1 :
-
+                        startActivity(new Intent(MainActivity.this, SingleChoiceActivity.class));
                         break;
                     case 2 :
+                        startActivity(new Intent(MainActivity.this, MultipleChoiceActivity.class));
                         break;
                     default :
 

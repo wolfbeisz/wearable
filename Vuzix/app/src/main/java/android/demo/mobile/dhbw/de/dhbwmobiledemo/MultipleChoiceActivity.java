@@ -15,6 +15,9 @@ public class MultipleChoiceActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplechoice);
+        setNode((MultipleChoiceNode)Node.getNodeById(Node.activeNode));
+        setContentView(R.layout.activity_multiplechoice);
+        setData();
 
     }
 

@@ -16,6 +16,9 @@ public class SingleChoiceActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singlechoice);
+        setNode((SingleChoiceNode)Node.getNodeById(Node.activeNode));
+        setContentView(R.layout.activity_singlechoice);
+        setData();
     }
 
 
