@@ -20,5 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ImageTextActivity" />
+        <activity android:name=".SingleChoiceActivity"/>
+        <activity android:name=".MultipleChoiceActivity"/>
     </application>
 </manifest>
