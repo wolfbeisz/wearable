@@ -1,10 +1,11 @@
 package mobileGen;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Connection; 
-import java.sql.Date; 
 import java.sql.DriverManager; 
 import java.sql.PreparedStatement; 
 import java.sql.ResultSet; 
@@ -16,7 +17,7 @@ class DBController {
 	private static final DBController dbcontroller = new DBController(); 
 	private static Connection connection; 
 	public static final String DB_PATH = "example-db.sqlite";//System.getProperty("user.home") + "/" + "example-db.sqlite"; 
-	private final String INSERT_PICTURE = "insert into IMAGE(IMAGEID, IMAGE) values (?, ?, ?)";
+	private static final int MAXSLIDEARRAYNUMBER = 10000;
 	FileInputStream fis = null;
 	PreparedStatement ps = null;
 
@@ -64,43 +65,75 @@ class DBController {
 		}); 
 	} 
 
-	void insertImg(int imgID, File file) throws FileNotFoundException, SQLException{
-		//file = new File("myPhoto.png");
-		fis = new FileInputStream(file);
-		ps = connection.prepareStatement(INSERT_PICTURE);
-		ps.setString(1, "imgID");
-		ps.setBinaryStream(2, fis, (int) file.length());
-		ps.executeUpdate();
-		connection.commit();
+	public int addImageToDB(String name,String imageName){
+		String query = "insert into IMAGE(IMAGEID, IMAGE) values (?, ?)";
+		PreparedStatement prepStmt=null;
+		int ret = -1;
+		try{
+			int imgNr = getImgCount();
+			connection.setAutoCommit(false);
+			prepStmt=connection.prepareStatement(query);
+			prepStmt.setInt(1, imgNr);
+
+			byte[] imageFileArr=null;//getByteArrayFromFile(imageName);
+			prepStmt.setBytes(2, imageFileArr);
+
+			prepStmt.executeUpdate();
+			connection.commit();
+			ret = imgNr;
+		}catch(Exception e){
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}finally{
+			try {
+				prepStmt.close();
+			} catch (Exception e) {
+			}
+		}
+		return ret;
+	}
+
+	public Image getImage(String name){
+		Image img=null;
+		String query="select image from IMAGE where IMAGEID='"+name+"'";
+		Statement stmt=null;
+		try{
+			stmt=connection.createStatement();
+			ResultSet rslt=stmt.executeQuery(query);
+			if(rslt.next()){
+				byte[] imgArr=rslt.getBytes("image");
+				img=Toolkit.getDefaultToolkit().createImage(imgArr);
+
+
+			}
+			rslt.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return img;
+	}
+
+	public int getImgCount() throws SQLException{
+		Statement stmt = connection.createStatement(); 
+		ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM IMAGE;"); 
+		int resInt = rs.getInt("COUNT(*)");
+		System.out.println("Have "+ resInt + " image records in DB");
+		rs.close(); 
+		return resInt;
 	}
 	void handleDB() { 
 		try { 
 			Statement stmt = connection.createStatement(); 
-			/*stmt.executeUpdate("DROP TABLE IF EXISTS books;"); 
-			stmt.executeUpdate("CREATE TABLE books (author, title, publication, pages, price);"); 
-			stmt.execute("INSERT INTO books (author, title, publication, pages, price) VALUES ('Paulchen Paule', 'Paul der Penner', '2001-05-06', '1234', '5.67')"); 
-
-			PreparedStatement ps = connection 
-					.prepareStatement("INSERT INTO books VALUES (?, ?, ?, ?, ?);"); 
-
-			ps.setString(1, "Willi Winzig"); 
-			ps.setString(2, "Willi's Wille"); 
-			ps.setDate(3, Date.valueOf("2011-05-16")); 
-			ps.setInt(4, 432); 
-			ps.setDouble(5, 32.95); 
-			ps.addBatch(); 
-
-			ps.setString(1, "Anton Antonius"); 
-			ps.setString(2, "Anton's Alarm"); 
-			ps.setDate(3, Date.valueOf("2009-10-01")); 
-			ps.setInt(4, 123); 
-			ps.setDouble(5, 98.76); 
-			ps.addBatch(); 
-
-			connection.setAutoCommit(false); 
-			ps.executeBatch(); 
-			connection.setAutoCommit(true); 
-			 */
 			ResultSet rs = stmt.executeQuery("SELECT * FROM EDGE;"); 
 			while (rs.next()) { 
 				System.out.print("NODEID = " + rs.getString("NODEID")); 
@@ -117,7 +150,7 @@ class DBController {
 		} 
 	} 
 
-	public String loadDBData(String prefStr, String tabStr, int type, int nodeId) throws SQLException{
+	public String queryDBfromString(String prefStr, String tabStr, int type, int nodeId) throws SQLException{
 		Statement stmt = connection.createStatement(); 
 		ResultSet rs = stmt.executeQuery("SELECT "+prefStr+" FROM "+tabStr+" WHERE NODEID = "+nodeId+";"); 
 		String resStr = "";
@@ -264,31 +297,7 @@ class DBController {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		} 
-		/*stmt.executeUpdate("DROP TABLE IF EXISTS books;"); 
-		stmt.executeUpdate("CREATE TABLE books (author, title, publication, pages, price);"); 
-		stmt.execute("INSERT INTO books (author, title, publication, pages, price) VALUES ('Paulchen Paule', 'Paul der Penner', '2001-05-06', '1234', '5.67')"); 
-
-
-
-		ps.setString(1, "Willi Winzig"); 
-		ps.setString(2, "Willi's Wille"); 
-		ps.setDate(3, Date.valueOf("2011-05-16")); 
-		ps.setInt(4, 432); 
-		ps.setDouble(5, 32.95); 
-		ps.addBatch(); 
-
-		ps.setString(1, "Anton Antonius"); 
-		ps.setString(2, "Anton's Alarm"); 
-		ps.setDate(3, Date.valueOf("2009-10-01")); 
-		ps.setInt(4, 123); 
-		ps.setDouble(5, 98.76); 
-		ps.addBatch(); 
-
-		connection.setAutoCommit(false); 
-		ps.executeBatch(); 
-		connection.setAutoCommit(true); 
-		 */		
+		} 		
 	} 
 	public int getNodeType(int slideNr) throws SQLException{
 		Statement stmt = connection.createStatement(); 
@@ -308,34 +317,6 @@ class DBController {
 		rs.close(); 
 
 		return resInt;
-	}
-
-	public boolean isSlideDisabled(int slideNr) throws SQLException{
-		Statement stmt = connection.createStatement(); 
-		ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM NODE WHERE NODE.NODEID = "+slideNr+" AND NODE.DISABLED IS NULL;"); 
-		int resInt = rs.getInt("COUNT(*)");
-		System.out.println("DISABLED INT: "+resInt);
-		if(resInt>0){			
-			System.out.println("Slide "+slideNr+ " is enabled");
-			rs.close(); 
-			return false;
-		}
-		else{			
-			System.out.println("Slide "+slideNr+ " is disabled");
-			rs.close(); 
-			return true;
-		}
-	}
-
-	public void setDisableState(int nodeId, boolean disabled) throws SQLException{
-		Statement stmt = connection.createStatement(); 
-		connection.setAutoCommit(false);
-
-		if(disabled){
-			stmt.execute("UPDATE NODE SET DISABLED = 1 WHERE NODE.NODEID = "+nodeId+";");
-		}else{
-			stmt.execute("UPDATE NODE SET DISABLED = NULL WHERE NODE.NODEID = "+nodeId+";");
-		}
 	}
 
 	public String[] getEdges(int slideNr) throws SQLException{
@@ -459,11 +440,70 @@ class DBController {
 	public Slide[] loadDB() {
 		Slide[] slideArray = null;
 		try {
-			slideArray = new Slide[this.getSlideMaxNr()];
+			slideArray = new Slide[MAXSLIDEARRAYNUMBER];
+			for(int i=0; i<this.getSlideMaxNr(); i++){
+				int nodeType = this.getNodeType(i);
+				slideArray[i] = new Slide(i,nodeType);
+
+				switch (nodeType) {
+				case 0: //Bild Text
+				case 1: //Einzelauswahl
+				case 2: //Mehrfachauswahl
+					try {
+						slideArray[i].setCaption(this.queryDBfromString("TITLE", "NODE", 0, i));
+						slideArray[i].setNext(this.queryDBfromString("FORWARDTEXT", "NODE", 0, i));
+						slideArray[i].setPrevious(this.queryDBfromString("PREVTEXT", "NODE", 0, i));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					break;
+				default:
+					break;
+				}
+
+				String[] prop = this.getEdges(i);
+				switch (nodeType) {
+				case 1: //Einzelauswahl
+				case 2: //Mehrfachauswahl
+					if(Integer.parseInt(prop[0])>0){
+						slideArray[i].setAnswer1Successor(Integer.parseInt(prop[1]));
+					}
+					if(Integer.parseInt(prop[0])>1){
+						slideArray[i].setAnswer1(prop[2]);
+					}
+					if(Integer.parseInt(prop[0])>2){
+						slideArray[i].setAnswer2Successor(Integer.parseInt(prop[3]));
+					}
+					if(Integer.parseInt(prop[0])>3){
+						slideArray[i].setAnswer2(prop[4]);
+					}
+					if(Integer.parseInt(prop[0])>4){
+						slideArray[i].setAnswer3Successor(Integer.parseInt(prop[5]));
+					}
+					if(Integer.parseInt(prop[0])>5){
+						slideArray[i].setAnswer3(prop[6]);
+					}
+					if(Integer.parseInt(prop[0])>6){
+						slideArray[i].setAnswer4Successor(Integer.parseInt(prop[7]));
+					}
+					if(Integer.parseInt(prop[0])>7){
+						slideArray[i].setAnswer4(prop[8]);
+					}
+
+					break;
+
+				case 0: //Bild Text
+					if(Integer.parseInt(prop[0])>0){
+						slideArray[i].setAnswer1Successor(Integer.parseInt(prop[1]));
+					}
+					break;
+				default:
+					break;
+				}
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return slideArray;
 	}
-
 }

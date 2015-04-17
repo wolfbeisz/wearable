@@ -3,16 +3,25 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDesktopPane;
@@ -23,6 +32,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -30,19 +40,18 @@ import javax.swing.text.JTextComponent;
 
 public class window2 implements ActionListener,ComponentListener{
 	static JFrame f;
-	static int slidenumberMax = 5;
+	static int slidenumberMax = 0;
 	static int slidenumberCur = 0;
-	JLabel slideNr1 = new JLabel("Slide "+(slidenumberCur+1)+ " of "+slidenumberMax), slideNr2 = new JLabel("Slide "+slidenumberCur+ " of "+slidenumberMax);
+	JLabel slideNr1 = new JLabel("Slide "+(slidenumberCur)+ " of "+slidenumberMax), slideNr2 = new JLabel("Slide "+slidenumberCur+ " of "+slidenumberMax);
 	JInternalFrame l1,l2;
 	static DBController dbc;
 	JMenuBar menuBar;
 	JMenu fileMenu;
 	JMenuItem openItem;
 	JMenuItem saveItem;
-	
+	static SlideHandler slideHandlerObj = new SlideHandler();
 	Slide[] slideArray;
 	//ELEMENTS////
-	JLabel disabled1 = new JLabel("");
 	JLabel contentCaption1 = new JLabel("Caption");
 	JLabel contentA11 = new JLabel("");
 	JLabel contentA21 = new JLabel("");
@@ -67,7 +76,6 @@ public class window2 implements ActionListener,ComponentListener{
 	JTextField propertiesNextField1 = new JTextField();
 	JCheckBox multipleBox1 = new JCheckBox("Multiple Choice");
 
-	JLabel disabled2 = new JLabel("");
 	JLabel contentCaption2 = new JLabel("Caption");
 	JLabel contentDescription2 = new JLabel("Description");
 	JLabel contentNext2 = new JLabel("Next");
@@ -79,21 +87,13 @@ public class window2 implements ActionListener,ComponentListener{
 	JTextField propertiesNextField2 = new JTextField();
 	JTextField propertiesEdgeA2 = new JTextField();
 	JTextField propertiesEdgeB2 = new JTextField();
+	Box box2 = Box.createVerticalBox();
 
-
+	BufferedImage image2;
+	JLabel imageLabel2 = new JLabel("");
 
 	////////////////////////////////
 	public window2() {
-		//Init DBC
-		dbc = DBController.getInstance(); 
-		dbc.initDBConnection(); 
-		try {
-			slidenumberMax = dbc.getSlideMaxNr();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		updateSlideNumberLabel();
-
 		//Create Frame
 		f = new JFrame("JDesktopPane Sample");
 		f.setResizable(false);
@@ -127,25 +127,18 @@ public class window2 implements ActionListener,ComponentListener{
 		desktop.add(l1);
 		desktop.add(l2);
 
-
-
-
-
 		//Fill Layers--------------------------------------------------
 
 		//----------->Multiple Choice
 		slideNr1.setBounds(5, 0, 100, 50);
 		l1.add(slideNr1);
 
-		disabled1.setBounds(150, 130, 100,30);
-		l1.add(disabled1);
-
 		JButton addBtn1=new JButton("Add Img Slide");
 		addBtn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				//desktop.moveToBack(l1);
-				//dbc.handleDB(); 
-				createNewSlide(1);
+				desktop.moveToBack(l1);
+				slideArray = slideHandlerObj.insertNewSlide(slideArray, slidenumberCur+1, 0);
+				createNewSlide(0);
 			}
 		});
 		addBtn1.setBounds(75, 28, 150, 30);
@@ -154,23 +147,26 @@ public class window2 implements ActionListener,ComponentListener{
 		JButton addBtnB1=new JButton("Add Q&A Slide");
 		addBtnB1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				desktop.moveToBack(l1);
-				//dbc.handleDB();
-				createNewSlide(0);
+				//desktop.moveToBack(l1);
+				slideArray = slideHandlerObj.insertNewSlide(slideArray, slidenumberCur+1, 1);
+				createNewSlide(1);
 			}
 		});
 		addBtnB1.setBounds(75, 60, 150, 30);
 		l1.add(addBtnB1);
 
-		JButton delBtn1=new JButton("Disable/Enable Slide");
+		JButton delBtn1=new JButton("Delete Slide");
 		delBtn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				try {
-					dbc.setDisableState(slidenumberCur+1, !dbc.isSlideDisabled(slidenumberCur+1));
-				} catch (SQLException e) {
-					e.printStackTrace();
+				if(slidenumberMax>0){
+					slideArray = slideHandlerObj.removeSlide(slideArray, slidenumberCur);
+					if(slidenumberCur>0){
+						slidenumberCur--;
+					}
+					slidenumberMax--;
+					loadData();
+					updateSlideNumberLabelUI();
 				}
-				loadData();
 			}
 		});
 		delBtn1.setBounds(75, 100, 180, 30);
@@ -182,7 +178,7 @@ public class window2 implements ActionListener,ComponentListener{
 				if(slidenumberCur>0){
 					slidenumberCur--;
 					loadData();
-					updateSlideNumberLabel();
+					updateSlideNumberLabelUI();
 				}
 			}
 		});
@@ -192,10 +188,10 @@ public class window2 implements ActionListener,ComponentListener{
 		JButton nextBtn1=new JButton("Next");
 		nextBtn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				if(slidenumberCur<slidenumberMax-1){
+				if(slidenumberCur<slidenumberMax){
 					slidenumberCur++;
 					loadData();
-					updateSlideNumberLabel();
+					updateSlideNumberLabelUI();
 				}
 			}
 		});
@@ -229,8 +225,6 @@ public class window2 implements ActionListener,ComponentListener{
 		box1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		box1.setBounds(250, 20, 500, 350);
 		l1.add(box1);
-
-
 
 		//->Properties
 
@@ -336,16 +330,16 @@ public class window2 implements ActionListener,ComponentListener{
 				contentA41.setText(p5);
 				contentPrev1.setText(p6);
 				contentNext1.setText(p7);
-				int type = 0;
+				int type = 1;
 				if(multipleBox1.isSelected()){
-					type = 0;
+					type = 2;
 					propertiesAnswerSlideFieldB1.setEnabled(true);
 					propertiesAnswerSlideFieldC1.setEnabled(true);
 					propertiesAnswerSlideFieldD1.setEnabled(true);
 
 				}
 				else{
-					type = 2;
+					type = 1;
 					propertiesAnswerSlideFieldB1.setEnabled(false);
 					propertiesAnswerSlideFieldC1.setEnabled(false);
 					propertiesAnswerSlideFieldD1.setEnabled(false);
@@ -354,12 +348,13 @@ public class window2 implements ActionListener,ComponentListener{
 					propertiesAnswerSlideFieldD1.setText("0");
 
 				}
+				/*
 				if(dbc.isConsistent(slidenumberCur+1, propertiesAnswerSlideFieldA1.getText(), propertiesAnswerSlideFieldB1.getText(), propertiesAnswerSlideFieldC1.getText(), propertiesAnswerSlideFieldD1.getText())){
 					dbc.saveSettings(slidenumberCur+1, type, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
 				}
 				else{
 					//TODO: Popup Error
-				}
+				}*/
 
 			}
 		});
@@ -384,16 +379,13 @@ public class window2 implements ActionListener,ComponentListener{
 		slideNr2.setBounds(5, 0, 100, 50);
 		l2.add(slideNr2);
 
-		disabled2.setBounds(150, 130, 100,30);
-		l2.add(disabled2);
-
 
 		JButton addBtn2=new JButton("Add Img Slide");
 		addBtn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				//desktop.moveToBack(l1);
-				//dbc.handleDB(); 
-				createNewSlide(1);
+				//desktop.moveToBack(l2);
+				slideArray = slideHandlerObj.insertNewSlide(slideArray, slidenumberCur+1, 0);
+				createNewSlide(0);
 			}
 		});
 		addBtn2.setBounds(75, 28, 150, 30);
@@ -402,23 +394,26 @@ public class window2 implements ActionListener,ComponentListener{
 		JButton addBtnB2=new JButton("Add Q&A Slide");
 		addBtnB2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				//desktop.moveToBack(l1);
-				//dbc.handleDB(); 
-				createNewSlide(0);
+				desktop.moveToBack(l2);
+				slideArray = slideHandlerObj.insertNewSlide(slideArray, slidenumberCur+1, 1);
+				createNewSlide(1);
 			}
 		});
 		addBtnB2.setBounds(75, 60, 150, 30);
 		l2.add(addBtnB2);
 
-		JButton delBtn2=new JButton("Disable/Enable Slide");
+		JButton delBtn2=new JButton("Delete Slide");
 		delBtn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				try {
-					dbc.setDisableState(slidenumberCur+1, !dbc.isSlideDisabled(slidenumberCur+1));
-				} catch (SQLException e) {
-					e.printStackTrace();
+				if(slidenumberMax>0){
+					slideArray = slideHandlerObj.removeSlide(slideArray, slidenumberCur);
+					if(slidenumberCur>0){
+						slidenumberCur--;
+					}
+					slidenumberMax--;
+					loadData();
+					updateSlideNumberLabelUI();
 				}
-				loadData();
 			}
 		});
 		delBtn2.setBounds(75, 100, 180, 30);
@@ -430,7 +425,7 @@ public class window2 implements ActionListener,ComponentListener{
 				if(slidenumberCur>0){
 					slidenumberCur--;
 					loadData();
-					updateSlideNumberLabel();
+					updateSlideNumberLabelUI();
 				}
 			}
 		});
@@ -440,10 +435,10 @@ public class window2 implements ActionListener,ComponentListener{
 		JButton nextBtn2=new JButton("Next");
 		nextBtn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				if(slidenumberCur<slidenumberMax-1){
+				if(slidenumberCur<slidenumberMax){
 					slidenumberCur++;
 					loadData();
-					updateSlideNumberLabel();
+					updateSlideNumberLabelUI();
 				}
 			}
 		});
@@ -461,7 +456,7 @@ public class window2 implements ActionListener,ComponentListener{
 		navBox2.add(contentNext2);
 		navBox2.setAlignmentX(0);
 
-		Box box2 = Box.createVerticalBox();
+		//Box box2 = Box.createVerticalBox();
 		box2.add(contentCaption2);
 		box2.add(Box.createVerticalGlue());
 		box2.add(contentDescription2);
@@ -470,6 +465,8 @@ public class window2 implements ActionListener,ComponentListener{
 		box2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		box2.setBounds(250, 20, 500, 350);
 		l2.add(box2);
+		imageLabel2.setBounds(box2.bounds());
+		l2.add(imageLabel2);
 
 		//->Properties
 		propertiesDescription2.setBounds(50, 400, 100, 30);
@@ -480,15 +477,32 @@ public class window2 implements ActionListener,ComponentListener{
 		JButton imgBtn2=new JButton("Set Image");
 		imgBtn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				desktop.moveToBack(l2);
+				//desktop.moveToBack(l2);
+				fileDialog fd = new fileDialog();
+				String filePath = fd.openDialog();
+				if(filePath!=null && filePath.toString().toLowerCase().endsWith(".png")){
+					byte[] img = fd.getBArrayFromFile(filePath);
+					if(img.length>0){
+						BufferedImage image2 = null;
+						try {
+							image2 = ImageIO.read(new File(filePath));
+							slideArray[slidenumberCur].setImg(image2);
+							loadData();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						//File seems valid
+					}
+				}
 			}
 		});
 		imgBtn2.setBounds(40, 450, 150, 30);
 		l2.add(imgBtn2);
 
-		JLabel propertiesImg2 = new JLabel("Chosen File: ");
+		/*JLabel propertiesImg2 = new JLabel("Chosen File: ");
 		propertiesImg2.setBounds(200, 450, 200, 30);
-		l2.add(propertiesImg2);
+		l2.add(propertiesImg2);*/
 
 		JLabel propertiesCap2 = new JLabel("Caption: ");
 		propertiesCap2.setBounds(400, 400, 70, 30);
@@ -542,49 +556,47 @@ public class window2 implements ActionListener,ComponentListener{
 				contentNext2.setText(propertiesNextField2.getText());
 				contentPrev2.setText(propertiesPrevField2.getText());
 
+				/*
 				String p1 = propertiesCapField2.getText(),p2 = propertiesDescriptionField2.getText(), p6 = propertiesNextField1.getText(), p7 = propertiesPrevField1.getText(), p8 = propertiesEdgeA2.getText(), p9 = propertiesEdgeB2.getText();
 				if(dbc.isConsistent(slidenumberCur+1, propertiesEdgeB2.getText(), null, null, null)){
 					dbc.saveSettings(slidenumberCur+1, 1, p1, p2, null, null, null, p6, p7, p8, p9, null, null);
 				}
 				else{
 					//TODO: Popup Error
-				}
+				}*/
 			}
 		});
 		applyBtn2.setBounds(20, 150, 100, 30);
 		l2.add(applyBtn2);
-
-
-
-
-
-
-
 		//--------------------------------------------------------------
 		//Finalize		
 		content.add(desktop, BorderLayout.CENTER);
 		f.setSize(800, 600);
 		f.setVisible(true);
-		loadData();
+		f.setSize((int)f.getWidth(),(int)f.getHeight()+menuBar.getHeight());
+
 		l1.setVisible(false);
 		l2.setVisible(false);
+
+
 	}
 
-	private void updateSlideNumberLabel(){
-		slideNr1.setText("Slide "+(slidenumberCur+1)+ " of "+slidenumberMax);
-		slideNr2.setText("Slide "+(slidenumberCur+1)+ " of "+slidenumberMax);
+	private void updateSlideNumberLabelUI(){
+		slideNr1.setText("Slide "+(slidenumberCur)+ " of "+slidenumberMax);
+		slideNr2.setText("Slide "+(slidenumberCur)+ " of "+slidenumberMax);
 	}
 	private void createNewSlide(int slideType){
-		slidenumberCur=slidenumberMax;
+		slidenumberCur++;
 		slidenumberMax++;
-		updateSlideNumberLabel();
+		updateSlideNumberLabelUI();
 		resetFields();
+		loadData();
 		switch (slideType) {
 		case 0:
-			l1.toFront();
+			l2.toFront();
 			break;
 		case 1:
-			l2.toFront();
+			l1.toFront();
 			break;
 		case 2:
 			l1.toFront();
@@ -637,161 +649,93 @@ public class window2 implements ActionListener,ComponentListener{
 
 	private void loadData(){
 		resetFields();
+		int nodeId = slidenumberCur;
+		Slide s = slideHandlerObj.getSlideForNumber(slideArray, nodeId);
 		int type = -1;
-		int nodeId = slidenumberCur+1;
-		try {
-			//Get slide type
-			type = dbc.getNodeType(nodeId);
-		} catch (SQLException e1) {
-			System.err.println("SlideMax overflow! I'll correct this in a second.");
-			slidenumberMax = slidenumberCur;
-			slidenumberCur--;
-			nodeId--;
-			try {
-				type = dbc.getNodeType(nodeId);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		try{
+			type = s.getSlideType();
+		}catch(Exception e){
+			type = -1;
 		}
-		try {
-			if(dbc.isSlideDisabled(nodeId)){
-				disabled1.setText("Disabled");
-				disabled2.setText("Disabled");
-			}
-			else{
-				disabled1.setText("Enabled");
-				disabled2.setText("Enabled");
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
-
 		switch (type) {
-		case 0:
+		case 2:
 			// If type = 0 -> Multiple Choice
 			l1.toFront();
 			multipleBox1.setSelected(true);
 
-			try {
-				contentCaption1.setText(dbc.loadDBData("TITLE", "NODE", 0, nodeId));
-				propertiesCapField1.setText(dbc.loadDBData("TITLE", "NODE", 0, nodeId));
-				propertiesNextField1.setText(dbc.loadDBData("NEXTTEXT", "NODE", 0, nodeId));
-				contentNext1.setText(dbc.loadDBData("NEXTTEXT", "NODE", 0, nodeId));
-				propertiesPrevField1.setText(dbc.loadDBData("PREVTEXT", "NODE", 0, nodeId));
-				contentPrev1.setText(dbc.loadDBData("PREVTEXT", "NODE", 0, nodeId));
-				loadEdges(nodeId, 0);
-				propertiesAnswerSlideFieldB1.setEnabled(true);
-				propertiesAnswerSlideFieldC1.setEnabled(true);
-				propertiesAnswerSlideFieldD1.setEnabled(true);
-			} catch (SQLException e) {
-				e.printStackTrace();
+			contentCaption1.setText(s.getCaption());
+			propertiesCapField1.setText(s.getCaption());
+			propertiesNextField1.setText(s.getNext());
+			contentNext1.setText(s.getNext());
+			propertiesPrevField1.setText(s.getPrevious());
+			contentPrev1.setText(s.getPrevious());
+			//	loadEdges(nodeId, 0);
+			propertiesAnswerSlideFieldB1.setEnabled(true);
+			propertiesAnswerSlideFieldC1.setEnabled(true);
+			propertiesAnswerSlideFieldD1.setEnabled(true);
+
+			break;
+
+		case 0:
+			l2.toFront();	
+			propertiesNextField2.setText(s.getNext());
+			contentNext2.setText(s.getNext());
+			propertiesPrevField2.setText(s.getPrevious());
+			contentPrev2.setText(s.getPrevious());
+			if(s.getImg()!=null){
+				//resizeImage(s.getImg(), box2.getWidth(), box2.getHeight());
+				Image img = s.getImg(); 
+				Dimension imgBounds = new Dimension(s.getImg().getWidth(), s.getImg().getHeight());
+				Dimension boxBounds = new Dimension(box2.getWidth(), box2.getHeight()-100);
+				Dimension d = getScaledDimension(imgBounds, boxBounds);
+				Image newimg = img.getScaledInstance(d.width, d.height, java.awt.Image.SCALE_SMOOTH);
+				imageLabel2.setIcon(new ImageIcon(newimg));
+				imageLabel2.setHorizontalAlignment(JLabel.CENTER);
+				imageLabel2.setText("");
 			}
+			else{
+				imageLabel2.setText("No image set.");
+			}
+			//	loadEdges(nodeId, 1);
+
 			break;
 
 		case 1:
-			l2.toFront();	
-			try {
-				propertiesNextField2.setText(dbc.loadDBData("NEXTTEXT", "NODE", 0, nodeId));
-				contentNext2.setText(dbc.loadDBData("NEXTTEXT", "NODE", 0, nodeId));
-				propertiesPrevField2.setText(dbc.loadDBData("PREVTEXT", "NODE", 0, nodeId));
-				contentPrev2.setText(dbc.loadDBData("PREVTEXT", "NODE", 0, nodeId));
-				loadEdges(nodeId, 1);
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			break;
-
-		case 2:
 			l1.toFront();
 			multipleBox1.setSelected(false);
-			try {
-				contentCaption1.setText(dbc.loadDBData("TITLE", "NODE", 0, nodeId));
-				propertiesCapField1.setText(dbc.loadDBData("TITLE", "NODE", 0, nodeId));
-				propertiesNextField1.setText(dbc.loadDBData("NEXTTEXT", "NODE", 0, nodeId));
-				contentNext1.setText(dbc.loadDBData("NEXTTEXT", "NODE", 0, nodeId));
-				propertiesPrevField1.setText(dbc.loadDBData("PREVTEXT", "NODE", 0, nodeId));
-				contentPrev1.setText(dbc.loadDBData("PREVTEXT", "NODE", 0, nodeId));
-				loadEdges(nodeId, 2);
-				propertiesAnswerSlideFieldB1.setEnabled(false);
-				propertiesAnswerSlideFieldB1.setText("");
-				propertiesAnswerSlideFieldC1.setEnabled(false);
-				propertiesAnswerSlideFieldC1.setText("");
-				propertiesAnswerSlideFieldD1.setEnabled(false);
-				propertiesAnswerSlideFieldD1.setText("");
-
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			contentCaption1.setText(s.getCaption());
+			propertiesCapField1.setText(s.getCaption());
+			propertiesNextField1.setText(s.getNext());
+			contentNext1.setText(s.getNext());
+			propertiesPrevField1.setText(s.getPrevious());
+			contentPrev1.setText(s.getPrevious());
+			//	loadEdges(nodeId, 2);
+			propertiesAnswerSlideFieldB1.setEnabled(false);
+			propertiesAnswerSlideFieldB1.setText("");
+			propertiesAnswerSlideFieldC1.setEnabled(false);
+			propertiesAnswerSlideFieldC1.setText("");
+			propertiesAnswerSlideFieldD1.setEnabled(false);
+			propertiesAnswerSlideFieldD1.setText("");
 			break;
 		default:
+			l1.toBack();
+			l2.toBack();
 			break;
 		}
 
 
 
-	}
-	private void loadEdges(int slideNr, int slideType) throws SQLException {
-		String[] prop = dbc.getEdges(slideNr);
-		switch (slideType) {
-		case 0:
-		case 2:
-			if(Integer.parseInt(prop[0])>0){
-				propertiesAnswerSlideFieldA1.setText(prop[1]);
-			}
-			if(Integer.parseInt(prop[0])>1){
-				propertiesAnswerFieldA1.setText(prop[2]);
-				contentA11.setText(prop[2]);
-			}
-			if(Integer.parseInt(prop[0])>2){
-				propertiesAnswerSlideFieldB1.setText(prop[3]);
-			}
-			if(Integer.parseInt(prop[0])>3){
-				propertiesAnswerFieldB1.setText(prop[4]);
-				contentA21.setText(prop[4]);
-			}
-			if(Integer.parseInt(prop[0])>4){
-				propertiesAnswerSlideFieldC1.setText(prop[5]);
-			}
-			if(Integer.parseInt(prop[0])>5){
-				propertiesAnswerFieldC1.setText(prop[6]);
-				contentA31.setText(prop[6]);
-			}
-			if(Integer.parseInt(prop[0])>6){
-				propertiesAnswerSlideFieldD1.setText(prop[7]);
-			}
-			if(Integer.parseInt(prop[0])>7){
-				propertiesAnswerFieldD1.setText(prop[8]);
-				contentA41.setText(prop[8]);
-
-			}
-			break;
-
-		case 1:
-			/*
-			if(Integer.parseInt(prop[0])>1){
-				propertiesEdgeA2.setText(prop[1]);
-			}*/
-			if(Integer.parseInt(prop[0])>3){
-				propertiesEdgeB2.setText(prop[3]);
-			}
-			break;
-		default:
-			break;
-		}
 	}
 
 	public static void main(String args[]) {
 		@SuppressWarnings("unused")
 		window2 theWindow = new window2();
-	}
+		slideHandlerObj = new SlideHandler();
 
+	}
 	public static JInternalFrame createLayer(String label) {
 		return new SelfInternalFrame(label, false, false, false, false);
 	}
-
 	@SuppressWarnings("serial")
 	static class SelfInternalFrame extends JInternalFrame {
 		public SelfInternalFrame(String label, boolean b, boolean c, boolean d,
@@ -809,19 +753,35 @@ public class window2 implements ActionListener,ComponentListener{
 			setLayout(null);
 		}
 	}
-
 	@Override
 	public void actionPerformed(ActionEvent object) {
 		fileDialog fd = new fileDialog();
 		if (object.getSource() == openItem){
 			System.out.println("Öffnen wurde angeklickt");
 			fd.openDialog();
+
+			dbc = DBController.getInstance(); 
+			dbc.initDBConnection(); 
+			//TODO Pfad übergeben
 			slideArray = dbc.loadDB();
-			
+			l1.setVisible(true);
+			l2.setVisible(true);
+			loadData();
+
+			slidenumberMax = slideHandlerObj.getSlideCount(slideArray)-1;
+			updateSlideNumberLabelUI();
+
+			//TODO Test:
+			//slideHandlerObj.insertNewSlide(slideArray, 2, 1);
+			//slideHandlerObj.removeSlide(slideArray, 3);
+
 		}
 		if (object.getSource() == saveItem){
-			fd.saveDBDialog();
 			System.out.println("Save wurde angeklickt");
+
+			slideArray = slideHandlerObj.insertNewSlide(slideArray, 2, 1);
+			slideArray = slideHandlerObj.removeSlide(slideArray, 3);
+			fd.saveDBDialog();
 		}
 	}
 	@Override
@@ -846,6 +806,26 @@ public class window2 implements ActionListener,ComponentListener{
 	public void componentHidden(ComponentEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public Dimension getScaledDimension(Dimension imgSize, Dimension boundary) {
+
+		int original_width = imgSize.width;
+		int original_height = imgSize.height;
+		int bound_width = boundary.width;
+		int bound_height = boundary.height;
+		int new_width = original_width;
+		int new_height = original_height;
+
+		if (original_width > bound_width) {
+			new_width = bound_width;
+			new_height = (new_width * original_height) / original_width;
+		}
+		if (new_height > bound_height) {
+			new_height = bound_height;
+			new_width = (new_height * original_width) / original_height;
+		}
+		return new Dimension(new_width, new_height);
 	}
 
 }
