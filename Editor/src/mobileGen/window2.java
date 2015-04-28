@@ -1,5 +1,6 @@
 package mobileGen;
 import java.awt.BorderLayout;
+import java.awt.CheckboxMenuItem;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -24,6 +25,7 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -42,13 +44,19 @@ public class window2 implements ActionListener,ComponentListener{
 	static JFrame f;
 	static int slidenumberMax = 0;
 	static int slidenumberCur = 0;
+	static String path = "";
 	JLabel slideNr1 = new JLabel("Slide "+(slidenumberCur)+ " of "+slidenumberMax), slideNr2 = new JLabel("Slide "+slidenumberCur+ " of "+slidenumberMax);
-	JInternalFrame l1,l2;
+	JInternalFrame l1,l2,companyPictureLayer;
 	static DBController dbc;
 	JMenuBar menuBar;
 	JMenu fileMenu;
 	JMenuItem openItem;
 	JMenuItem saveItem;
+	JMenuItem newItem;
+
+	JMenu slideMenu;
+	JCheckBoxMenuItem companyLogo;
+	JMenuItem showCompanyLogo;
 	static SlideHandler slideHandlerObj = new SlideHandler();
 	Slide[] slideArray;
 	//ELEMENTS////
@@ -92,6 +100,9 @@ public class window2 implements ActionListener,ComponentListener{
 	BufferedImage image2;
 	JLabel imageLabel2 = new JLabel("");
 
+	BufferedImage image3;
+	JLabel imageLabel3 = new JLabel("");
+
 	////////////////////////////////
 	public window2() {
 		//Create Frame
@@ -108,26 +119,57 @@ public class window2 implements ActionListener,ComponentListener{
 
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
+		newItem = new JMenuItem("Create DB");
+		newItem.addActionListener(this);
 		openItem = new JMenuItem("Open");
 		openItem.addActionListener(this);
 		saveItem = new JMenuItem("Save");
 		saveItem.addActionListener(this);
+		saveItem.setEnabled(false);
 		menuBar.add(fileMenu);
+		fileMenu.add(newItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
+
+
+		slideMenu = new JMenu("Extra");
+		slideMenu.setEnabled(false);
+		companyLogo = new JCheckBoxMenuItem("Use Company Logo");
+		companyLogo.addActionListener(this);
+		companyLogo.setSelected(false);
+		slideMenu.add(companyLogo);
+		showCompanyLogo = new JMenuItem("Show Set Company Logo");
+		showCompanyLogo.addActionListener(this);
+		slideMenu.add(showCompanyLogo);
+		menuBar.add(slideMenu);
+
 		f.add(menuBar, BorderLayout.NORTH);
 		//Create Layers
 		l1 = createLayer("Slide: Q&A");
 		l1.addComponentListener(this);
 		l2 = createLayer("Slide: Image and Description");
 		l2.addComponentListener(this);
-
+		companyPictureLayer = createLayer("Slide: Image and Description");
+		companyPictureLayer.addComponentListener(this);
 
 		//desktop.add(l1, JLayeredPane.DEFAULT_LAYER);
 		desktop.add(l1);
 		desktop.add(l2);
+		desktop.add(companyPictureLayer);
 
 		//Fill Layers--------------------------------------------------
+		JButton dismissButton=new JButton("Dismiss.");
+		dismissButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				//desktop.moveToBack(companyPictureLayer);
+				companyPictureLayer.toBack();
+				companyPictureLayer.setVisible(false);
+			}
+		});
+		dismissButton.setBounds(75, 28, 150, 30);
+		companyPictureLayer.add(dismissButton);
+		imageLabel3.setBounds(250, 20, 500, 350);
+		companyPictureLayer.add(imageLabel3);
 
 		//----------->Multiple Choice
 		slideNr1.setBounds(5, 0, 100, 50);
@@ -323,6 +365,7 @@ public class window2 implements ActionListener,ComponentListener{
 		applyBtn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				String p1 = propertiesCapField1.getText(),p2 = propertiesAnswerFieldA1.getText(),p3 = propertiesAnswerFieldB1.getText(),p4 = propertiesAnswerFieldC1.getText(),p5 = propertiesAnswerFieldD1.getText(), p6 = propertiesPrevField1.getText(), p7 = propertiesNextField1.getText(), p8 = propertiesAnswerSlideFieldA1.getText(), p9 = propertiesAnswerSlideFieldB1.getText(), p10 = propertiesAnswerSlideFieldC1.getText(), p11 = propertiesAnswerSlideFieldD1.getText();
+				//Set content
 				contentCaption1.setText(p1);
 				contentA11.setText(p2);
 				contentA21.setText(p3);
@@ -330,32 +373,97 @@ public class window2 implements ActionListener,ComponentListener{
 				contentA41.setText(p5);
 				contentPrev1.setText(p6);
 				contentNext1.setText(p7);
-				int type = 1;
-				if(multipleBox1.isSelected()){
-					type = 2;
-					propertiesAnswerSlideFieldB1.setEnabled(true);
-					propertiesAnswerSlideFieldC1.setEnabled(true);
-					propertiesAnswerSlideFieldD1.setEnabled(true);
 
-				}
-				else{
-					type = 1;
+				//Set slide information in slide obj and change display options
+				int nodeId = slidenumberCur;
+				Slide s = slideHandlerObj.getSlideForNumber(slideArray, nodeId);
+				if(multipleBox1.isSelected()){
+					s.setSlideType(2);
 					propertiesAnswerSlideFieldB1.setEnabled(false);
 					propertiesAnswerSlideFieldC1.setEnabled(false);
 					propertiesAnswerSlideFieldD1.setEnabled(false);
-					propertiesAnswerSlideFieldB1.setText("0");
-					propertiesAnswerSlideFieldC1.setText("0");
-					propertiesAnswerSlideFieldD1.setText("0");
-
-				}
-				/*
-				if(dbc.isConsistent(slidenumberCur+1, propertiesAnswerSlideFieldA1.getText(), propertiesAnswerSlideFieldB1.getText(), propertiesAnswerSlideFieldC1.getText(), propertiesAnswerSlideFieldD1.getText())){
-					dbc.saveSettings(slidenumberCur+1, type, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
+					propertiesAnswerSlideFieldB1.setVisible(false);
+					propertiesAnswerSlideFieldC1.setVisible(false);
+					propertiesAnswerSlideFieldD1.setVisible(false);
+					if(propertiesAnswerSlideFieldA1.getText()!=null){
+						try{
+							s.setAnswer1Successor(Integer.parseInt(p8));
+							s.setAnswer2Successor(Integer.parseInt(p8));
+							s.setAnswer3Successor(Integer.parseInt(p8));
+							s.setAnswer4Successor(Integer.parseInt(p8));
+							propertiesAnswerSlideFieldB1.setText("");
+							propertiesAnswerSlideFieldC1.setText("");
+							propertiesAnswerSlideFieldD1.setText("");
+						}catch(Exception e){
+							s.setAnswer1Successor(-1);
+						}
+					}
+					else{
+						s.setAnswer1Successor(-1);
+					}
 				}
 				else{
-					//TODO: Popup Error
-				}*/
+					propertiesAnswerSlideFieldB1.setEnabled(true);
+					propertiesAnswerSlideFieldC1.setEnabled(true);
+					propertiesAnswerSlideFieldD1.setEnabled(true);
+					propertiesAnswerSlideFieldB1.setVisible(true);
+					propertiesAnswerSlideFieldC1.setVisible(true);
+					propertiesAnswerSlideFieldD1.setVisible(true);
+					/*propertiesAnswerSlideFieldB1.setText("");
+					propertiesAnswerSlideFieldC1.setText("");
+					propertiesAnswerSlideFieldD1.setText("");*/
+					s.setSlideType(1);
+					if(propertiesAnswerSlideFieldA1.getText()!=null){
+						try{
+							s.setAnswer1Successor(Integer.parseInt(propertiesAnswerSlideFieldA1.getText()));
+						}catch(Exception e){
+							s.setAnswer1Successor(-1);
+						}
+					}
+					else{
+						s.setAnswer1Successor(-1);
+					}
+					if(propertiesAnswerSlideFieldB1.getText()!=null){
+						try{
+							s.setAnswer2Successor(Integer.parseInt(propertiesAnswerSlideFieldB1.getText()));
+						}catch(Exception e){
+							s.setAnswer2Successor(-1);
+						}
+					}
+					else{
+						s.setAnswer2Successor(-1);
+					}
+					if(propertiesAnswerSlideFieldC1.getText()!=null){
+						try{
+							s.setAnswer3Successor(Integer.parseInt(propertiesAnswerSlideFieldC1.getText()));
+						}catch(Exception e){
+							s.setAnswer3Successor(-1);
+						}
+					}
+					else{
+						s.setAnswer3Successor(-1);
+					}
+					if(propertiesAnswerSlideFieldD1.getText()!=null){
+						try{
+							s.setAnswer4Successor(Integer.parseInt(propertiesAnswerSlideFieldD1.getText()));
+						}catch(Exception e){
+							s.setAnswer4Successor(-1);
+						}
+					}
+					else{
+						s.setAnswer4Successor(-1);
+					}
+				}
 
+
+
+				s.setNext(p6);
+				s.setPrevious(p7);
+				s.setCaption(p1);
+				s.setAnswer1(p2);
+				s.setAnswer2(p3);
+				s.setAnswer3(p4);
+				s.setAnswer4(p5);
 			}
 		});
 		applyBtn1.setBounds(20, 150, 100, 30);
@@ -481,7 +589,7 @@ public class window2 implements ActionListener,ComponentListener{
 				fileDialog fd = new fileDialog();
 				String filePath = fd.openDialog();
 				if(filePath!=null && filePath.toString().toLowerCase().endsWith(".png")){
-					byte[] img = fd.getBArrayFromFile(filePath);
+					byte[] img = fd.getByteArrayFromFile(filePath);
 					if(img.length>0){
 						BufferedImage image2 = null;
 						try {
@@ -555,6 +663,18 @@ public class window2 implements ActionListener,ComponentListener{
 				contentDescription2.setText(propertiesDescriptionField2.getText());
 				contentNext2.setText(propertiesNextField2.getText());
 				contentPrev2.setText(propertiesPrevField2.getText());
+				int nodeId = slidenumberCur;
+				Slide s = slideHandlerObj.getSlideForNumber(slideArray, nodeId);
+				s.setNext(propertiesNextField2.getText());
+				s.setPrevious(propertiesPrevField2.getText());
+				s.setImageDescription(contentDescription2.getText());
+				s.setCaption(contentCaption2.getText());
+				try{
+					s.setAnswer1Successor(Integer.parseInt(propertiesEdgeB2.getText()));
+
+				}catch(Exception e){
+					s.setAnswer1Successor(-1);
+				}
 
 				/*
 				String p1 = propertiesCapField2.getText(),p2 = propertiesDescriptionField2.getText(), p6 = propertiesNextField1.getText(), p7 = propertiesPrevField1.getText(), p8 = propertiesEdgeA2.getText(), p9 = propertiesEdgeB2.getText();
@@ -570,6 +690,8 @@ public class window2 implements ActionListener,ComponentListener{
 		l2.add(applyBtn2);
 		//--------------------------------------------------------------
 		//Finalize		
+		companyPictureLayer.toBack();
+		companyPictureLayer.setVisible(false);
 		content.add(desktop, BorderLayout.CENTER);
 		f.setSize(800, 600);
 		f.setVisible(true);
@@ -648,6 +770,7 @@ public class window2 implements ActionListener,ComponentListener{
 	}
 
 	private void loadData(){
+		slideMenu.setEnabled(true);
 		resetFields();
 		int nodeId = slidenumberCur;
 		Slide s = slideHandlerObj.getSlideForNumber(slideArray, nodeId);
@@ -670,18 +793,55 @@ public class window2 implements ActionListener,ComponentListener{
 			propertiesPrevField1.setText(s.getPrevious());
 			contentPrev1.setText(s.getPrevious());
 			//	loadEdges(nodeId, 0);
-			propertiesAnswerSlideFieldB1.setEnabled(true);
-			propertiesAnswerSlideFieldC1.setEnabled(true);
-			propertiesAnswerSlideFieldD1.setEnabled(true);
+			//TODO To Be checked
+			propertiesAnswerSlideFieldB1.setEnabled(false);
+			propertiesAnswerSlideFieldB1.setVisible(false);
+			propertiesAnswerSlideFieldB1.setText("");
+			propertiesAnswerSlideFieldC1.setEnabled(false);
+			propertiesAnswerSlideFieldC1.setVisible(false);
+			propertiesAnswerSlideFieldC1.setText("");
+			propertiesAnswerSlideFieldD1.setEnabled(false);
+			propertiesAnswerSlideFieldD1.setVisible(false);
+			propertiesAnswerSlideFieldD1.setText("");
+
+
+			propertiesAnswerSlideFieldA1.setText("");
+
+			if(s.getAnswer1Successor()>-1){
+				propertiesAnswerSlideFieldA1.setText(""+s.getAnswer1Successor());
+			}
+
+
+			if(s.getAnswer1()!=null){
+				propertiesAnswerFieldA1.setText(s.getAnswer1());
+				contentA11.setText(s.getAnswer1());
+			}
+			if(s.getAnswer2()!=null){
+				propertiesAnswerFieldB1.setText(s.getAnswer2());
+				contentA21.setText(s.getAnswer2());
+			}
+			if(s.getAnswer3()!=null){
+				propertiesAnswerFieldC1.setText(s.getAnswer3());
+				contentA31.setText(s.getAnswer3());
+			}
+			if(s.getAnswer4()!=null){
+				propertiesAnswerFieldD1.setText(s.getAnswer4());
+				contentA41.setText(s.getAnswer4());
+			}
 
 			break;
 
 		case 0:
 			l2.toFront();	
+			multipleBox1.setSelected(false);
 			propertiesNextField2.setText(s.getNext());
 			contentNext2.setText(s.getNext());
 			propertiesPrevField2.setText(s.getPrevious());
 			contentPrev2.setText(s.getPrevious());
+			contentDescription2.setText(s.getImageDescription());
+			contentCaption2.setText(s.getCaption());
+			propertiesDescriptionField2.setText(s.getImageDescription());
+			propertiesCapField2.setText(s.getCaption());
 			if(s.getImg()!=null){
 				//resizeImage(s.getImg(), box2.getWidth(), box2.getHeight());
 				Image img = s.getImg(); 
@@ -710,12 +870,40 @@ public class window2 implements ActionListener,ComponentListener{
 			propertiesPrevField1.setText(s.getPrevious());
 			contentPrev1.setText(s.getPrevious());
 			//	loadEdges(nodeId, 2);
-			propertiesAnswerSlideFieldB1.setEnabled(false);
-			propertiesAnswerSlideFieldB1.setText("");
-			propertiesAnswerSlideFieldC1.setEnabled(false);
-			propertiesAnswerSlideFieldC1.setText("");
-			propertiesAnswerSlideFieldD1.setEnabled(false);
-			propertiesAnswerSlideFieldD1.setText("");
+			if(s.getAnswer1Successor()>-1){
+				propertiesAnswerSlideFieldA1.setText(""+s.getAnswer1Successor());
+			}
+			if(s.getAnswer2Successor()>-1){
+				propertiesAnswerSlideFieldB1.setText(""+s.getAnswer2Successor());
+			}
+			if(s.getAnswer3Successor()>-1){
+				propertiesAnswerSlideFieldC1.setText(""+s.getAnswer3Successor());
+			}
+			if(s.getAnswer4Successor()>-1){
+				propertiesAnswerSlideFieldD1.setText(""+s.getAnswer4Successor());
+			}
+			if(s.getAnswer1()!=null){
+				propertiesAnswerFieldA1.setText(s.getAnswer1());
+				contentA11.setText(s.getAnswer1());
+			}
+			if(s.getAnswer2()!=null){
+				propertiesAnswerFieldB1.setText(s.getAnswer2());
+				contentA21.setText(s.getAnswer2());
+			}
+			if(s.getAnswer3()!=null){
+				propertiesAnswerFieldC1.setText(s.getAnswer3());
+				contentA31.setText(s.getAnswer3());
+			}
+			if(s.getAnswer4()!=null){
+				propertiesAnswerFieldD1.setText(s.getAnswer4());
+				contentA41.setText(s.getAnswer4());
+			}
+			propertiesAnswerSlideFieldB1.setEnabled(true);
+			propertiesAnswerSlideFieldC1.setEnabled(true);
+			propertiesAnswerSlideFieldD1.setEnabled(true);
+			propertiesAnswerSlideFieldB1.setVisible(true);
+			propertiesAnswerSlideFieldC1.setVisible(true);
+			propertiesAnswerSlideFieldD1.setVisible(true);
 			break;
 		default:
 			l1.toBack();
@@ -756,13 +944,62 @@ public class window2 implements ActionListener,ComponentListener{
 	@Override
 	public void actionPerformed(ActionEvent object) {
 		fileDialog fd = new fileDialog();
-		if (object.getSource() == openItem){
-			System.out.println("Öffnen wurde angeklickt");
-			fd.openDialog();
 
-			dbc = DBController.getInstance(); 
-			dbc.initDBConnection(); 
-			//TODO Pfad übergeben
+		if (object.getSource() == companyLogo){
+			if(companyLogo.isSelected()){
+				String imgPath = fd.openDialog();
+				System.out.println(imgPath);
+				if(imgPath==null){
+					companyLogo.setSelected(false);
+					return;
+				}
+				if(imgPath.toLowerCase().endsWith(".jpg")){
+					//TODO Change to png jpg was just for testing
+					System.out.println("This is a valid picture");
+					companyLogo.setSelected(true);
+					byte[] img = fd.getByteArrayFromFile(imgPath);
+					if(img.length>0){
+						BufferedImage image2 = null;
+						try {
+							image2 = ImageIO.read(new File(imgPath));
+							slideArray = slideHandlerObj.setCompanyImage(slideArray,image2);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}				
+					}
+				}
+				else{
+					companyLogo.setSelected(false);
+				}
+			}else{
+				System.out.println("Company Logo Disabled");
+				slideArray = slideHandlerObj.setCompanyImage(slideArray,null);
+			}
+		}
+		if(object.getSource() == showCompanyLogo){
+			if(slideArray[0].getCompanyImage()!=null){
+				//resizeImage(s.getImg(), box2.getWidth(), box2.getHeight());
+				Image img = slideArray[0].getCompanyImage(); 
+				Dimension imgBounds = new Dimension(slideArray[0].getCompanyImage().getWidth(), slideArray[0].getCompanyImage().getHeight());
+				Dimension boxBounds = new Dimension(box2.getWidth(), box2.getHeight()-100);
+				Dimension d = getScaledDimension(imgBounds, boxBounds);
+				Image newimg = img.getScaledInstance(d.width, d.height, java.awt.Image.SCALE_SMOOTH);
+				imageLabel3.setIcon(new ImageIcon(newimg));
+				imageLabel3.setHorizontalAlignment(JLabel.CENTER);
+				imageLabel3.setText("");
+				companyPictureLayer.toFront();
+				companyPictureLayer.setVisible(true);
+			}
+			else{
+				imageLabel3.setText("No image set.");
+			}
+		}
+		if (object.getSource() == newItem){
+			path = fd.saveDBDialog();
+			dbc = DBController.getInstance();
+			if(!dbc.initDBConnection(path)){
+				return;
+			}
 			slideArray = dbc.loadDB();
 			l1.setVisible(true);
 			l2.setVisible(true);
@@ -770,23 +1007,44 @@ public class window2 implements ActionListener,ComponentListener{
 
 			slidenumberMax = slideHandlerObj.getSlideCount(slideArray)-1;
 			updateSlideNumberLabelUI();
+			saveItem.setEnabled(true);
+		}
+		if (object.getSource() == openItem){
+			System.out.println("Öffnen wurde angeklickt");
+			path = fd.openDialog();
+			if(path!=null&&path.toString().toLowerCase().endsWith(".sqlite")){
+				dbc = DBController.getInstance(); 
+				if(dbc.initDBConnection(path)){
+					return;
+				}
+				slideArray = dbc.loadDB();
+				if(slideArray!=null&&slideArray.length>0){
+					l1.setVisible(true);
+					l2.setVisible(true);
+					slidenumberCur = 0;
+					loadData();
 
-			//TODO Test:
-			//slideHandlerObj.insertNewSlide(slideArray, 2, 1);
-			//slideHandlerObj.removeSlide(slideArray, 3);
-
+					slidenumberMax = slideHandlerObj.getSlideCount(slideArray)-1;
+					updateSlideNumberLabelUI();
+					saveItem.setEnabled(true);
+				}
+			}
 		}
 		if (object.getSource() == saveItem){
 			System.out.println("Save wurde angeklickt");
-
-			slideArray = slideHandlerObj.insertNewSlide(slideArray, 2, 1);
-			slideArray = slideHandlerObj.removeSlide(slideArray, 3);
-			fd.saveDBDialog();
+			if(path!=null||(path!=null && path.length() == 0)){
+				fd.saveDBFileOverride(path); //Clear old file
+				slideArray = slideHandlerObj.insertNewSlide(slideArray, 2, 1);
+				slideArray = slideHandlerObj.removeSlide(slideArray, 3);
+				if(!slideHandlerObj.checkEdgesForConsistency(slideArray)){
+					System.out.println("Fehler. Bitte konsistenz prüfen!");
+				}
+				//TODO Save to DB
+			}
 		}
 	}
 	@Override
 	public void componentResized(ComponentEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
@@ -794,17 +1052,16 @@ public class window2 implements ActionListener,ComponentListener{
 		//Prevent move of panes
 		l1.setLocation(0, 0);
 		l2.setLocation(0, 0);
+		companyPictureLayer.setLocation(0, 0);
 		//l3.setLocation(0, 0);
 
 	}
 	@Override
 	public void componentShown(ComponentEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
 	public void componentHidden(ComponentEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
