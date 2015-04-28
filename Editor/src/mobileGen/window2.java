@@ -39,6 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.JTextComponent;
 
 public class window2 implements ActionListener,ComponentListener{
@@ -107,7 +109,19 @@ public class window2 implements ActionListener,ComponentListener{
 	////////////////////////////////
 	public window2() {
 		//Create Frame
-		f = new JFrame("JDesktopPane Sample");
+		f = new JFrame("Mobile Editor");
+		try {
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
+
 		f.setResizable(false);
 
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -184,7 +198,7 @@ public class window2 implements ActionListener,ComponentListener{
 				createNewSlide(0);
 			}
 		});
-		addBtn1.setBounds(75, 28, 150, 30);
+		addBtn1.setBounds(90, 28, 130, 30);
 		l1.add(addBtn1);
 
 		JButton addBtnB1=new JButton("Add Q&A Slide");
@@ -195,7 +209,7 @@ public class window2 implements ActionListener,ComponentListener{
 				createNewSlide(1);
 			}
 		});
-		addBtnB1.setBounds(75, 60, 150, 30);
+		addBtnB1.setBounds(90, 60, 130, 30);
 		l1.add(addBtnB1);
 
 		JButton delBtn1=new JButton("Delete Slide");
@@ -212,7 +226,7 @@ public class window2 implements ActionListener,ComponentListener{
 				}
 			}
 		});
-		delBtn1.setBounds(75, 100, 180, 30);
+		delBtn1.setBounds(90, 100, 130, 30);
 		l1.add(delBtn1);
 
 		JButton prevBtn1=new JButton("Prev");
@@ -225,7 +239,7 @@ public class window2 implements ActionListener,ComponentListener{
 				}
 			}
 		});
-		prevBtn1.setBounds(20, 50, 50, 30);
+		prevBtn1.setBounds(20, 50, 65, 30);
 		l1.add(prevBtn1);
 
 		JButton nextBtn1=new JButton("Next");
@@ -238,7 +252,7 @@ public class window2 implements ActionListener,ComponentListener{
 				}
 			}
 		});
-		nextBtn1.setBounds(20, 90, 60, 30);
+		nextBtn1.setBounds(20, 90, 65, 30);
 		l1.add(nextBtn1);
 
 		//-> Content
@@ -497,7 +511,7 @@ public class window2 implements ActionListener,ComponentListener{
 				createNewSlide(0);
 			}
 		});
-		addBtn2.setBounds(75, 28, 150, 30);
+		addBtn2.setBounds(90, 28, 130, 30);
 		l2.add(addBtn2);
 
 		JButton addBtnB2=new JButton("Add Q&A Slide");
@@ -508,7 +522,7 @@ public class window2 implements ActionListener,ComponentListener{
 				createNewSlide(1);
 			}
 		});
-		addBtnB2.setBounds(75, 60, 150, 30);
+		addBtnB2.setBounds(90, 60, 130, 30);
 		l2.add(addBtnB2);
 
 		JButton delBtn2=new JButton("Delete Slide");
@@ -525,7 +539,7 @@ public class window2 implements ActionListener,ComponentListener{
 				}
 			}
 		});
-		delBtn2.setBounds(75, 100, 180, 30);
+		delBtn2.setBounds(90, 100, 130, 30);
 		l2.add(delBtn2);
 
 		JButton prevBtn2=new JButton("Prev");
@@ -538,7 +552,7 @@ public class window2 implements ActionListener,ComponentListener{
 				}
 			}
 		});
-		prevBtn2.setBounds(20, 50, 50, 30);
+		prevBtn2.setBounds(20, 50, 65, 30);
 		l2.add(prevBtn2);
 
 		JButton nextBtn2=new JButton("Next");
@@ -551,7 +565,7 @@ public class window2 implements ActionListener,ComponentListener{
 				}
 			}
 		});
-		nextBtn2.setBounds(20, 90, 60, 30);
+		nextBtn2.setBounds(20, 90, 65, 30);
 		l2.add(nextBtn2);
 
 
@@ -694,10 +708,14 @@ public class window2 implements ActionListener,ComponentListener{
 		companyPictureLayer.toBack();
 		companyPictureLayer.setVisible(false);
 		multipleBox1.addActionListener(this);
+		l1.setBounds(0,0,l1.getWidth(),l1.getHeight()+10);
+		l2.setBounds(0,0,l2.getWidth(),l2.getHeight()+10);
+		companyPictureLayer.setBounds(0,0,companyPictureLayer.getWidth(),companyPictureLayer.getHeight()+10);
+		//desktop.setBounds(0,0,desktop.getWidth(),desktop.getHeight()+10);
 		content.add(desktop, BorderLayout.CENTER);
 		f.setSize(800, 600);
 		f.setVisible(true);
-		f.setSize((int)f.getWidth(),(int)f.getHeight()+menuBar.getHeight());
+		f.setSize((int)f.getWidth(),(int)f.getHeight()+menuBar.getHeight()+10);
 
 		l1.setVisible(false);
 		l2.setVisible(false);
@@ -956,8 +974,7 @@ public class window2 implements ActionListener,ComponentListener{
 					companyLogo.setSelected(false);
 					return;
 				}
-				if(imgPath.toLowerCase().endsWith(".jpg")){
-					//TODO Change to png jpg was just for testing
+				if(imgPath.toLowerCase().endsWith(".png")){
 					System.out.println("This is a valid picture");
 					companyLogo.setSelected(true);
 					byte[] img = fd.getByteArrayFromFile(imgPath);
@@ -1039,8 +1056,8 @@ public class window2 implements ActionListener,ComponentListener{
 			System.out.println("Save wurde angeklickt");
 			if(path!=null||(path!=null && path.length() == 0)){
 				fd.saveDBFileOverride(path); //Clear old file
-				slideArray = slideHandlerObj.insertNewSlide(slideArray, 2, 1);
-				slideArray = slideHandlerObj.removeSlide(slideArray, 3);
+				//slideArray = slideHandlerObj.insertNewSlide(slideArray, 2, 1);
+				//slideArray = slideHandlerObj.removeSlide(slideArray, 3);
 				if(!slideHandlerObj.checkEdgesForConsistency(slideArray)){
 					System.out.println("Fehler. Bitte konsistenz prüfen!");
 					JOptionPane.showMessageDialog(null,

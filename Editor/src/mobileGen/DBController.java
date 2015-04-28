@@ -5,9 +5,12 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection; 
 import java.sql.DriverManager; 
 import java.sql.PreparedStatement; 
@@ -96,6 +99,9 @@ class DBController {
 			prepStmt.setInt(1, imgNr);
 
 			prepStmt.setBytes(2, imageFileArr);
+			//Blob blob = new javax.sql.rowset.serial.SerialBlob(imageFileArr);
+			//prepStmt.setBlob(2, blob);
+			
 
 			prepStmt.executeUpdate();
 			connection.commit();
@@ -156,7 +162,6 @@ class DBController {
 			ResultSet rslt=stmt.executeQuery(query);
 			if(rslt.next()){
 				byte[] imgArr=rslt.getBytes("image");
-				//img=Toolkit.getDefaultToolkit().createImage(imgArr);
 				img = ImageIO.read(new ByteArrayInputStream(imgArr));
 
 			}
@@ -261,7 +266,8 @@ class DBController {
 			connection.setAutoCommit(false);
 			Statement stmt_del = connection.createStatement(); 
 			stmt_del.execute("DELETE FROM NODE");
-			Statement stmt_del2 = connection.createStatement(); 
+			stmt_del.execute("DELETE FROM VIEW");
+			stmt_del.execute("DELETE FROM IMAGE");
 			stmt_del.execute("DELETE FROM EDGE");
 
 			for(int i = 0; i<ar.length; i++){
@@ -285,8 +291,11 @@ class DBController {
 				ps1.setInt(4, s.getSlideType());
 				//TODO: View
 				if(s.getImg()!=null){
-					byte[] imageByteArray = ((DataBufferByte) s.getImg().getData().getDataBuffer()).getData();
-					int viewNr = addImageViewToDB(imageByteArray,s.getImageDescription());
+					//byte[] imageByteArray = ((DataBufferByte) s.getImg().getData().getDataBuffer()).getData();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(s.getImg(), "png", baos);
+					byte[] bytes = baos.toByteArray();
+					int viewNr = addImageViewToDB(bytes,s.getImageDescription());
 					ps1.setInt(5, viewNr);
 				}else{
 					ps1.setNull(5, java.sql.Types.INTEGER);
@@ -358,7 +367,7 @@ class DBController {
 
 			}
 			connection.commit();
-		} catch (SQLException e) {
+		} catch (SQLException | IOException e) {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
