@@ -21,7 +21,7 @@ import sun.awt.image.ToolkitImage;
 
 class DBController { 
 
-	private static final DBController dbcontroller = new DBController(); 
+	private static DBController dbcontroller = new DBController(); 
 	private static Connection connection; 
 	public static final String DB_PATH = "example-db.sqlite";//System.getProperty("user.home") + "/" + "example-db.sqlite"; 
 	private static final int MAXSLIDEARRAYNUMBER = 10000;
@@ -44,6 +44,11 @@ class DBController {
 	public static DBController getInstance(){ 
 		return dbcontroller; 
 	} 
+	
+	public static void reset(){
+		dbcontroller = new DBController(); 	
+		connection = null;
+	}
 
 	boolean initDBConnection(String path) { 
 		boolean ret = false;
@@ -190,24 +195,6 @@ class DBController {
 		rs.close(); 
 		return resInt;
 	}
-	void handleDB() { 
-		try { 
-			Statement stmt = connection.createStatement(); 
-			ResultSet rs = stmt.executeQuery("SELECT * FROM EDGE;"); 
-			while (rs.next()) { 
-				System.out.print("NODEID = " + rs.getString("NODEID")); 
-				System.out.print(" SUCCESSORID = " + rs.getString("SUCCESSORID")); 
-				System.out.print(" DESCRIPTION = " + rs.getInt("DESCRIPTION")); 
-				System.out.print(" EDGEID = " + rs.getDouble("EDGEID")); 
-				System.out.println("");
-			} 
-			rs.close(); 
-			//connection.close(); 
-		} catch (SQLException e) { 
-			System.err.println("Couldn't handle DB-Query"); 
-			e.printStackTrace(); 
-		} 
-	} 
 
 	public String queryDBfromString(String prefStr, String tabStr, int type, int nodeId) throws SQLException{
 		Statement stmt = connection.createStatement(); 
@@ -271,14 +258,18 @@ class DBController {
 
 	public void saveSettings(Slide[] ar) {
 		try{
+			connection.setAutoCommit(false);
+			Statement stmt_del = connection.createStatement(); 
+			stmt_del.execute("DELETE FROM NODE");
+			Statement stmt_del2 = connection.createStatement(); 
+			stmt_del.execute("DELETE FROM EDGE");
+
 			for(int i = 0; i<ar.length; i++){
 				Slide s = ar[i];
 				if(s==null){
 					break;
 				}
-				connection.setAutoCommit(false);
-				Statement stmt = connection.createStatement(); 
-				PreparedStatement ps1 = connection.prepareStatement("INSERT INTO NODE VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				PreparedStatement ps1 = connection.prepareStatement("INSERT INTO NODE VALUES (?, ?, ?, ?, ?, ?);");
 
 				ps1.setInt(1, s.getSlideNr());
 				ps1.setString(2, s.getCaption());
@@ -304,7 +295,7 @@ class DBController {
 				ps1.setString(6, s.getNext());
 				ps1.addBatch(); 
 				ps1.executeBatch();
-				
+
 				PreparedStatement ps2 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer1()!=null && s.getAnswer1Successor()>-1){
 					ps2.setInt(1, s.getSlideNr());
@@ -319,7 +310,7 @@ class DBController {
 				}
 				ps2.addBatch();
 				ps2.executeBatch();
-				
+
 				PreparedStatement ps3 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer2()!=null && s.getAnswer2Successor()>-1){
 					ps3.setInt(1, s.getSlideNr());
@@ -334,7 +325,7 @@ class DBController {
 				}
 				ps3.addBatch();
 				ps3.executeBatch();
-				
+
 				PreparedStatement ps4 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer3()!=null && s.getAnswer3Successor()>-1){
 					ps4.setInt(1, s.getSlideNr());
@@ -349,7 +340,7 @@ class DBController {
 				}
 				ps4.addBatch();
 				ps4.executeBatch();
-				
+
 				PreparedStatement ps5 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer4()!=null && s.getAnswer4Successor()>-1){
 					ps5.setInt(1, s.getSlideNr());
@@ -364,10 +355,15 @@ class DBController {
 				}
 				ps5.addBatch();
 				ps5.executeBatch();
-				
-			}
 
+			}
+			connection.commit();
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 	} 
@@ -406,108 +402,6 @@ class DBController {
 		return ret;
 	}
 
-	public boolean isConsistent(int i, String successor1, String successor2, String successor3, String successor4) {	
-		boolean ret = false;
-		try {
-			int s1, s2, s3, s4;
-			try{
-				s1 = Integer.parseInt(successor1);
-			}catch(NumberFormatException e){
-				s1 = -1;
-			}
-
-			try{
-				s2 = Integer.parseInt(successor2);
-			}catch(NumberFormatException e){
-				s2 = -1;
-			}
-
-			try{
-				s3 = Integer.parseInt(successor3);
-			}catch(NumberFormatException e){
-				s3 = -1;
-			}
-
-			try{
-				s4 = Integer.parseInt(successor4);
-			}catch(NumberFormatException e){
-				s4 = -1;
-			}
-
-			if(s1>0){
-				Statement stmt = connection.createStatement(); 
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM NODE WHERE NODEID = "+ s1 +" AND DISABLED IS NULL;"); 
-				rs.next();
-				if(rs.getInt("COUNT(*)")==1){
-					ret = true;
-				}
-				else{
-					ret = false;
-				}
-			}
-			if(s2>0){
-				Statement stmt = connection.createStatement(); 
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM NODE WHERE NODEID = "+ s2 +" AND DISABLED IS NULL;"); 
-				rs.next();
-				if(rs.getInt("COUNT(*)")==1 && ret == true){
-					ret = true;
-				}else{
-					ret = false;
-				}
-			}
-			if(s3>0){
-				Statement stmt = connection.createStatement(); 
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM NODE WHERE NODEID = "+ s3 +" AND DISABLED IS NULL;"); 
-				rs.next();
-				if(rs.getInt("COUNT(*)")==1 && ret == true){
-					ret = true;
-				}else{
-					ret = false;
-				}
-			}
-			if(s4>0){
-				Statement stmt = connection.createStatement(); 
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM NODE WHERE NODEID = "+ s4 +" AND DISABLED IS NULL;"); 
-				rs.next();
-				if(rs.getInt("COUNT(*)")==1 && ret == true){
-					ret = true;
-				}else{
-					ret = false;
-				}
-			}
-
-
-
-			return ret;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		/*try{
-			Statement stmt0 = connection.createStatement(); 
-			ResultSet rs0 = stmt0.executeQuery("SELECT COUNT(*) FROM EDGE;"); 
-			int count = +rs0.getInt("COUNT(*)");
-
-
-			Statement stmt = connection.createStatement(); 
-			ResultSet rs = stmt.executeQuery("SELECT SUCCESSORID FROM EDGE;"); 
-			for(int j = 0; j<count; j++){
-				rs.next();
-				int successorid =  rs.getInt("SUCCESSORID");
-				Statement stmt2 = connection.createStatement(); 
-				ResultSet rs2 = stmt2.executeQuery("SELECT COUNT(*) FROM NODE WHERE NODEID = "+ successorid +" AND DISABLED IS NULL;"); 
-				rs2.next();
-				int hasValidSuccessor = rs2.getInt("COUNT(*)");
-				if(hasValidSuccessor==0){
-					return false;
-				}
-			}
-			return true;
-		}catch (SQLException e){
-			e.printStackTrace();
-			return false;
-		}*/
-	}
 
 	public static BufferedImage imgToBimg(Image img)
 	{

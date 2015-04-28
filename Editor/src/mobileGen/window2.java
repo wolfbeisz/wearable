@@ -34,6 +34,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
@@ -692,6 +693,7 @@ public class window2 implements ActionListener,ComponentListener{
 		//Finalize		
 		companyPictureLayer.toBack();
 		companyPictureLayer.setVisible(false);
+		multipleBox1.addActionListener(this);
 		content.add(desktop, BorderLayout.CENTER);
 		f.setSize(800, 600);
 		f.setVisible(true);
@@ -766,7 +768,8 @@ public class window2 implements ActionListener,ComponentListener{
 		propertiesNextField2.setText("");
 		propertiesEdgeA2.setText("");
 		propertiesEdgeB2.setText("");
-
+		imageLabel2.setIcon(null);
+		imageLabel2.setText("");
 	}
 
 	private void loadData(){
@@ -1013,10 +1016,12 @@ public class window2 implements ActionListener,ComponentListener{
 			System.out.println("Öffnen wurde angeklickt");
 			path = fd.openDialog();
 			if(path!=null&&path.toString().toLowerCase().endsWith(".sqlite")){
-				dbc = DBController.getInstance(); 
-				if(dbc.initDBConnection(path)){
+				dbc.reset();
+				dbc = DBController.getInstance();
+				if(!dbc.initDBConnection(path)){
 					return;
 				}
+				resetFields();
 				slideArray = dbc.loadDB();
 				if(slideArray!=null&&slideArray.length>0){
 					l1.setVisible(true);
@@ -1038,8 +1043,34 @@ public class window2 implements ActionListener,ComponentListener{
 				slideArray = slideHandlerObj.removeSlide(slideArray, 3);
 				if(!slideHandlerObj.checkEdgesForConsistency(slideArray)){
 					System.out.println("Fehler. Bitte konsistenz prüfen!");
+					JOptionPane.showMessageDialog(null,
+							"Consistency check failed. Please check your entries",
+							"Warning!",
+							JOptionPane.WARNING_MESSAGE);
+				}else{
+					dbc.saveSettings(slideArray);
 				}
-				//TODO Save to DB
+			}
+		}
+		if (object.getSource() == multipleBox1){
+			if(multipleBox1.isSelected()==true){
+				propertiesAnswerSlideFieldB1.setEnabled(false);
+				propertiesAnswerSlideFieldC1.setEnabled(false);
+				propertiesAnswerSlideFieldD1.setEnabled(false);
+				propertiesAnswerSlideFieldB1.setVisible(false);
+				propertiesAnswerSlideFieldC1.setVisible(false);
+				propertiesAnswerSlideFieldD1.setVisible(false);
+				propertiesAnswerSlideFieldB1.setText("");
+				propertiesAnswerSlideFieldC1.setText("");
+				propertiesAnswerSlideFieldD1.setText("");
+			}
+			else{
+				propertiesAnswerSlideFieldB1.setEnabled(true);
+				propertiesAnswerSlideFieldC1.setEnabled(true);
+				propertiesAnswerSlideFieldD1.setEnabled(true);
+				propertiesAnswerSlideFieldB1.setVisible(true);
+				propertiesAnswerSlideFieldC1.setVisible(true);
+				propertiesAnswerSlideFieldD1.setVisible(true);
 			}
 		}
 	}
