@@ -13,6 +13,7 @@ using App2.Common;
 using System.Globalization;
 using Windows.UI.Xaml.Media;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.UI.Popups;
 
 namespace App2.dao
 {
@@ -74,8 +75,12 @@ namespace App2.dao
                 return null;
 
             sql_Image imageRecord = s.sql_Images.FirstOrDefault((img) => { return img.IMAGEID == p; });
-            if (imageRecord == null)
+            if (imageRecord == null) {
+                var x = new MessageDialog("Bitte überprüfen sie die SQLite-Datei auf Korrektheit. Die Anwendung wird nun beendet");
+                await x.ShowAsync();
+                App.Current.Exit();
                 return null;
+            }
 
             IBuffer buffer = imageRecord.IMAGE.AsBuffer();
             var stream = new InMemoryRandomAccessStream();
