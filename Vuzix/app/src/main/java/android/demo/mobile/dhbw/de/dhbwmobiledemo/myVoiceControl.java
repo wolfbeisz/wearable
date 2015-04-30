@@ -2,6 +2,7 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Button;
 
 import com.vuzix.speech.VoiceControl;
 
@@ -10,17 +11,22 @@ import com.vuzix.speech.VoiceControl;
  */
 
 
-
 public class myVoiceControl extends VoiceControl {
-    private VoiceControl vc;
+    private static VoiceControl vc;
 
-    public myVoiceControl(Context context){
+    public myVoiceControl(Context context) {
         super(context);
+        vc = this;
+    }
+
+    public static VoiceControl getVC() {
+        return vc;
     }
 
     @Override
-    protected void onRecognition(String result){
-        Log.w("Vuzix Speech: ", "result"+ result);
+    protected void onRecognition(String result) {
+
+
     }
 
 }

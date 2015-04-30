@@ -9,7 +9,7 @@ import android.widget.RadioButton;
 /**
  * Created by Silke on 14.04.2015.
  */
-public class SingleChoiceActivity extends Activity{
+public class SingleChoiceActivity extends MainActivity{
     private static SingleChoiceNode node;
     private Edge edge;
 
@@ -32,6 +32,7 @@ public class SingleChoiceActivity extends Activity{
         RadioButton r = (RadioButton)findViewById(R.id.radioButton);
         r.setText(node.getEdgeList().get(0).text);
 
+
         r = (RadioButton)findViewById(R.id.radioButton2);
         r.setText(node.getEdgeList().get(1).text);
 
@@ -45,6 +46,17 @@ public class SingleChoiceActivity extends Activity{
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayNextNode();
+            }
+        });
+
+        Button bb = (Button) findViewById(R.id.buttonBack);
+        if (Node.activeNode == 0){
+            bb.setVisibility(View.INVISIBLE);
+        }
 
     }
 }

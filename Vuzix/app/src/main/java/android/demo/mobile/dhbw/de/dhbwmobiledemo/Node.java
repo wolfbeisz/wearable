@@ -127,10 +127,14 @@ public abstract class Node {
     }
 
     public static Node getNodeById(int id) {
-        for (Node node : nodesList) {
-            if (node.getNodeId() == id) {
-                return node;
+        try{
+            for (Node node : nodesList) {
+                if (node.getNodeId() == id) {
+                    return node;
+                }
             }
+        }catch(java.lang.NullPointerException e) {
+            return null;
         }
         return null;
     }
@@ -161,6 +165,10 @@ public abstract class Node {
 
     public int getTypeId() {
         return typeId;
+    }
+
+    public static void destroy(){
+        nodesList = null;
     }
 
     private int typeId;
