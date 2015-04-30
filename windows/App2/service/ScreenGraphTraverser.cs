@@ -12,6 +12,7 @@ using App2.Common;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Popups;
 
 
 namespace App2.service
@@ -69,16 +70,20 @@ namespace App2.service
             return CurrentScreen;
         }
 
-        public static void NavigateToView(Frame frame, Screen screen, ScreenGraphTraverser traverser)
-        {
-            if (screen is ImageScreen)
-                frame.Navigate(typeof(ImageView), traverser);
-            else if (screen is SingleChoiceScreen)
-                frame.Navigate(typeof(SingleChoiceView), traverser);
-            else if (screen is MultipleChoiceScreen)
-                frame.Navigate(typeof(MultipleChoiceView), traverser);
-            else
-                throw new InvalidOperationException();
+        public static async void NavigateToView(Frame frame, Screen screen, ScreenGraphTraverser traverser)
+        {           
+                if (screen is ImageScreen)
+                    frame.Navigate(typeof(ImageView), traverser);
+                else if (screen is SingleChoiceScreen)
+                    frame.Navigate(typeof(SingleChoiceView), traverser);
+                else if (screen is MultipleChoiceScreen)
+                    frame.Navigate(typeof(MultipleChoiceView), traverser);
+                else
+                {
+                    var x = new MessageDialog("Bitte überprüfen sie die SQLite-Datei auf Korrektheit. Die Anwendung wird nun beendet");
+                    await x.ShowAsync();
+                    App.Current.Exit();
+                }
         }
 
         internal bool canGoBack()
