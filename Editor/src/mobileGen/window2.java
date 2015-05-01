@@ -164,7 +164,7 @@ public class window2 implements ActionListener,ComponentListener{
 		l1.addComponentListener(this);
 		l2 = createLayer("Slide: Image and Description");
 		l2.addComponentListener(this);
-		companyPictureLayer = createLayer("Slide: Image and Description");
+		companyPictureLayer = createLayer("Company Logo");
 		companyPictureLayer.addComponentListener(this);
 
 		//desktop.add(l1, JLayeredPane.DEFAULT_LAYER);
@@ -1132,6 +1132,10 @@ public class window2 implements ActionListener,ComponentListener{
 							JOptionPane.WARNING_MESSAGE);
 				}else{
 					dbc.saveSettings(slideArray);
+					JOptionPane.showMessageDialog(null,
+							"DB saved",
+							"Saved!",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		}
