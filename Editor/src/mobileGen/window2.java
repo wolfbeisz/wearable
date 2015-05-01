@@ -179,6 +179,7 @@ public class window2 implements ActionListener,ComponentListener{
 				//desktop.moveToBack(companyPictureLayer);
 				companyPictureLayer.toBack();
 				companyPictureLayer.setVisible(false);
+				loadData();
 			}
 		});
 		dismissButton.setBounds(75, 28, 150, 30);
@@ -984,10 +985,14 @@ public class window2 implements ActionListener,ComponentListener{
 			imageLabel3.setHorizontalAlignment(JLabel.CENTER);
 			imageLabel3.setText("");
 			companyLogo.setSelected(true);
+			showCompanyLogo.setEnabled(true);
+			companyLogo.setEnabled(true);
 		}
 		else{
 			imageLabel3.setText("No image set.");
 			companyLogo.setSelected(false);
+			showCompanyLogo.setEnabled(false);
+			companyLogo.setEnabled(true);
 		}
 
 
@@ -1046,12 +1051,16 @@ public class window2 implements ActionListener,ComponentListener{
 							e.printStackTrace();
 						}				
 					}
+					companyLogo.setEnabled(true);
+					showCompanyLogo.setEnabled(true);
 				}
 				else{
 					companyLogo.setSelected(false);
+					showCompanyLogo.setEnabled(false);
 				}
 			}else{
 				System.out.println("Company Logo Disabled");
+				showCompanyLogo.setEnabled(false);
 				slideArray = slideHandlerObj.setCompanyImage(slideArray,null);
 			}
 		}
@@ -1068,6 +1077,9 @@ public class window2 implements ActionListener,ComponentListener{
 				imageLabel3.setText("");
 				companyPictureLayer.toFront();
 				companyPictureLayer.setVisible(true);
+				companyLogo.setEnabled(false);
+				showCompanyLogo.setEnabled(false);
+
 			}
 			else{
 				imageLabel3.setText("No image set.");
