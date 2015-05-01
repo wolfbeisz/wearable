@@ -77,7 +77,25 @@ public class SlideHandler {
 					if(ar[i].getAnswer4Successor()>-1 && getSlideforSlideNr(ar,ar[i].getAnswer4Successor())==null){
 						ret = false;
 					}
+					//Check if slide has any Successors
+					int ctr = 0;
+					if(ar[i].getAnswer1Successor()>-1){
+						ctr++;
+					}
+					if(ar[i].getAnswer2Successor()>-1){
+						ctr++;
+					}
+					if(ar[i].getAnswer3Successor()>-1){
+						ctr++;
+					}
+					if(ar[i].getAnswer4Successor()>-1){
+						ctr++;
+					}
+					if(ctr == 0){
+						ret = false;
+					}
 				}
+
 			}
 		}
 		return ret;
