@@ -8,10 +8,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.TextView;
+import android.widget.CompoundButton;
 
 import com.vuzix.speech.VoiceControl;
 
@@ -22,17 +21,24 @@ import java.io.IOException;
 public class MainActivity extends Activity {
 
 
-    VoiceControl vc;
+    protected VoiceControl vc;
 
-    MyDBHelper dbh;
+    private MyDBHelper dbh;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        vc = new VoiceControl(this) {
 
+        if (vc != null) {
+            vc.destroy();
+        }
+
+        /*
+        * Nested class
+         */
+        vc = new VoiceControl(this) {
             @Override
             protected void onRecognition(String result) {
                 Log.i("Recognition", "Recognition: " + result);
@@ -40,72 +46,25 @@ public class MainActivity extends Activity {
                 if (result.contains("move right") || result.contains("forward") || result.contains("next") || result.contains("go right")) {
                     Log.i("Recognition", "Button: " + result);
                     Button b = (Button) findViewById(R.id.buttonForward);
-                    if(b.isEnabled()) {
+                    if (b.isEnabled()) {
                         b.callOnClick();
                     }
-                } else if (result.contains("select")){
+                } else if (result.contains("select") || result.contains("choose")) {
                     Log.i("Recognition", "Select: " + result);
-                        if (result.contains("1")){
-                            Log.i("Recognition", "Select 1: " + result);
-                            try {
-                                CheckBox c = (CheckBox) findViewById(R.id.checkBox);
-                                if (c.isEnabled()) {
-                                    Log.i("Recognition", "Checkbox enabled: " + result);
-                                    //c.callOnClick();
-                                    c.setChecked(true);
-                                }
-                            }catch (NullPointerException e){
-                                Log.i("Recognition", "No Checkbox available.");
-                            }
+                    if (result.contains("1")) {
+                        checkCheckBox(R.id.selection1, 0);
+                    } else if (result.contains("2")) {
+                        checkCheckBox(R.id.selection2, 1);
+                    } else if (result.contains("3")) {
+                        checkCheckBox(R.id.selection3, 2);
+                    }
+                } else if (result.contains("back") || result.contains("previous") || result.contains("move left") || result.contains("go left")) {
+                    try {
+                        Button bb = (Button) findViewById(R.id.buttonBack);
+                        bb.callOnClick();
+                    } catch (Exception e) {
 
-                            try {
-                                RadioButton r = (RadioButton)findViewById(R.id.radioButton);
-                                if (r.isEnabled()){
-                                    r.setChecked(true);
-                                }
-                            } catch (NullPointerException e){
-                                Log.i("Recognition", "No radioButton available.");
-                            }
-                        } else if(result.contains("2")){
-                            try {
-                                CheckBox c = (CheckBox) findViewById(R.id.checkBox2);
-                                if (c.isEnabled()) {
-                                    c.callOnClick();
-                                }
-                            }catch (Exception e){
-
-                            }
-
-                            try {
-                                RadioButton r = (RadioButton)findViewById(R.id.radioButton2);
-                                if (r.isEnabled()){
-                                    r.callOnClick();
-                                }
-                            } catch (Exception e) {
-                            }
-                        }
-
-
-                    } else if(result.contains("3")){
-                            try {
-                                CheckBox c = (CheckBox) findViewById(R.id.checkBox3);
-                                if (c.isEnabled()) {
-                                    c.callOnClick();
-                                }
-                            }catch (Exception e){
-
-                            }
-
-                            try {
-                                RadioButton r = (RadioButton)findViewById(R.id.radioButton3);
-                                if (r.isEnabled()){
-                                    r.callOnClick();
-                                }
-                            } catch (Exception e) {
-
-                            }
-                } else if(result.contains("back") || result.contains("previous")){
-                    finish();
+                    }
                 }
 
 
@@ -113,7 +72,7 @@ public class MainActivity extends Activity {
         };
 
 
-        if((Node.getNodeById(Node.activeNode) == null)) {
+        if ((Node.getNodeById(Node.activeNode) == null)) {
             if (isExternalStorageReadable()) {
                 File directory = getStorageDir("example-db.sqlite");
 
@@ -151,23 +110,47 @@ public class MainActivity extends Activity {
 
     }
 
-    public void displayNode(){
-        switch(Node.getNodeById(Node.activeNode).getTypeId()){
-            case 0 :
-                startActivity(new Intent(MainActivity.this, ImageTextActivity.class));
-                break;
-            case 1 :
-                startActivity(new Intent(MainActivity.this, SingleChoiceActivity.class));
-                break;
-            case 2 :
-                startActivity(new Intent(MainActivity.this, MultipleChoiceActivity.class));
-                break;
-            default :
+    protected void checkCheckBox(int id, int nr){
+        try {
+            View v = findViewById(id);
+            if (v.isEnabled()) {
+                ((CompoundButton)v).setChecked(true);
+            }
+            View f = findViewById(R.id.buttonForward);
+            f.setEnabled(true);
+        } catch (NullPointerException e) {
+            Log.i("Recognition", "No box available, recognized " + nr);
         }
     }
 
-    public void displayNextNode(){
-        Node.activeNode++;
+    public void displayNode() {
+        switch (Node.getNodeById(Node.activeNode).getTypeId()) {
+            case 0:
+                startActivity(new Intent(MainActivity.this, ImageTextActivity.class));
+                break;
+            case 1:
+                startActivity(new Intent(MainActivity.this, SingleChoiceActivity.class));
+                break;
+            case 2:
+                startActivity(new Intent(MainActivity.this, MultipleChoiceActivity.class));
+                break;
+            default:
+        }
+    }
+
+    public void displayNextNode() {
+        Node oActiveNode = Node.getNodeById(Node.activeNode);
+        switch(oActiveNode.getTypeId()){
+            case 0:
+                Node.activeNode++;
+                break;
+            case 1:
+                int succ = ((SingleChoiceActivity)this).getCheckedSelection();
+                Node.activeNode = ((SingleChoiceNode)oActiveNode).getNextNodeIdByEdgeNr(succ);
+                break;
+            case 2:
+                Node.activeNode = ((MultipleChoiceNode)oActiveNode).getNextNodeId(-1);
+        }
         displayNode();
     }
 
@@ -216,26 +199,26 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        if(vc != null) {
+        if (vc != null) {
             vc.on();
         }
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
-        if(vc != null) {
+        if (vc != null) {
             vc.off();
         }
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         Node.destroy();
-        if(vc != null) {
+        if (vc != null) {
             vc.destroy();
         }
     }
@@ -250,7 +233,7 @@ public class MainActivity extends Activity {
 
         } catch (IOException ioe) {
 
-            throw  ioe;
+            throw ioe;
 
         }
 
@@ -258,7 +241,7 @@ public class MainActivity extends Activity {
 
             myDBHelper.openDataBase();
 
-        }catch(SQLException sqle){
+        } catch (SQLException sqle) {
 
             throw sqle;
 

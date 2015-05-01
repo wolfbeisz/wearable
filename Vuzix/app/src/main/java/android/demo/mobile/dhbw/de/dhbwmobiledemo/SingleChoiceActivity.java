@@ -1,6 +1,5 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +11,16 @@ import android.widget.RadioButton;
 public class SingleChoiceActivity extends MainActivity{
     private static SingleChoiceNode node;
     private Edge edge;
+
+    public int getCheckedSelection() {
+        return checkedSelection;
+    }
+
+    public void setCheckedSelection(int checkedSelection) {
+        this.checkedSelection = checkedSelection;
+    }
+
+    private int checkedSelection = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -29,22 +38,7 @@ public class SingleChoiceActivity extends MainActivity{
     public void setEdge(Edge edge){this.edge=edge;}
 
     public void setData(){
-        RadioButton r = (RadioButton)findViewById(R.id.radioButton);
-        r.setText(node.getEdgeList().get(0).text);
-
-
-        r = (RadioButton)findViewById(R.id.radioButton2);
-        r.setText(node.getEdgeList().get(1).text);
-
-
-        try {
-            r = (RadioButton)findViewById(R.id.radioButton3);
-            r.setText(node.getEdgeList().get(2).text);
-        } catch (Exception e) {
-            ((RadioButton)findViewById(R.id.radioButton3)).setVisibility(View.INVISIBLE);
-        }
-
-        Button b = (Button) findViewById(R.id.buttonForward);
+        final Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,11 +46,54 @@ public class SingleChoiceActivity extends MainActivity{
                 displayNextNode();
             }
         });
+        b.setEnabled(false);
+
+
+        RadioButton r = (RadioButton)findViewById(R.id.selection1);
+        r.setText(node.getEdgeList().get(0).text);
+        setSelectionOnClicklistener(r,b, 0);
+
+
+        try {
+            r = (RadioButton)findViewById(R.id.selection2);
+            r.setText(node.getEdgeList().get(1).text);
+            setSelectionOnClicklistener(r,b, 1);
+        } catch (Exception e) {
+            ((RadioButton)findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+        }
+
+
+        try {
+            r = (RadioButton)findViewById(R.id.selection3);
+            r.setText(node.getEdgeList().get(2).text);
+            setSelectionOnClicklistener(r,b, 2);
+        } catch (Exception e) {
+            ((RadioButton)findViewById(R.id.selection3)).setVisibility(View.INVISIBLE);
+        }
+
+
 
         Button bb = (Button) findViewById(R.id.buttonBack);
         if (Node.activeNode == 0){
             bb.setVisibility(View.INVISIBLE);
+            bb.setEnabled(false);
         }
-
     }
+
+    @Override
+    protected void checkCheckBox(int id, int nr){
+        super.checkCheckBox(id, nr);
+        this.setCheckedSelection(nr);
+    }
+
+    public void setSelectionOnClicklistener(View r, final View b, final int nr){
+        r.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                b.setEnabled(true);
+                setCheckedSelection(nr);
+            }
+        });
+    }
+
 }

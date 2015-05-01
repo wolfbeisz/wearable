@@ -86,9 +86,9 @@ public abstract class Node {
                     edgeCursor.moveToFirst();
 
                     while (edgeCursor.isAfterLast() == false) {
-                        int succId = c.getInt(0);
-                        String edgeText = c.getString(1);
-                        int edgeId = c.getInt(2);
+                        int succId = edgeCursor.getInt(0);
+                        String edgeText = edgeCursor.getString(1);
+                        int edgeId = edgeCursor.getInt(2);
                         edgeList.add(new Edge(succId, edgeText, edgeId));
                         edgeCursor.moveToNext();
                     }

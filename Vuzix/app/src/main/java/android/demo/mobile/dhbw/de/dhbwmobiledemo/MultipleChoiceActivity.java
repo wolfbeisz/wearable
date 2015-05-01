@@ -1,13 +1,9 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-
-import com.vuzix.speech.VoiceControl;
 
 /**
  * Created by Silke on 14.04.2015.
@@ -32,13 +28,13 @@ public class MultipleChoiceActivity extends MainActivity{
     }
 
     public void setData(){
-        CheckBox c = (CheckBox)findViewById(R.id.checkBox);
+        CheckBox c = (CheckBox)findViewById(R.id.selection1);
         c.setText(node.getEdgeList().get(0).text);
 
-        c = (CheckBox)findViewById(R.id.checkBox2);
+        c = (CheckBox)findViewById(R.id.selection2);
         c.setText(node.getEdgeList().get(1).text);
 
-        c = (CheckBox)findViewById(R.id.checkBox3);
+        c = (CheckBox)findViewById(R.id.selection3);
         c.setText(node.getEdgeList().get(2).text);
 
         Button b = (Button) findViewById(R.id.buttonForward);

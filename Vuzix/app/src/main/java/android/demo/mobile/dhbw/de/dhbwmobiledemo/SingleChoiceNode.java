@@ -39,7 +39,9 @@ public class SingleChoiceNode extends Node {
     }
 
     public int getNextNodeIdByEdgeNr(int id){
-        return getEdgeList().get(id).successor;
+        List<Edge> el = getEdgeList();
+        Edge e = el.get(id);
+        return e.successor;
     }
 
 
