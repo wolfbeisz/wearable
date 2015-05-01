@@ -87,7 +87,11 @@ public class SlideHandler {
 		if(ar!=null){
 			for(int i = 0; i<ar.length; i++){
 				if(ar[i]!=null){
-					ar[i].setCompanyImage((BufferedImage)img);
+					if(img!=null){
+						ar[i].setCompanyImage((BufferedImage)img);
+					}else{
+						ar[i].setCompanyImage(null);
+					}
 				}	
 			}
 		}

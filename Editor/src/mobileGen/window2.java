@@ -403,12 +403,24 @@ public class window2 implements ActionListener,ComponentListener{
 					if(propertiesAnswerSlideFieldA1.getText()!=null){
 						try{
 							s.setAnswer1Successor(Integer.parseInt(p8));
-							s.setAnswer2Successor(Integer.parseInt(p8));
-							s.setAnswer3Successor(Integer.parseInt(p8));
-							s.setAnswer4Successor(Integer.parseInt(p8));
-							propertiesAnswerSlideFieldB1.setText("");
-							propertiesAnswerSlideFieldC1.setText("");
-							propertiesAnswerSlideFieldD1.setText("");
+							if(propertiesAnswerSlideFieldB1.getText()!=null){
+								s.setAnswer2Successor(Integer.parseInt(p8));
+								propertiesAnswerSlideFieldB1.setText("");
+							}else{
+								s.setAnswer2Successor(-1);
+							}
+							if(propertiesAnswerSlideFieldC1.getText()!=null){
+								s.setAnswer3Successor(Integer.parseInt(p8));
+								propertiesAnswerSlideFieldC1.setText("");
+							}else{
+								s.setAnswer3Successor(-1);
+							}
+							if(propertiesAnswerSlideFieldD1.getText()!=null){
+								s.setAnswer4Successor(Integer.parseInt(p8));
+								propertiesAnswerSlideFieldD1.setText("");
+							}else{
+								s.setAnswer4Successor(-1);
+							}
 						}catch(Exception e){
 							s.setAnswer1Successor(-1);
 						}
@@ -682,8 +694,8 @@ public class window2 implements ActionListener,ComponentListener{
 				Slide s = slideHandlerObj.getSlideForNumber(slideArray, nodeId);
 				s.setNext(propertiesNextField2.getText());
 				s.setPrevious(propertiesPrevField2.getText());
-				s.setImageDescription(contentDescription2.getText());
-				s.setCaption(contentCaption2.getText());
+				s.setImageDescription(propertiesDescriptionField2.getText());
+				s.setCaption(propertiesCapField2.getText());
 				try{
 					s.setAnswer1Successor(Integer.parseInt(propertiesEdgeB2.getText()));
 
@@ -716,7 +728,11 @@ public class window2 implements ActionListener,ComponentListener{
 		f.setSize(800, 600);
 		f.setVisible(true);
 		f.setSize((int)f.getWidth(),(int)f.getHeight()+menuBar.getHeight()+10);
-
+		//No Back text, so disable...
+		propertiesPrev1.setVisible(false);
+		propertiesPrev2.setVisible(false);
+		propertiesPrevField1.setVisible(false);
+		propertiesPrevField2.setVisible(false);
 		l1.setVisible(false);
 		l2.setVisible(false);
 
@@ -836,18 +852,26 @@ public class window2 implements ActionListener,ComponentListener{
 			if(s.getAnswer1()!=null){
 				propertiesAnswerFieldA1.setText(s.getAnswer1());
 				contentA11.setText(s.getAnswer1());
+			}else{
+				propertiesAnswerFieldA1.setText("");
 			}
 			if(s.getAnswer2()!=null){
 				propertiesAnswerFieldB1.setText(s.getAnswer2());
 				contentA21.setText(s.getAnswer2());
+			}else{
+				propertiesAnswerFieldB1.setText("");
 			}
 			if(s.getAnswer3()!=null){
 				propertiesAnswerFieldC1.setText(s.getAnswer3());
 				contentA31.setText(s.getAnswer3());
+			}else{
+				propertiesAnswerFieldC1.setText("");
 			}
 			if(s.getAnswer4()!=null){
 				propertiesAnswerFieldD1.setText(s.getAnswer4());
 				contentA41.setText(s.getAnswer4());
+			}else{
+				propertiesAnswerFieldD1.setText("");
 			}
 
 			break;
@@ -856,6 +880,11 @@ public class window2 implements ActionListener,ComponentListener{
 			l2.toFront();	
 			multipleBox1.setSelected(false);
 			propertiesNextField2.setText(s.getNext());
+			if(s.getAnswer1Successor()>-1){ //Don't show -1 but an empty field
+				propertiesEdgeB2.setText(""+s.getAnswer1Successor());
+			}else{
+				propertiesEdgeB2.setText("");
+			}
 			contentNext2.setText(s.getNext());
 			propertiesPrevField2.setText(s.getPrevious());
 			contentPrev2.setText(s.getPrevious());
@@ -876,6 +905,7 @@ public class window2 implements ActionListener,ComponentListener{
 			}
 			else{
 				imageLabel2.setText("No image set.");
+				imageLabel2.setIcon(null);
 			}
 			//	loadEdges(nodeId, 1);
 
@@ -894,14 +924,26 @@ public class window2 implements ActionListener,ComponentListener{
 			if(s.getAnswer1Successor()>-1){
 				propertiesAnswerSlideFieldA1.setText(""+s.getAnswer1Successor());
 			}
+			else{
+				propertiesAnswerSlideFieldA1.setText("");
+			}
 			if(s.getAnswer2Successor()>-1){
 				propertiesAnswerSlideFieldB1.setText(""+s.getAnswer2Successor());
+			}
+			else{
+				propertiesAnswerSlideFieldB1.setText("");
 			}
 			if(s.getAnswer3Successor()>-1){
 				propertiesAnswerSlideFieldC1.setText(""+s.getAnswer3Successor());
 			}
+			else{
+				propertiesAnswerSlideFieldC1.setText("");
+			}
 			if(s.getAnswer4Successor()>-1){
 				propertiesAnswerSlideFieldD1.setText(""+s.getAnswer4Successor());
+			}
+			else{
+				propertiesAnswerSlideFieldD1.setText("");
 			}
 			if(s.getAnswer1()!=null){
 				propertiesAnswerFieldA1.setText(s.getAnswer1());
@@ -930,6 +972,22 @@ public class window2 implements ActionListener,ComponentListener{
 			l1.toBack();
 			l2.toBack();
 			break;
+		}
+		if(slideArray!=null && slideArray[0]!=null && slideArray[0].getCompanyImage()!=null){
+			//resizeImage(s.getImg(), box2.getWidth(), box2.getHeight());
+			Image img = slideArray[0].getCompanyImage(); 
+			Dimension imgBounds = new Dimension(slideArray[0].getCompanyImage().getWidth(), slideArray[0].getCompanyImage().getHeight());
+			Dimension boxBounds = new Dimension(box2.getWidth(), box2.getHeight()-100);
+			Dimension d = getScaledDimension(imgBounds, boxBounds);
+			Image newimg = img.getScaledInstance(d.width, d.height, java.awt.Image.SCALE_SMOOTH);
+			imageLabel3.setIcon(new ImageIcon(newimg));
+			imageLabel3.setHorizontalAlignment(JLabel.CENTER);
+			imageLabel3.setText("");
+			companyLogo.setSelected(true);
+		}
+		else{
+			imageLabel3.setText("No image set.");
+			companyLogo.setSelected(false);
 		}
 
 
@@ -962,6 +1020,7 @@ public class window2 implements ActionListener,ComponentListener{
 			setLayout(null);
 		}
 	}
+	@SuppressWarnings("static-access")
 	@Override
 	public void actionPerformed(ActionEvent object) {
 		fileDialog fd = new fileDialog();
@@ -1015,6 +1074,7 @@ public class window2 implements ActionListener,ComponentListener{
 			}
 		}
 		if (object.getSource() == newItem){
+			dbc.reset();
 			path = fd.saveDBDialog();
 			dbc = DBController.getInstance();
 			if(!dbc.initDBConnection(path)){
@@ -1023,6 +1083,7 @@ public class window2 implements ActionListener,ComponentListener{
 			slideArray = dbc.loadDB();
 			l1.setVisible(true);
 			l2.setVisible(true);
+			l1.toFront();
 			loadData();
 
 			slidenumberMax = slideHandlerObj.getSlideCount(slideArray)-1;
@@ -1055,7 +1116,12 @@ public class window2 implements ActionListener,ComponentListener{
 		if (object.getSource() == saveItem){
 			System.out.println("Save wurde angeklickt");
 			if(path!=null||(path!=null && path.length() == 0)){
+				dbc.reset();
 				fd.saveDBFileOverride(path); //Clear old file
+				dbc = DBController.getInstance();
+				if(!dbc.initDBConnection(path)){
+					return;
+				}
 				//slideArray = slideHandlerObj.insertNewSlide(slideArray, 2, 1);
 				//slideArray = slideHandlerObj.removeSlide(slideArray, 3);
 				if(!slideHandlerObj.checkEdgesForConsistency(slideArray)){

@@ -47,10 +47,17 @@ class DBController {
 	public static DBController getInstance(){ 
 		return dbcontroller; 
 	} 
-	
+
 	public static void reset(){
-		dbcontroller = new DBController(); 	
-		connection = null;
+		try { 
+			if (connection != null) { 
+				connection.close(); 
+				if (connection.isClosed()) 
+					System.out.println("Connection to database closed"); 
+			} 
+		} catch (SQLException e) { 
+			e.printStackTrace(); 
+		}
 	}
 
 	boolean initDBConnection(String path) { 
@@ -59,9 +66,7 @@ class DBController {
 			return ret;
 		}
 		try { 
-			if (connection != null) 
-				return false; 
-			System.out.println("Creating Connection to Database..."); 
+			System.out.println("Connection to Database..."); 
 			connection = DriverManager.getConnection("jdbc:sqlite:" + path); 
 			if (!connection.isClosed()){
 				System.out.println("...Connection established"); 
@@ -75,7 +80,7 @@ class DBController {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 			public void run() { 
 				try { 
-					if (!connection.isClosed() && connection != null) { 
+					if (connection != null && !connection.isClosed()) { 
 						connection.close(); 
 						if (connection.isClosed()) 
 							System.out.println("Connection to Database closed"); 
@@ -88,23 +93,25 @@ class DBController {
 		return ret;
 	} 
 
-	public int addImageToDB(byte[] imageFileArr){
+	public int addImageToDB(byte[] imageFileArr, boolean companyImg){
 		String query = "insert into IMAGE(IMAGEID, IMAGE) values (?, ?)";
 		PreparedStatement prepStmt=null;
 		int ret = -1;
 		try{
 			int imgNr = getImgCount(); //TODO Check
-			connection.setAutoCommit(false);
+			if(companyImg){
+				imgNr = 0; //Ensure companyImg is first img
+			}else{
+				imgNr++;
+			}
 			prepStmt=connection.prepareStatement(query);
 			prepStmt.setInt(1, imgNr);
 
 			prepStmt.setBytes(2, imageFileArr);
 			//Blob blob = new javax.sql.rowset.serial.SerialBlob(imageFileArr);
 			//prepStmt.setBlob(2, blob);
-			
 
-			prepStmt.executeUpdate();
-			connection.commit();
+			prepStmt.execute();
 			ret = imgNr;
 		}catch(Exception e){
 			ret = -1;
@@ -123,27 +130,19 @@ class DBController {
 		int ret = -1;
 		try{
 			int viewId = getViewCount(); //TODO check
-			int imageId = addImageToDB(imageFileArr);
+			int imageId = addImageToDB(imageFileArr,false);
 			if(imageId == -1){
-				connection.rollback();
 				return -1;
 			}
-			connection.setAutoCommit(false);
 			prepStmt=connection.prepareStatement(query);
 			prepStmt.setInt(1, viewId);
 			prepStmt.setInt(2, imageId);
 			prepStmt.setString(3, viewText);
 
-			prepStmt.executeUpdate();
-			connection.commit();
+			prepStmt.execute();
 			ret = viewId;
 		}catch(Exception e){
 			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 		}finally{
 			try {
 				prepStmt.close();
@@ -178,12 +177,41 @@ class DBController {
 		return img;
 	}
 
+	public Image getCompanyImage(){
+		Image img=null;
+		String query="select image from IMAGE where IMAGEID=0";
+		Statement stmt=null;
+		try{
+			stmt=connection.createStatement();
+			ResultSet rslt=stmt.executeQuery(query);
+			if(rslt.next()){
+				byte[] imgArr=rslt.getBytes("image");
+				img = ImageIO.read(new ByteArrayInputStream(imgArr));
+
+			}
+			rslt.close();
+		}catch(Exception e){
+			System.out.println("No company image set.");
+			e.printStackTrace();
+		}finally{
+			try {
+				stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return img;
+	}
+
 	public int getImgCount() throws SQLException{
 		Statement stmt = connection.createStatement(); 
 		ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM IMAGE;"); 
 		int resInt = rs.getInt("COUNT(*)");
 		System.out.println("Have "+ resInt + " image records in DB");
 		rs.close(); 
+		if(getCompanyImage()!=null){
+			resInt--;
+		}
 		return resInt;
 	}
 	public int getViewCount() throws SQLException{
@@ -263,13 +291,14 @@ class DBController {
 
 	public void saveSettings(Slide[] ar) {
 		try{
+			int companyImageNr = -1;
 			connection.setAutoCommit(false);
 			Statement stmt_del = connection.createStatement(); 
 			stmt_del.execute("DELETE FROM NODE");
 			stmt_del.execute("DELETE FROM VIEW");
 			stmt_del.execute("DELETE FROM IMAGE");
 			stmt_del.execute("DELETE FROM EDGE");
-
+			connection.commit();
 			for(int i = 0; i<ar.length; i++){
 				Slide s = ar[i];
 				if(s==null){
@@ -280,18 +309,20 @@ class DBController {
 				ps1.setInt(1, s.getSlideNr());
 				ps1.setString(2, s.getCaption());
 				//TODO: CompanyImage
-				if(s.getCompanyImage()!=null){
-					byte[] imageByteArray = ((DataBufferByte) s.getCompanyImage().getData().getDataBuffer()).getData();
-					int companyImageNr = addImageToDB(imageByteArray);
-					ps1.setInt(3, companyImageNr);
-				}else{
+				if(s.getCompanyImage()!=null&&s.getSlideNr()==0){//Save only for first slide
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(s.getCompanyImage(), "png", baos);
+					byte[] bytes = baos.toByteArray();
+					companyImageNr = addImageToDB(bytes, true);
+				}
+				if(companyImageNr==-1){
 					ps1.setNull(3, java.sql.Types.INTEGER);
+				}else{
+					ps1.setInt(3, companyImageNr);
 				}
 				//
 				ps1.setInt(4, s.getSlideType());
-				//TODO: View
 				if(s.getImg()!=null){
-					//byte[] imageByteArray = ((DataBufferByte) s.getImg().getData().getDataBuffer()).getData();
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					ImageIO.write(s.getImg(), "png", baos);
 					byte[] bytes = baos.toByteArray();
@@ -302,8 +333,7 @@ class DBController {
 				}
 				//
 				ps1.setString(6, s.getNext());
-				ps1.addBatch(); 
-				ps1.executeBatch();
+				ps1.execute();
 
 				PreparedStatement ps2 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer1()!=null && s.getAnswer1Successor()>-1){
@@ -311,14 +341,14 @@ class DBController {
 					ps2.setInt(2, s.getAnswer1Successor());
 					ps2.setString(3, s.getAnswer1());
 					ps2.setInt(4, getEdgeCount());
+					ps2.execute();
+
 				}else if(s.getAnswer1()!=null && s.getAnswer1Successor()==-1){
-					ps2.setInt(1, s.getSlideNr());
+					/*ps2.setInt(1, s.getSlideNr());
 					ps2.setInt(2, 0);
 					ps2.setString(3, s.getAnswer1());
-					ps2.setInt(4, getEdgeCount());
+					ps2.setInt(4, getEdgeCount());*/
 				}
-				ps2.addBatch();
-				ps2.executeBatch();
 
 				PreparedStatement ps3 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer2()!=null && s.getAnswer2Successor()>-1){
@@ -326,14 +356,14 @@ class DBController {
 					ps3.setInt(2, s.getAnswer2Successor());
 					ps3.setString(3, s.getAnswer2());
 					ps3.setInt(4, getEdgeCount());
+					ps3.execute();
+
 				}else if(s.getAnswer2()!=null && s.getAnswer2Successor()==-1){
-					ps3.setInt(1, s.getSlideNr());
+					/*ps3.setInt(1, s.getSlideNr());
 					ps3.setInt(2, 0);
 					ps3.setString(3, s.getAnswer2());
-					ps3.setInt(4, getEdgeCount());
+					ps3.setInt(4, getEdgeCount());*/
 				}
-				ps3.addBatch();
-				ps3.executeBatch();
 
 				PreparedStatement ps4 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer3()!=null && s.getAnswer3Successor()>-1){
@@ -341,14 +371,14 @@ class DBController {
 					ps4.setInt(2, s.getAnswer3Successor());
 					ps4.setString(3, s.getAnswer3());
 					ps4.setInt(4, getEdgeCount());
+					ps4.execute();
+
 				}else if(s.getAnswer3()!=null && s.getAnswer3Successor()==-1){
-					ps4.setInt(1, s.getSlideNr());
+					/*ps4.setInt(1, s.getSlideNr());
 					ps4.setInt(2, 0);
 					ps4.setString(3, s.getAnswer3());
-					ps4.setInt(4, getEdgeCount());
+					ps4.setInt(4, getEdgeCount());*/
 				}
-				ps4.addBatch();
-				ps4.executeBatch();
 
 				PreparedStatement ps5 = connection.prepareStatement("INSERT INTO EDGE VALUES (?, ?, ?, ?);");
 				if(s.getAnswer4()!=null && s.getAnswer4Successor()>-1){
@@ -356,14 +386,14 @@ class DBController {
 					ps5.setInt(2, s.getAnswer4Successor());
 					ps5.setString(3, s.getAnswer4());
 					ps5.setInt(4, getEdgeCount());
+					ps5.execute();
+
 				}else if(s.getAnswer4()!=null && s.getAnswer4Successor()==-1){
-					ps5.setInt(1, s.getSlideNr());
+					/*ps5.setInt(1, s.getSlideNr());
 					ps5.setInt(2, 0);
 					ps5.setString(3, s.getAnswer4());
-					ps5.setInt(4, getEdgeCount());
+					ps5.setInt(4, getEdgeCount());*/
 				}
-				ps5.addBatch();
-				ps5.executeBatch();
 
 			}
 			connection.commit();
@@ -432,7 +462,9 @@ class DBController {
 			for(int i=0; i<this.getSlideMaxNr(); i++){
 				int nodeType = this.getNodeType(i);
 				slideArray[i] = new Slide(i,nodeType);
-
+				if(getCompanyImage()!=null){ //If there is a company image set it to the nodes
+					slideArray[i].setCompanyImage(imgToBimg(getCompanyImage()));
+				}
 				switch (nodeType) {
 				case 0: //Bild Text
 					try {
