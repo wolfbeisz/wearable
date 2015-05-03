@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
 
         if ((Node.getNodeById(Node.activeNode) == null)) {
             if (isExternalStorageReadable()) {
-                File directory = getStorageDir("example-db.sqlite");
+                File directory = getStorageDir("example-db.sqlite")[0];
 
             /*
             File choose should be implemented later
@@ -145,8 +145,8 @@ public class MainActivity extends Activity {
                 Node.activeNode++;
                 break;
             case 1:
-                int succ = ((SingleChoiceActivity)this).getCheckedSelection();
-                Node.activeNode = ((SingleChoiceNode)oActiveNode).getNextNodeIdByEdgeNr(succ);
+                int selectedEdgeNr = ((SingleChoiceActivity)this).getCheckedSelection();
+                Node.activeNode = ((SingleChoiceNode)oActiveNode).getNextNodeIdByEdgeNr(selectedEdgeNr);
                 break;
             case 2:
                 Node.activeNode = ((MultipleChoiceNode)oActiveNode).getNextNodeId(-1);
@@ -187,15 +187,23 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    public File getStorageDir(String folderName) {
-        // Get the directory for the user's public Downloads directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), folderName);
-        Log.e("Log", "DIRECTORY");
+    public File[] getStorageDir(String folderName) {
+        String path = Environment.getExternalStorageDirectory().toString() + "/MobileDemo";
+        Log.d("Files", "Path: " + path);
+        File file = new File(path);
+        Log.d("Files", "File object created.");
         if (!file.mkdirs()) {
-            Log.e("Error", "Directory not created");
+            Log.d("Files", "Directory exists. Continuing reading files.");
+            File files[] = file.listFiles();
+            int nrOfFiles = files.length;
+            Log.d("Files", "Found " + nrOfFiles + "files in directory.");
+            return files;
         }
-        return file;
+        else {
+            Log.d("Files", "Directory did not exist. Created directory at: " + path);
+            //TODO: Notify User where to put files.
+            return null;
+        }
     }
 
     @Override
