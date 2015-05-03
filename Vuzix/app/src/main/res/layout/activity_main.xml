@@ -12,18 +12,13 @@
         android:text="@string/selectionHeader"
         android:id="@+id/selectionHeaderTextView" />
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView"
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/filesListView"
+        android:clickable="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/selectionHeaderTextView">
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/filesListView" />
-    </ScrollView>
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/selectionHeaderTextView" />
 
 </RelativeLayout>

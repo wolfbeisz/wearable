@@ -1,6 +1,7 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
@@ -9,13 +10,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 
 import com.vuzix.speech.VoiceControl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
@@ -74,31 +81,55 @@ public class MainActivity extends Activity {
 
         if ((Node.getNodeById(Node.activeNode) == null)) {
             if (isExternalStorageReadable()) {
-                File directory = getStorageDir("example-db.sqlite")[0];
+                File directory;
+                final File files[] = getStorageDir("example-db.sqlite");
+                if (files != null && files.length > 0) {
+                    directory = files[0];
+
+                    final ListView listView = (ListView) findViewById(R.id.filesListView);
+                    final ArrayList<String> fileNameStringList = new ArrayList<String>();
+                    for(File file : files){
+                        fileNameStringList.add(file.getName());
+                    }
+                    final ArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, fileNameStringList);
+                    listView.setAdapter(adapter);
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, final View view,
+                                                int position, long id) {
+
+                            try {
+                                dbh = openDatase(files[position]);
+                                Log.i("Log", "Database opened successfully");
+                            } catch (IOException e) {
+                                Log.e("Error", "Database could not be copied: " + e.getMessage());
+                            } catch (SQLException e) {
+                                Log.e("Error", "Database could not be opened: " + e.getMessage());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                Node.init(dbh);
+                                Node.activeNode = 0;
+                                displayNode();
+
+                            } catch (Exception e) {
+                                Log.e("Error", e.getMessage());
+                            }
+                        }
+
+                    });
 
             /*
             File choose should be implemented later
              */
 
-                try {
-                    dbh = openDatase(directory);
-                    Log.i("Log", "Database opened successfully");
-                } catch (IOException e) {
-                    Log.e("Error", "Database could not be copied: " + e.getMessage());
-                } catch (SQLException e) {
-                    Log.e("Error", "Database could not be opened: " + e.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Node.init(dbh);
-                    Node.activeNode = 0;
-                    displayNode();
 
-                } catch (Exception e) {
-                    Log.e("Error", e.getMessage());
+                } else {
+                    Log.i("Files", "No files found.");
                 }
-
 
             } else {
                 Log.i("Info", "Storage not available for any reason.");
@@ -110,11 +141,11 @@ public class MainActivity extends Activity {
 
     }
 
-    protected void checkCheckBox(int id, int nr){
+    protected void checkCheckBox(int id, int nr) {
         try {
             View v = findViewById(id);
             if (v.isEnabled()) {
-                ((CompoundButton)v).setChecked(true);
+                ((CompoundButton) v).setChecked(true);
             }
             View f = findViewById(R.id.buttonForward);
             f.setEnabled(true);
@@ -140,16 +171,16 @@ public class MainActivity extends Activity {
 
     public void displayNextNode() {
         Node oActiveNode = Node.getNodeById(Node.activeNode);
-        switch(oActiveNode.getTypeId()){
+        switch (oActiveNode.getTypeId()) {
             case 0:
                 Node.activeNode++;
                 break;
             case 1:
-                int selectedEdgeNr = ((SingleChoiceActivity)this).getCheckedSelection();
-                Node.activeNode = ((SingleChoiceNode)oActiveNode).getNextNodeIdByEdgeNr(selectedEdgeNr);
+                int selectedEdgeNr = ((SingleChoiceActivity) this).getCheckedSelection();
+                Node.activeNode = ((SingleChoiceNode) oActiveNode).getNextNodeIdByEdgeNr(selectedEdgeNr);
                 break;
             case 2:
-                Node.activeNode = ((MultipleChoiceNode)oActiveNode).getNextNodeId(-1);
+                Node.activeNode = ((MultipleChoiceNode) oActiveNode).getNextNodeId(-1);
         }
         displayNode();
     }
@@ -198,8 +229,7 @@ public class MainActivity extends Activity {
             int nrOfFiles = files.length;
             Log.d("Files", "Found " + nrOfFiles + "files in directory.");
             return files;
-        }
-        else {
+        } else {
             Log.d("Files", "Directory did not exist. Created directory at: " + path);
             //TODO: Notify User where to put files.
             return null;
@@ -255,6 +285,31 @@ public class MainActivity extends Activity {
 
         }
         return myDBHelper;
+    }
+
+    private class StableArrayAdapter extends ArrayAdapter<String> {
+
+        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+
+        public StableArrayAdapter(Context context, int textViewResourceId,
+                                  List<String> objects) {
+            super(context, textViewResourceId, objects);
+            for (int i = 0; i < objects.size(); ++i) {
+                mIdMap.put(objects.get(i), i);
+            }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            String item = getItem(position);
+            return mIdMap.get(item);
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
     }
 
 }
