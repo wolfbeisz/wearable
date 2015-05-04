@@ -1,5 +1,6 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -45,5 +46,19 @@ public class MultipleChoiceActivity extends MainActivity{
                 displayNextNode();
             }
         });
+
+        Button bb = (Button) findViewById(R.id.buttonBack);
+        final Activity that = this;
+        try {
+            bb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Node.activeNode = Node.listOfNodesVisited.pop();
+                    that.finish();
+                }
+            });
+        } catch( NullPointerException e){
+            //This is ok, no back button on current page
+        }
     }
 }

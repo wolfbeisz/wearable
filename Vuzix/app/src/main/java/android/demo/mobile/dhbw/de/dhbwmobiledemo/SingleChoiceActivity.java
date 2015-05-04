@@ -1,5 +1,6 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -71,6 +72,25 @@ public class SingleChoiceActivity extends MainActivity{
         } catch (Exception e) {
             ((RadioButton)findViewById(R.id.selection3)).setVisibility(View.INVISIBLE);
         }
+
+
+        Button bb = (Button) findViewById(R.id.buttonBack);
+        final Activity that = this;
+        try {
+            bb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!Node.listOfNodesVisited.empty()) {
+                        Node.activeNode = Node.listOfNodesVisited.pop();
+                    }else{
+                        Node.activeNode = 0;
+                    }
+                    that.finish();
+                }
+            });
+        } catch( NullPointerException e){
+            //This is ok, no back button on current page
+        }
     }
 
     @Override
@@ -88,5 +108,7 @@ public class SingleChoiceActivity extends MainActivity{
             }
         });
     }
+
+
 
 }

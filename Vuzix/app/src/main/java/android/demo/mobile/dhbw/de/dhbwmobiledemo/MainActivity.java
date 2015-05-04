@@ -37,22 +37,11 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final Activity that = this;
-        final Button bb = (Button) findViewById(R.id.buttonBack);
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
-            bb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Node.activeNode = Node.listOfNodesVisited.pop();
-                    that.finish();
-                }
-            });
-        } catch( NullPointerException e){
-            //This is ok, no back button on current page
-        }
+
 
         if (vc != null) {
             vc.destroy();
@@ -83,6 +72,7 @@ public class MainActivity extends Activity {
                     }
                 } else if (result.contains("back") || result.contains("previous") || result.contains("move left") || result.contains("go left")) {
                     try {
+                        Button bb = (Button) findViewById(R.id.buttonBack);
                         if(bb.getVisibility() == View.VISIBLE) {
                             bb.callOnClick();
                         }

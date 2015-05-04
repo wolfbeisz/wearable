@@ -46,6 +46,19 @@ public class ImageTextActivity extends MainActivity {
             }
         });
 
+        Button bb = (Button) findViewById(R.id.buttonBack);
+        final Activity that = this;
+        try {
+            bb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Node.activeNode = Node.listOfNodesVisited.pop();
+                    that.finish();
+                }
+            });
+        } catch( NullPointerException e){
+            //This is ok, no back button on current page
+        }
 
     }
 }
