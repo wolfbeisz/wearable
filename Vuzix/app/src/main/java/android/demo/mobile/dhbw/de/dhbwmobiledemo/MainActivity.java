@@ -2,6 +2,7 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
@@ -35,8 +36,20 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final Activity that = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            final Button bb = (Button) findViewById(R.id.buttonBack);
+            bb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    that.finish();
+                }
+            });
+        } catch( NullPointerException e){
+            //This is ok, no back button on page
+        }
 
         if (vc != null) {
             vc.destroy();
@@ -67,7 +80,7 @@ public class MainActivity extends Activity {
                     }
                 } else if (result.contains("back") || result.contains("previous") || result.contains("move left") || result.contains("go left")) {
                     try {
-                        Button bb = (Button) findViewById(R.id.buttonBack);
+
                         bb.callOnClick();
                     } catch (Exception e) {
 
