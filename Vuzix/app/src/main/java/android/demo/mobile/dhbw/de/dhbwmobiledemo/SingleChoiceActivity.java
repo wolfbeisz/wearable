@@ -71,14 +71,6 @@ public class SingleChoiceActivity extends MainActivity{
         } catch (Exception e) {
             ((RadioButton)findViewById(R.id.selection3)).setVisibility(View.INVISIBLE);
         }
-
-
-
-        Button bb = (Button) findViewById(R.id.buttonBack);
-        if (Node.activeNode == 0){
-            bb.setVisibility(View.INVISIBLE);
-            bb.setEnabled(false);
-        }
     }
 
     @Override

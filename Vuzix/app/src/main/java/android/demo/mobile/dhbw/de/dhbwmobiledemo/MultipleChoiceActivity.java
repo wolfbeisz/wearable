@@ -45,11 +45,5 @@ public class MultipleChoiceActivity extends MainActivity{
                 displayNextNode();
             }
         });
-
-        Button bb = (Button) findViewById(R.id.buttonBack);
-        if (Node.activeNode == 0){
-            bb.setVisibility(View.INVISIBLE);
-        }
-
     }
 }
