@@ -40,7 +40,7 @@
         android:id="@+id/buttonForward"
         android:layout_gravity="right"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentRight="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -48,5 +48,5 @@
         android:text="New Button"
         android:id="@+id/buttonBack"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentLeft="true" />
 </RelativeLayout>
