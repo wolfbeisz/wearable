@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 public class SingleChoiceActivity extends MainActivity{
     private static SingleChoiceNode node;
     private Edge edge;
+    private int previousActiveNode;
 
     public int getCheckedSelection() {
         return checkedSelection;

@@ -38,18 +38,20 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final Activity that = this;
+        final Button bb = (Button) findViewById(R.id.buttonBack);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            final Button bb = (Button) findViewById(R.id.buttonBack);
             bb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Node.activeNode = Node.listOfNodesVisited.pop();
                     that.finish();
                 }
             });
         } catch( NullPointerException e){
-            //This is ok, no back button on page
+            //This is ok, no back button on current page
         }
 
         if (vc != null) {
@@ -57,7 +59,7 @@ public class MainActivity extends Activity {
         }
 
         /*
-        * Nested class
+        * anonymous class
          */
         vc = new VoiceControl(this) {
             @Override
@@ -81,10 +83,11 @@ public class MainActivity extends Activity {
                     }
                 } else if (result.contains("back") || result.contains("previous") || result.contains("move left") || result.contains("go left")) {
                     try {
-
-                        bb.callOnClick();
-                    } catch (Exception e) {
-
+                        if(bb.getVisibility() == View.VISIBLE) {
+                            bb.callOnClick();
+                        }
+                    } catch (NullPointerException e) {
+                        //this is ok, no back button to click on current page
                     }
                 }
 
@@ -147,9 +150,7 @@ public class MainActivity extends Activity {
 
             } else {
                 Log.i("Info", "Storage not available for any reason.");
-            /*
-            User should be informed.
-             */
+            Toast.makeText(getApplicationContext(),"Please ensure storage is mounted and available for device.",Toast.LENGTH_LONG);
             }
         }
 
@@ -184,6 +185,7 @@ public class MainActivity extends Activity {
     }
 
     public void displayNextNode() {
+        Node.listOfNodesVisited.push(Node.activeNode);
         Node oActiveNode = Node.getNodeById(Node.activeNode);
         switch (oActiveNode.getTypeId()) {
             case 0:
@@ -270,7 +272,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Node.destroy();
+        //Node.destroy();
         if (vc != null) {
             vc.destroy();
         }

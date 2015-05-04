@@ -46,9 +46,6 @@ public class ImageTextActivity extends MainActivity {
             }
         });
 
-        Button bb = (Button) findViewById(R.id.buttonBack);
-        if (Node.activeNode == 0){
-            bb.setVisibility(View.INVISIBLE);
-        }
+
     }
 }

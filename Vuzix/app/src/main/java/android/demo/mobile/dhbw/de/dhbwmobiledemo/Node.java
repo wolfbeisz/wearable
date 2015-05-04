@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by Manuel on 11.04.2015.
@@ -17,11 +18,14 @@ public abstract class Node {
     private static HashMap<Integer, byte[]> logoBlobMap = new HashMap<>();
     private static MyDBHelper mdh;
     public static int activeNode;
+    public static Stack<Integer> listOfNodesVisited;
 
     public abstract void show();
 
     public static void init(MyDBHelper mdh) {
+        listOfNodesVisited = new Stack<>();
         try {
+
             Node.mdh = mdh;
 
             int nodeId;
