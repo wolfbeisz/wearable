@@ -233,11 +233,11 @@ public class MainActivity extends Activity {
         if (!file.mkdirs()) {
             Log.d("Files", "Directory exists. Continuing reading files.");
             File files[] = file.listFiles();
-            if (files != null) {
+            
                 int nrOfFiles = files.length;
                 Log.d("Files", "Found " + nrOfFiles + "files in directory.");
                 return files;
-            }
+
         }
         else {
             Log.d("Files", "Directory did not exist. Created directory at: " + path);
