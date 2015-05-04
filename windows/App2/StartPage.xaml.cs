@@ -32,12 +32,15 @@ namespace App2
         private async void Load_Database(object sender, RoutedEventArgs e)
         {
             FileOpenPicker picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add(".txt");
+            //picker.FileTypeFilter.Add(".txt");
             picker.FileTypeFilter.Add(".sqlite");
             picker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 
             StorageFile file = await picker.PickSingleFileAsync();
-            service.Bootstrap.DisplayMockup(file, Window.Current.Content as Frame);
+            if (file != null) {
+                service.Bootstrap.DisplayMockup(file, Window.Current.Content as Frame);
+            }
+            
         }
 
     }
