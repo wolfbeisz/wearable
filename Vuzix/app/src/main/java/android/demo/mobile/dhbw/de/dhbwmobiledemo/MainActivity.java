@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.vuzix.speech.VoiceControl;
 
@@ -245,6 +246,7 @@ public class MainActivity extends Activity {
         } else {
             Log.d("Files", "Directory did not exist. Created directory at: " + path);
             //TODO: Notify User where to put files.
+            Toast.makeText(getApplicationContext(),"Please put your sql files under /MobileDemo/!",Toast.LENGTH_LONG);
             return null;
         }
     }
