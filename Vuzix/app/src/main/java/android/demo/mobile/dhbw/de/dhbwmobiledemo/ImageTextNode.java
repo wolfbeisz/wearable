@@ -16,6 +16,9 @@ public class ImageTextNode extends Node {
         return Picture.createFromStream(new ByteArrayInputStream(getImageBlobById(pictureId)));
     }
 
+    public byte[] getByteArray() {
+        return getImageBlobById(pictureId);
+    }
 
     public String getText() {
         return text;

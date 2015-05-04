@@ -1,6 +1,8 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,8 +36,10 @@ public class ImageTextActivity extends MainActivity {
     public void setData(){
         TextView t = (TextView) findViewById(R.id.textViewText);
         t.setText(node.getText());
-        ImageView i = (ImageView) findViewById(R.id.imageViewImage);
 
+        Bitmap bmp = BitmapFactory.decodeByteArray(node.getByteArray(),0,node.getByteArray().length);
+        ImageView i = (ImageView) findViewById(R.id.imageViewImage);
+        i.setImageBitmap(bmp);
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
