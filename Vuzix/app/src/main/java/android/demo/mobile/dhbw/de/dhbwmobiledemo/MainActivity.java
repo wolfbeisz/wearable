@@ -229,13 +229,17 @@ public class MainActivity extends Activity {
         Log.d("Files", "Path: " + path);
         File file = new File(path);
         Log.d("Files", "File object created.");
+
         if (!file.mkdirs()) {
             Log.d("Files", "Directory exists. Continuing reading files.");
             File files[] = file.listFiles();
-            int nrOfFiles = files.length;
-            Log.d("Files", "Found " + nrOfFiles + "files in directory.");
-            return files;
-        } else {
+            if (files != null) {
+                int nrOfFiles = files.length;
+                Log.d("Files", "Found " + nrOfFiles + "files in directory.");
+                return files;
+            }
+        }
+        else {
             Log.d("Files", "Directory did not exist. Created directory at: " + path);
             //TODO: Notify User where to put files.
             Toast.makeText(getApplicationContext(),"Please put your sql files under /MobileDemo/!",Toast.LENGTH_LONG);
