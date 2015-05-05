@@ -29,10 +29,17 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
+    private static final String nextWords[] = {"move right", "forward","next","go right"};
+    private static final String selectWords[] = {"select", "choose"};
+    private static final String backWords[] = {"back", "previous","move left", "go left"};
 
-    protected VoiceControl vc;
+
+
+    protected static VoiceControl vc;
 
     private MyDBHelper dbh;
+
+    protected File cFiles[];
 
 
     @Override
@@ -48,55 +55,92 @@ public class MainActivity extends Activity {
         }
 
         /*
-        * anonymous class
+        * anonymous class extending VoiceControl
+        * Create a new object for voice control
          */
         vc = new VoiceControl(this) {
             @Override
             protected void onRecognition(String result) {
                 Log.i("Recognition", "Recognition: " + result);
-                //int typeID = Node.getNodeById(Node.activeNode).getTypeId();
-                if (result.contains("move right") || result.contains("forward") || result.contains("next") || result.contains("go right")) {
-                    Log.i("Recognition", "Button: " + result);
-                    Button b = (Button) findViewById(R.id.buttonForward);
-                    if (b.isEnabled()) {
-                        b.callOnClick();
-                    }
-                } else if (result.contains("select") || result.contains("choose")) {
-                    Log.i("Recognition", "Select: " + result);
-                    if (result.contains("1")) {
-                        checkCheckBox(R.id.selection1, 0);
-                    } else if (result.contains("2")) {
-                        checkCheckBox(R.id.selection2, 1);
-                    } else if (result.contains("3")) {
-                        checkCheckBox(R.id.selection3, 2);
-                    }
-                } else if (result.contains("back") || result.contains("previous") || result.contains("move left") || result.contains("go left")) {
-                    try {
-                        Button bb = (Button) findViewById(R.id.buttonBack);
-                        if(bb.getVisibility() == View.VISIBLE) {
-                            bb.callOnClick();
+                /*
+                Checking for recognized keyword to navigate forward
+                 */
+                for(String nextWord : nextWords){
+                    if(result.contains(nextWord)){
+                        Log.i("Recognition", "Button: " + result);
+                        Button b = (Button) findViewById(R.id.buttonForward);
+                        if (b.isEnabled()) {
+                            b.callOnClick();
                         }
-                    } catch (NullPointerException e) {
-                        //this is ok, no back button to click on current page
+                        return;
                     }
                 }
+                /*
+                Checking for recognized keyword to select a line
+                 */
+                for(String selectWord : selectWords){
+                    if(result.contains(selectWord)){
+                        ListView v;
+                        try{
+                            v = (ListView)findViewById(R.id.filesListView);
+                            int count = v.getCount();
+                            if(count > 0){
+                                for(int i = 1; i <= count; i++){
+                                    if(result.contains("" + i)){
+                                        initializeDBFile(cFiles, i-1);
+                                    }
+                                }
+                            }
+                        } catch (Exception e){
 
+                        }
 
+                        Log.i("Recognition", "Select: " + result);
+                        if (result.contains("1")) {
+                            checkCheckBox(R.id.selection1, 0);
+                        } else if (result.contains("2")) {
+                            checkCheckBox(R.id.selection2, 1);
+                        } else if (result.contains("3")) {
+                            checkCheckBox(R.id.selection3, 2);
+                        }
+                        return;
+                    }
+                }
+                /*
+                Checking for recognized keyword to navigate back
+                 */
+                for(String backWord : backWords){
+                    if(result.contains(backWord)){
+                        try {
+                            Button bb = (Button) findViewById(R.id.buttonBack);
+                            if(bb.getVisibility() == View.VISIBLE) {
+                                bb.callOnClick();
+                            }
+                        } catch (NullPointerException e) {
+                            //this is ok, no back button to click on current page
+                        }
+                    }
+                }
             }
         };
 
+        /*
+        Read files from storage and initialize the ListView
 
+        Set listener for click on ListItems that will load the database file and start
+         */
         if ((Node.getNodeById(Node.activeNode) == null)) {
             if (isExternalStorageReadable()) {
                 File directory;
                 final File files[] = getStorageDir("example-db.sqlite");
+                cFiles = files;
                 if (files != null && files.length > 0) {
                     directory = files[0];
 
                     final ListView listView = (ListView) findViewById(R.id.filesListView);
                     final ArrayList<String> fileNameStringList = new ArrayList<String>();
-                    for(File file : files){
-                        fileNameStringList.add(file.getName());
+                    for(int i = 0; i < files.length; i++){
+                        fileNameStringList.add("" + (i+1) + ": " + files[i].getName());
                     }
                     final ArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, fileNameStringList);
                     listView.setAdapter(adapter);
@@ -107,24 +151,7 @@ public class MainActivity extends Activity {
                         public void onItemClick(AdapterView<?> parent, final View view,
                                                 int position, long id) {
 
-                            try {
-                                dbh = openDatase(files[position]);
-                                Log.i("Log", "Database opened successfully");
-                            } catch (IOException e) {
-                                Log.e("Error", "Database could not be copied: " + e.getMessage());
-                            } catch (SQLException e) {
-                                Log.e("Error", "Database could not be opened: " + e.getMessage());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                Node.init(dbh);
-                                Node.activeNode = 0;
-                                displayNode();
-
-                            } catch (Exception e) {
-                                Log.e("Error", e.getMessage());
-                            }
+                            initializeDBFile(files, position);
                         }
 
                     });
@@ -144,6 +171,32 @@ public class MainActivity extends Activity {
             }
         }
 
+    }
+
+    public void initializeVoiceControl(){
+
+    }
+
+    protected void initializeDBFile(File[] files, int position){
+
+        try {
+            dbh = openDatase(files[position]);
+            Log.i("Log", "Database opened successfully");
+        } catch (IOException e) {
+            Log.e("Error", "Database could not be copied: " + e.getMessage());
+        } catch (SQLException e) {
+            Log.e("Error", "Database could not be opened: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Node.init(dbh);
+            Node.activeNode = 0;
+            displayNode();
+
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
     }
 
     protected void checkCheckBox(int id, int nr) {

@@ -108,7 +108,4 @@ public class SingleChoiceActivity extends MainActivity{
             }
         });
     }
-
-
-
 }
