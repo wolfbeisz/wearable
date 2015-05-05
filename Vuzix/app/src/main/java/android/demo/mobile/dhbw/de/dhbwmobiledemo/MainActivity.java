@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 
     protected static final String nextWords[] = {"move right", "forward", "next", "go right"};
     protected static final String selectWords[] = {"select", "choose"};
-    protected static final String backWords[] = {"back", "previous", "move left", "go left"};
+    protected static final String backWords[] = {"go back", "previous", "move left", "go left"};
     private static final String folderName = "MobileDemo";
 
 
@@ -119,22 +119,28 @@ public class MainActivity extends Activity {
             protected void onRecognition(String result) {
                 try {
                     Log.i("Recognition", "Recognition: " + result);
+                    ListView v;
+                    v = (ListView) findViewById(R.id.filesListView);
                 /*
                 Checking for recognized keyword to select a line
                  */
                     for (String selectWord : selectWords) {
                         if (result.contains(selectWord)) {
-                            ListView v;
-                            v = (ListView) findViewById(R.id.filesListView);
                             int count = v.getCount();
                             if (count > 0) {
                                 for (int i = 1; i <= count; i++) {
                                     if (result.contains("" + i)) {
                                         initializeDBFile(cFiles.get(i - 1));
+                                        return;
                                     }
                                 }
                             }
                         }
+                    }
+                    if(result.contains("move up") || result.contains("go up")){
+                        v.scrollBy(0,-1);
+                    } else if(result.contains("move down") || result.contains("go down")){
+                        v.scrollBy(0,1);
                     }
                 } catch (Exception e) {
                 }
