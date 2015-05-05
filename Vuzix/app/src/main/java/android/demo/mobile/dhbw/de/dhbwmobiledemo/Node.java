@@ -19,12 +19,13 @@ public abstract class Node {
     private static MyDBHelper mdh;
     public static int activeNode;
     public static Stack<Integer> listOfNodesVisited;
+    public static int highestNodeId = 0;
+    public static int lowestNodeId = Integer.MAX_VALUE;
 
     public abstract void show();
 
     public static void init(MyDBHelper mdh) {
         listOfNodesVisited = new Stack<>();
-        try {
 
             Node.mdh = mdh;
 
@@ -62,7 +63,7 @@ public abstract class Node {
                 }
 
 
-                Node tmp;
+                Node tmp = null;
                 /*
                 If typeId == 0 an additional imageId and text has to selected from another table
                  */
@@ -74,7 +75,16 @@ public abstract class Node {
                         int imageId = viewCursor.getInt(0);
                         String text = viewCursor.getString(1);
 
-                        tmp = new ImageTextNode(nodeId, typeId, title, logoId, imageId, text, forwardText);
+                        Cursor edgeCursor = mdh.executeRawQuery("SELECT SUCCESSORID FROM EDGE WHERE NODEID = '" + nodeId + "';");
+                        edgeCursor.moveToFirst();
+                        String succIdString = null;
+                        try{
+                            succIdString = edgeCursor.getString(0);
+                        } catch (Exception e){
+
+                        }
+
+                        tmp = new ImageTextNode(nodeId, typeId, title, logoId, imageId, text, forwardText, succIdString);
                         nodesList.add(tmp);
                     } catch (Exception e) {
                         Log.e("Error", e.getMessage());
@@ -104,13 +114,20 @@ public abstract class Node {
                         nodesList.add(tmp);
                     }
                 }
+                if(tmp != null){
+                    if(tmp.nodeId > highestNodeId) {
+                        highestNodeId = tmp.nodeId;
+                    }
+                    if(tmp.nodeId < lowestNodeId){
+                        lowestNodeId = tmp.nodeId;
+                    }
+                }
+
                 c.moveToNext();
             }
             c.close();
-        } catch (Exception e) {
-            Log.e("Error", "Database not initialized");
-        }
     }
+
 
     public static byte[] getImageBlobById(int id) {
         if (!logoBlobMap.containsKey(id)) {

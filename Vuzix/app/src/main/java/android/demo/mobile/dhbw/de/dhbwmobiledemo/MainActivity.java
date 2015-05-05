@@ -2,7 +2,6 @@ package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,27 +27,84 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
-    private static final String nextWords[] = {"move right", "forward","next","go right"};
-    private static final String selectWords[] = {"select", "choose"};
-    private static final String backWords[] = {"back", "previous","move left", "go left"};
+    protected static final String nextWords[] = {"move right", "forward", "next", "go right"};
+    protected static final String selectWords[] = {"select", "choose"};
+    protected static final String backWords[] = {"back", "previous", "move left", "go left"};
+    private static final String folderName = "MobileDemo";
 
 
-
-    protected static VoiceControl vc;
+    protected VoiceControl vc;
 
     private MyDBHelper dbh;
 
-    protected File cFiles[];
+    protected ArrayList<File> cFiles;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
+        initializeVoiceControl();
 
+        initializeFiles();
+    }
+
+    public void initializeFiles() {
+        /*
+
+        Read files from storage and initialize the ListView
+
+        Set listener for click on ListItems that will load the database file and start
+         */
+        if (cFiles == null) {
+            if (isExternalStorageReadable()) {
+                cFiles = new ArrayList<>();
+                File tFiles[] = getStorageDir(folderName);
+                if (tFiles != null && tFiles.length > 0) {
+                    for (int i = 0; i < tFiles.length; i++) {
+                        if (tFiles[i].getName().endsWith(".sqlite")) {
+                            cFiles.add(tFiles[i]);
+                        }
+                    }
+
+                    final File files[] = cFiles.toArray(new File[cFiles.size()]);
+                    if (files.length > 0) {
+
+                        final ListView listView = (ListView) findViewById(R.id.filesListView);
+                        final ArrayList<String> fileNameStringList = new ArrayList<String>();
+                        for (int i = 0; i < files.length; i++) {
+                            fileNameStringList.add("" + (i + 1) + ": " + files[i].getName());
+                        }
+                        final ArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, fileNameStringList);
+                        listView.setAdapter(adapter);
+
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, final View view,
+                                                    int position, long id) {
+
+                                initializeDBFile(files[position]);
+                            }
+
+                        });
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No sqlite files found in folder " + folderName + ".", Toast.LENGTH_LONG);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No files found in folder " + folderName + ".", Toast.LENGTH_LONG);
+                }
+            } else {
+                Log.i("Info", "Storage not available for any reason.");
+                Toast.makeText(getApplicationContext(), "Please ensure storage is mounted and available for device.", Toast.LENGTH_LONG);
+            }
+        }
+    }
+
+    public void initializeVoiceControl() {
         if (vc != null) {
             vc.destroy();
         }
@@ -61,141 +116,59 @@ public class MainActivity extends Activity {
         vc = new VoiceControl(this) {
             @Override
             protected void onRecognition(String result) {
-                Log.i("Recognition", "Recognition: " + result);
-                /*
-                Checking for recognized keyword to navigate forward
-                 */
-                for(String nextWord : nextWords){
-                    if(result.contains(nextWord)){
-                        Log.i("Recognition", "Button: " + result);
-                        Button b = (Button) findViewById(R.id.buttonForward);
-                        if (b.isEnabled()) {
-                            b.callOnClick();
-                        }
-                        return;
-                    }
-                }
+                try {
+                    Log.i("Recognition", "Recognition: " + result);
                 /*
                 Checking for recognized keyword to select a line
                  */
-                for(String selectWord : selectWords){
-                    if(result.contains(selectWord)){
-                        ListView v;
-                        try{
-                            v = (ListView)findViewById(R.id.filesListView);
+                    for (String selectWord : selectWords) {
+                        if (result.contains(selectWord)) {
+                            ListView v;
+                            v = (ListView) findViewById(R.id.filesListView);
                             int count = v.getCount();
-                            if(count > 0){
-                                for(int i = 1; i <= count; i++){
-                                    if(result.contains("" + i)){
-                                        initializeDBFile(cFiles, i-1);
+                            if (count > 0) {
+                                for (int i = 1; i <= count; i++) {
+                                    if (result.contains("" + i)) {
+                                        initializeDBFile(cFiles.get(i - 1));
                                     }
                                 }
                             }
-                        } catch (Exception e){
-
-                        }
-
-                        Log.i("Recognition", "Select: " + result);
-                        if (result.contains("1")) {
-                            checkCheckBox(R.id.selection1, 0);
-                        } else if (result.contains("2")) {
-                            checkCheckBox(R.id.selection2, 1);
-                        } else if (result.contains("3")) {
-                            checkCheckBox(R.id.selection3, 2);
-                        }
-                        return;
-                    }
-                }
-                /*
-                Checking for recognized keyword to navigate back
-                 */
-                for(String backWord : backWords){
-                    if(result.contains(backWord)){
-                        try {
-                            Button bb = (Button) findViewById(R.id.buttonBack);
-                            if(bb.getVisibility() == View.VISIBLE) {
-                                bb.callOnClick();
-                            }
-                        } catch (NullPointerException e) {
-                            //this is ok, no back button to click on current page
                         }
                     }
+                } catch (Exception e) {
                 }
+
             }
         };
-
-        /*
-        Read files from storage and initialize the ListView
-
-        Set listener for click on ListItems that will load the database file and start
-         */
-        if ((Node.getNodeById(Node.activeNode) == null)) {
-            if (isExternalStorageReadable()) {
-                File directory;
-                final File files[] = getStorageDir("example-db.sqlite");
-                cFiles = files;
-                if (files != null && files.length > 0) {
-                    directory = files[0];
-
-                    final ListView listView = (ListView) findViewById(R.id.filesListView);
-                    final ArrayList<String> fileNameStringList = new ArrayList<String>();
-                    for(int i = 0; i < files.length; i++){
-                        fileNameStringList.add("" + (i+1) + ": " + files[i].getName());
-                    }
-                    final ArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, fileNameStringList);
-                    listView.setAdapter(adapter);
-
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, final View view,
-                                                int position, long id) {
-
-                            initializeDBFile(files, position);
-                        }
-
-                    });
-
-            /*
-            File choose should be implemented later
-             */
-
-
-                } else {
-                    Log.i("Files", "No files found.");
-                }
-
-            } else {
-                Log.i("Info", "Storage not available for any reason.");
-            Toast.makeText(getApplicationContext(),"Please ensure storage is mounted and available for device.",Toast.LENGTH_LONG);
-            }
-        }
-
     }
 
-    public void initializeVoiceControl(){
-
-    }
-
-    protected void initializeDBFile(File[] files, int position){
+    protected void initializeDBFile(File myFile) {
 
         try {
-            dbh = openDatase(files[position]);
+            dbh = openDatase(myFile);
             Log.i("Log", "Database opened successfully");
         } catch (IOException e) {
             Log.e("Error", "Database could not be copied: " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Database could not be copied: Access problem. " + e.getMessage() + e.getMessage(), Toast.LENGTH_LONG);
         } catch (SQLException e) {
-            Log.e("Error", "Database could not be opened: " + e.getMessage());
+            Log.e("Error", "Database could not be opened: File does not fit to application. " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Database could not be opened: File does not fit to application. " + e.getMessage(), Toast.LENGTH_LONG);
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Database could not be opened: File does not fit to application. " + e.getMessage(), Toast.LENGTH_LONG);
         }
         try {
             Node.init(dbh);
-            Node.activeNode = 0;
+            Node.activeNode = Node.lowestNodeId;
             displayNode();
 
+        } catch (SQLException e) {
+            Log.e("Error", "Database could not be opened: File does not fit to application. " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Database could not be opened: File does not fit to application. " + e.getMessage(), Toast.LENGTH_LONG);
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+            Log.e("Error", "Database could not be opened: File does not fit to application. " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Database could not be opened: File does not fit to application. " + e.getMessage(), Toast.LENGTH_LONG);
         }
     }
 
@@ -232,16 +205,20 @@ public class MainActivity extends Activity {
         Node oActiveNode = Node.getNodeById(Node.activeNode);
         switch (oActiveNode.getTypeId()) {
             case 0:
-                Node.activeNode++;
+                Node.activeNode = oActiveNode.getNextNodeId(-1);
                 break;
             case 1:
                 int selectedEdgeNr = ((SingleChoiceActivity) this).getCheckedSelection();
                 Node.activeNode = ((SingleChoiceNode) oActiveNode).getNextNodeIdByEdgeNr(selectedEdgeNr);
                 break;
             case 2:
-                Node.activeNode = ((MultipleChoiceNode) oActiveNode).getNextNodeId(-1);
+                Node.activeNode = oActiveNode.getNextNodeId(-1);
+        }
+        if ((Node.activeNode < Node.lowestNodeId || Node.activeNode > Node.highestNodeId)) {
+            Node.activeNode = Node.lowestNodeId;
         }
         displayNode();
+
     }
 
 
@@ -278,7 +255,7 @@ public class MainActivity extends Activity {
     }
 
     public File[] getStorageDir(String folderName) {
-        String path = Environment.getExternalStorageDirectory().toString() + "/MobileDemo";
+        String path = Environment.getExternalStorageDirectory().toString() + "/" + folderName;
         Log.d("Files", "Path: " + path);
         File file = new File(path);
         Log.d("Files", "File object created.");
@@ -287,15 +264,10 @@ public class MainActivity extends Activity {
             Log.d("Files", "Directory exists. Continuing reading files.");
             File files[] = file.listFiles();
 
-                int nrOfFiles = files.length;
-                Log.d("Files", "Found " + nrOfFiles + "files in directory.");
-                return files;
-
-        }
-        else {
-            Log.d("Files", "Directory did not exist. Created directory at: " + path);
-            //TODO: Notify User where to put files.
-            Toast.makeText(getApplicationContext(),"Please put your sql files under /MobileDemo/!",Toast.LENGTH_LONG);
+            int nrOfFiles = files.length;
+            Log.d("Files", "Found " + nrOfFiles + "files in directory.");
+            return files;
+        } else {
             return null;
         }
     }
@@ -303,26 +275,27 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (vc != null) {
-            vc.on();
-        }
+        initializeVoiceControl();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         if (vc != null) {
-            vc.off();
+            vc.destroy();
+            vc = null;
         }
+        super.onPause();
+
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        //Node.destroy();
         if (vc != null) {
             vc.destroy();
+            vc = null;
         }
+        super.onDestroy();
+        //Node.destroy();
     }
 
 
