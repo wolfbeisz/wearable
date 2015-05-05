@@ -106,6 +106,7 @@ public class MainActivity extends Activity {
 
     public void initializeVoiceControl() {
         if (vc != null) {
+            vc.off();
             vc.destroy();
         }
 
@@ -145,6 +146,9 @@ public class MainActivity extends Activity {
     protected void initializeDBFile(File myFile) {
 
         try {
+            if(dbh != null){
+                dbh.close();
+            }
             dbh = openDatase(myFile);
             Log.i("Log", "Database opened successfully");
         } catch (IOException e) {
@@ -275,14 +279,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        initializeVoiceControl();
+        if(vc != null) {
+            vc.on();
+        }
     }
 
     @Override
     protected void onPause() {
         if (vc != null) {
-            vc.destroy();
-            vc = null;
+
+           vc.off();
         }
         super.onPause();
 
@@ -291,9 +297,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (vc != null) {
+            vc.off();
             vc.destroy();
             vc = null;
         }
+        if(dbh != null)
+            {
+                dbh.close();
+            }
         super.onDestroy();
         //Node.destroy();
     }

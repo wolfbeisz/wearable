@@ -86,16 +86,7 @@ public class SingleChoiceActivity extends MainActivity {
             bb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!Node.listOfNodesVisited.empty()) {
-                        Node.activeNode = Node.listOfNodesVisited.pop();
-                    } else {
-                        Node.activeNode = 0;
-                    }
-                    if (vc != null) {
-                        vc.destroy();
-                        vc = null;
-                    }
-                    that.finish();
+                    onBackPressed();
                 }
             });
         } catch (NullPointerException e) {
@@ -122,6 +113,7 @@ public class SingleChoiceActivity extends MainActivity {
     @Override
     public void initializeVoiceControl() {
         if (vc != null) {
+            vc.off();
             vc.destroy();
         }
 
@@ -186,6 +178,21 @@ public class SingleChoiceActivity extends MainActivity {
                 }
             }
         };
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (!Node.listOfNodesVisited.empty()) {
+            Node.activeNode = Node.listOfNodesVisited.pop();
+        } else {
+            Node.activeNode = 0;
+        }
+        if (vc != null) {
+            vc.off();
+            vc.destroy();
+            vc = null;
+        }
+        super.onBackPressed();
     }
 
     @Override

@@ -57,12 +57,7 @@ public class ImageTextActivity extends MainActivity {
             bb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Node.activeNode = Node.listOfNodesVisited.pop();
-                    if (vc != null) {
-                        vc.destroy();
-                        vc = null;
-                    }
-                    that.finish();
+                    onBackPressed();
                 }
             });
         } catch (NullPointerException e) {
@@ -75,6 +70,7 @@ public class ImageTextActivity extends MainActivity {
     @Override
     public void initializeVoiceControl() {
         if (vc != null) {
+            vc.off();
             vc.destroy();
         }
 
@@ -120,6 +116,17 @@ public class ImageTextActivity extends MainActivity {
                 }
             }
         };
+    }
+
+    @Override
+    public void onBackPressed() {
+        Node.activeNode = Node.listOfNodesVisited.pop();
+        if (vc != null) {
+            vc.off();
+            vc.destroy();
+            vc = null;
+        }
+        super.onBackPressed();
     }
 
     @Override

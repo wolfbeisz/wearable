@@ -83,6 +83,7 @@ public abstract class Node {
                         } catch (Exception e){
 
                         }
+                        edgeCursor.close();
 
                         tmp = new ImageTextNode(nodeId, typeId, title, logoId, imageId, text, forwardText, succIdString);
                         nodesList.add(tmp);
@@ -201,6 +202,9 @@ public abstract class Node {
         this.forwardText = forwardText;
         this.typeId = typeId;
     }
+
+
+
 
 
 }
