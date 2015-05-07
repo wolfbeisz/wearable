@@ -322,17 +322,24 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         if(vc != null) {
-            vc.on();
+            try {
+                vc.on();
+            } catch (Exception e) {
+
+            }
         }
         MainActivity.setActiveActivity(this);
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        if (vc != null) {
-           vc.on();
+        if (vc != null) {try {
+            vc.on();
+        } catch (Exception e) {
+
+        }
         }
         super.onPause();
 
@@ -342,8 +349,8 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         if (vc != null) {
             vc.off();
-            //vc.destroy();
-            //vc = null;
+            vc.destroy();
+            vc = null;
         }
         if(dbh != null)
             {
