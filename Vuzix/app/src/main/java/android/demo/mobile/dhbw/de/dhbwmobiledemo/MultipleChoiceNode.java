@@ -20,11 +20,6 @@ public class MultipleChoiceNode extends Node {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
     public int getNextNodeId(int id){
         id = getEdgeList().get(0).successor;
         return id;

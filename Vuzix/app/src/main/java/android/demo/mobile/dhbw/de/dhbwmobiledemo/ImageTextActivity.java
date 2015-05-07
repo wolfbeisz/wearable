@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.vuzix.speech.VoiceControl;
-
 /**
  * Created by Silke on 14.04.2015.
  */
@@ -62,56 +60,93 @@ public class ImageTextActivity extends MainActivity {
 
     }
 
+//
+//    @Override
+//    public void initializeVoiceControl() {
+//        if (vc != null) {
+//            vc.off();
+//            vc.destroy();
+//        }
+//
+//        /*
+//        * anonymous class extending VoiceControl
+//        * Create a new object for voice control
+//         */
+//        vc = new VoiceControl(this) {
+//            @Override
+//            protected void onRecognition(String result) {
+//                try {
+//                    Log.i("Recognition", "Recognition: " + result);
+//
+//                    for (String nextWord : nextWords) {
+//                        if (result.contains(nextWord)) {
+//                            Log.i("Recognition", "Button: " + result);
+//                            try {
+//                                Button b = (Button) findViewById(R.id.buttonForward);
+//                                if (b.isEnabled()) {
+//                                    b.callOnClick();
+//                                }
+//                            } catch (Exception e) {
+//
+//                            }
+//                            return;
+//                        }
+//                    }
+//                    for (String backWord : backWords) {
+//                        if (result.contains(backWord)) {
+//                            try {
+//                                Button bb = (Button) findViewById(R.id.buttonBack);
+//                                if (bb.getVisibility() == View.VISIBLE) {
+//                                    bb.callOnClick();
+//                                }
+//                            } catch (NullPointerException e) {
+//                                //this is ok, no back button to click on current page
+//                            }
+//                        }
+//                    }
+//
+//
+//                } catch (Exception e) {
+//                }
+//            }
+//        };
+//    }
 
     @Override
-    public void initializeVoiceControl() {
-        if (vc != null) {
-            vc.off();
-            vc.destroy();
-        }
+    protected void myOnRecognition(String result) {
+        try {
+            Log.i("Recognition", "Recognition: " + result);
 
-        /*
-        * anonymous class extending VoiceControl
-        * Create a new object for voice control
-         */
-        vc = new VoiceControl(this) {
-            @Override
-            protected void onRecognition(String result) {
-                try {
-                    Log.i("Recognition", "Recognition: " + result);
-
-                    for (String nextWord : nextWords) {
-                        if (result.contains(nextWord)) {
-                            Log.i("Recognition", "Button: " + result);
-                            try {
-                                Button b = (Button) findViewById(R.id.buttonForward);
-                                if (b.isEnabled()) {
-                                    b.callOnClick();
-                                }
-                            } catch (Exception e) {
-
-                            }
-                            return;
+            for (String nextWord : nextWords) {
+                if (result.contains(nextWord)) {
+                    Log.i("Recognition", "Button: " + result);
+                    try {
+                        Button b = (Button) findViewById(R.id.buttonForward);
+                        if (b.isEnabled()) {
+                            b.callOnClick();
                         }
-                    }
-                    for (String backWord : backWords) {
-                        if (result.contains(backWord)) {
-                            try {
-                                Button bb = (Button) findViewById(R.id.buttonBack);
-                                if (bb.getVisibility() == View.VISIBLE) {
-                                    bb.callOnClick();
-                                }
-                            } catch (NullPointerException e) {
-                                //this is ok, no back button to click on current page
-                            }
-                        }
-                    }
+                    } catch (Exception e) {
 
-
-                } catch (Exception e) {
+                    }
+                    return;
                 }
             }
-        };
+            for (String backWord : backWords) {
+                if (result.contains(backWord)) {
+                    try {
+                        Button bb = (Button) findViewById(R.id.buttonBack);
+                        if (bb.getVisibility() == View.VISIBLE) {
+                            bb.callOnClick();
+                        }
+                    } catch (NullPointerException e) {
+                        //this is ok, no back button to click on current page
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+        }
     }
 
     @Override

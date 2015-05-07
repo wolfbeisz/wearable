@@ -1,5 +1,6 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.Picture;
 import android.util.Log;
@@ -22,7 +23,16 @@ public abstract class Node {
     public static int highestNodeId = 0;
     public static int lowestNodeId = Integer.MAX_VALUE;
 
-    public abstract void show();
+    public static Activity getActiveActivity() {
+        return activeActivity;
+    }
+
+    public static void setActiveActivity(MainActivity activeActivity) {
+        Node.activeActivity = activeActivity;
+    }
+
+    private static MainActivity activeActivity;
+
 
     public static void init(MyDBHelper mdh) {
         listOfNodesVisited = new Stack<>();
@@ -193,7 +203,7 @@ public abstract class Node {
         nodesList = null;
     }
 
-    private int typeId;
+    public int typeId;
 
     protected Node(int nodeId, int typeId, String title, String logo, String forwardText) {
         this.nodeId = nodeId;

@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
-import com.vuzix.speech.VoiceControl;
-
 /**
  * Created by Silke on 14.04.2015.
  */
@@ -62,75 +60,131 @@ public class MultipleChoiceActivity extends MainActivity {
         }
     }
 
+//
+//    @Override
+//    public void initializeVoiceControl() {
+//        if (vc != null) {
+//            vc.off();
+//            vc.destroy();
+//        }
+//
+//        /*
+//        * anonymous class extending VoiceControl
+//        * Create a new object for voice control
+//         */
+//        vc = new VoiceControl(this) {
+//            @Override
+//            protected void onRecognition(String result) {
+//                try {
+//                    Log.i("Recognition", "Recognition: " + result);
+//
+//
+//                /*
+//                Checking for recognized keyword to select a line
+//                 */
+//                    for (String selectWord : selectWords) {
+//                        if (result.contains(selectWord)) {
+//
+//                            Log.i("Recognition", "Select: " + result);
+//                            if (result.contains("1")) {
+//                                checkCheckBox(R.id.selection1, 0);
+//                            } else if (result.contains("2")) {
+//                                checkCheckBox(R.id.selection2, 1);
+//                            } else if (result.contains("3")) {
+//                                checkCheckBox(R.id.selection3, 2);
+//                            }
+//                            return;
+//                        }
+//                    }
+//
+//                    for (String nextWord : nextWords) {
+//                        if (result.contains(nextWord)) {
+//                            Log.i("Recognition", "Button: " + result);
+//                            try {
+//                                Button b = (Button) findViewById(R.id.buttonForward);
+//                                if (b.isEnabled()) {
+//                                    b.callOnClick();
+//                                }
+//                            } catch (Exception e) {
+//
+//                            }
+//                            return;
+//                        }
+//                    }
+//                    for (String backWord : backWords) {
+//                        if (result.contains(backWord)) {
+//                            try {
+//                                Button bb = (Button) findViewById(R.id.buttonBack);
+//                                if (bb.getVisibility() == View.VISIBLE) {
+//                                    bb.callOnClick();
+//                                }
+//                            } catch (NullPointerException e) {
+//                                //this is ok, no back button to click on current page
+//                            }
+//                        }
+//                    }
+//
+//
+//                } catch (Exception e) {
+//                }
+//            }
+//        };
+//    }
 
     @Override
-    public void initializeVoiceControl() {
-        if (vc != null) {
-            vc.off();
-            vc.destroy();
-        }
-
-        /*
-        * anonymous class extending VoiceControl
-        * Create a new object for voice control
-         */
-        vc = new VoiceControl(this) {
-            @Override
-            protected void onRecognition(String result) {
-                try {
-                    Log.i("Recognition", "Recognition: " + result);
+    public void myOnRecognition(String result) {
+        try {
+            Log.i("Recognition", "Recognition: " + result);
 
 
                 /*
                 Checking for recognized keyword to select a line
                  */
-                    for (String selectWord : selectWords) {
-                        if (result.contains(selectWord)) {
+            for (String selectWord : selectWords) {
+                if (result.contains(selectWord)) {
 
-                            Log.i("Recognition", "Select: " + result);
-                            if (result.contains("1")) {
-                                checkCheckBox(R.id.selection1, 0);
-                            } else if (result.contains("2")) {
-                                checkCheckBox(R.id.selection2, 1);
-                            } else if (result.contains("3")) {
-                                checkCheckBox(R.id.selection3, 2);
-                            }
-                            return;
-                        }
+                    Log.i("Recognition", "Select: " + result);
+                    if (result.contains("1")) {
+                        checkCheckBox(R.id.selection1, 0);
+                    } else if (result.contains("2")) {
+                        checkCheckBox(R.id.selection2, 1);
+                    } else if (result.contains("3")) {
+                        checkCheckBox(R.id.selection3, 2);
                     }
-
-                    for (String nextWord : nextWords) {
-                        if (result.contains(nextWord)) {
-                            Log.i("Recognition", "Button: " + result);
-                            try {
-                                Button b = (Button) findViewById(R.id.buttonForward);
-                                if (b.isEnabled()) {
-                                    b.callOnClick();
-                                }
-                            } catch (Exception e) {
-
-                            }
-                            return;
-                        }
-                    }
-                    for (String backWord : backWords) {
-                        if (result.contains(backWord)) {
-                            try {
-                                Button bb = (Button) findViewById(R.id.buttonBack);
-                                if (bb.getVisibility() == View.VISIBLE) {
-                                    bb.callOnClick();
-                                }
-                            } catch (NullPointerException e) {
-                                //this is ok, no back button to click on current page
-                            }
-                        }
-                    }
-
-
-                } catch (Exception e) {
+                    return;
                 }
             }
-        };
+
+            for (String nextWord : nextWords) {
+                if (result.contains(nextWord)) {
+                    Log.i("Recognition", "Button: " + result);
+                    try {
+                        Button b = (Button) findViewById(R.id.buttonForward);
+                        if (b.isEnabled()) {
+                            b.callOnClick();
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    return;
+                }
+            }
+            for (String backWord : backWords) {
+                if (result.contains(backWord)) {
+                    try {
+                        Button bb = (Button) findViewById(R.id.buttonBack);
+                        if (bb.getVisibility() == View.VISIBLE) {
+                            bb.callOnClick();
+                        }
+                    } catch (NullPointerException e) {
+                        //this is ok, no back button to click on current page
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+        }
     }
 
     @Override

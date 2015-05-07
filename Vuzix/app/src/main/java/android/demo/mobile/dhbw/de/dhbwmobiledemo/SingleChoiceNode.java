@@ -21,11 +21,6 @@ public class SingleChoiceNode extends Node {
         return null;
     }
 
-    @Override
-    public void show() {
-
-    }
-
     /*
         @param edgeId
          */

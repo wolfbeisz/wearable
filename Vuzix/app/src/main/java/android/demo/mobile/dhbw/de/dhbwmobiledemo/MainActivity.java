@@ -35,7 +35,18 @@ public class MainActivity extends Activity {
     private static final String folderName = "MobileDemo";
 
 
-    protected VoiceControl vc;
+    public static MainActivity getActiveActivity() {
+        return activeActivity;
+    }
+
+    public static void setActiveActivity(MainActivity activeActivity) {
+        MainActivity.activeActivity = activeActivity;
+    }
+
+    private static MainActivity activeActivity;
+
+
+    protected static VoiceControl vc;
 
     private MyDBHelper dbh;
 
@@ -54,6 +65,8 @@ public class MainActivity extends Activity {
         initializeVoiceControl();
 
         initializeFiles();
+
+        setActiveActivity(this);
     }
 
     public void initializeFiles() {
@@ -109,11 +122,6 @@ public class MainActivity extends Activity {
     }
 
     public void initializeVoiceControl() {
-        if (vc != null) {
-            vc.off();
-            vc.destroy();
-        }
-
         /*
         * anonymous class extending VoiceControl
         * Create a new object for voice control
@@ -121,50 +129,45 @@ public class MainActivity extends Activity {
         vc = new VoiceControl(this) {
             @Override
             protected void onRecognition(String result) {
-                try {
-                    Log.i("Recognition", "Recognition: " + result);
-                    ListView v;
-                    v = (ListView) findViewById(R.id.filesListView);
+                MainActivity.getActiveActivity().myOnRecognition(result);
+            }
+        };
+    }
+
+    protected void myOnRecognition(String result) {
+        try {
+            Log.i("Recognition", "Recognition: " + result);
+            ListView v;
+            v = (ListView) findViewById(R.id.filesListView);
                 /*
                 Checking for recognized keyword to select a line
                  */
-                    for (String selectWord : selectWords) {
-                        if (result.contains(selectWord)) {
-                            int count = v.getCount();
-                            if (count > 0) {
-                                for (int i = 1; i <= count; i++) {
-                                    if (result.contains("" + i)) {
-                                        initializeDBFile(cFiles.get(i - 1));
-                                        return;
-                                    }
-                                }
+            for (String selectWord : selectWords) {
+                if (result.contains(selectWord)) {
+                    int count = v.getCount();
+                    if (count > 0) {
+                        for (int i = 1; i <= count; i++) {
+                            if (result.contains("" + i)) {
+                                initializeDBFile(cFiles.get(i - 1));
+                                return;
                             }
                         }
                     }
-                    boolean scrollUp = false;
-                    boolean scrollDown = false;
-                    for (String selectWord : scrollUpWords) {
-                        if (result.contains(selectWord)) {
-                            scrollUp = true;
-                            break;
-                        }
-                    }
-                    for (String selectWord : scrollDownWords) {
-                        if (result.contains(selectWord)) {
-                            scrollDown = true;
-                            break;
-                        }
-                    }
-
-                    if(scrollUp){
-                        scroll(v, -3);
-                    } else if(scrollDown){
-                        scroll(v, 3);
-                    }
-                } catch (Exception e) {
                 }
             }
-        };
+
+            int wordsMaxLength = (scrollUpWords.length >= scrollUpWords.length)? scrollUpWords.length : scrollDownWords.length;
+            for (int i = 0; i < wordsMaxLength; i++) {
+                if (scrollUpWords.length > i && result.contains(scrollUpWords[i])) {
+                    scroll(v,-3);
+                    break;
+                } else if (scrollDownWords.length > i && result.contains(scrollDownWords[i])) {
+                    scroll(v,3);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+        }
     }
 
     private void scroll(ListView v, int step){
@@ -323,12 +326,13 @@ public class MainActivity extends Activity {
         if(vc != null) {
             vc.on();
         }
+        MainActivity.setActiveActivity(this);
     }
 
     @Override
     protected void onPause() {
         if (vc != null) {
-           vc.off();
+           vc.on();
         }
         super.onPause();
 
@@ -337,10 +341,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (vc != null) {
-
             vc.off();
-            vc.destroy();
-            vc = null;
+            //vc.destroy();
+            //vc = null;
         }
         if(dbh != null)
             {

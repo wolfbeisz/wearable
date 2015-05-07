@@ -41,10 +41,4 @@ public class ImageTextNode extends Node {
             return ++Node.activeNode;
         }
     }
-
-
-
-    @Override
-    public void show() {
-    }
 }
