@@ -33,7 +33,6 @@ public abstract class Node {
 
     private static MainActivity activeActivity;
 
-
     public static void init(MyDBHelper mdh) {
         listOfNodesVisited = new Stack<>();
 
@@ -189,12 +188,6 @@ public abstract class Node {
     public String getForwardText() {
         return forwardText;
     }
-
-    private int nodeId;
-    private String title;
-    private String logo;
-    private String forwardText;
-
     public int getTypeId() {
         return typeId;
     }
@@ -203,6 +196,10 @@ public abstract class Node {
         nodesList = null;
     }
 
+    private int nodeId;
+    private String title;
+    private String logo;
+    private String forwardText;
     public int typeId;
 
     protected Node(int nodeId, int typeId, String title, String logo, String forwardText) {
