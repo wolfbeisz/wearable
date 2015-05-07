@@ -40,6 +40,9 @@ public class MultipleChoiceActivity extends MainActivity {
         c = (CheckBox) findViewById(R.id.selection3);
         c.setText(node.getEdgeList().get(2).text);
 
+        c = (CheckBox) findViewById(R.id.selection4);
+        c.setText(node.getEdgeList().get(3).text);
+
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
         b.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +97,8 @@ public class MultipleChoiceActivity extends MainActivity {
                                 checkCheckBox(R.id.selection2, 1);
                             } else if (result.contains("3")) {
                                 checkCheckBox(R.id.selection3, 2);
+                            } else if (result.contains("4")) {
+                                checkCheckBox(R.id.selection4, 3);
                             }
                             return;
                         }

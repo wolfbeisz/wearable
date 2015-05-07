@@ -32,6 +32,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/selection2"
         android:layout_centerHorizontal="true" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New CheckBox"
+        android:id="@+id/selection4"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/selection3"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -49,4 +57,6 @@
         android:layout_gravity="right"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" />
+
+
 </RelativeLayout>

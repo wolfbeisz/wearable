@@ -66,6 +66,14 @@ public class SingleChoiceActivity extends MainActivity {
             ((RadioButton) findViewById(R.id.selection3)).setVisibility(View.INVISIBLE);
         }
 
+        try {
+            r = (RadioButton) findViewById(R.id.selection4);
+            r.setText(node.getEdgeList().get(3).text);
+            setSelectionOnClicklistener(r, b, 3);
+        } catch (Exception e) {
+            ((RadioButton) findViewById(R.id.selection4)).setVisibility(View.INVISIBLE);
+        }
+
 
         Button bb = (Button) findViewById(R.id.buttonBack);
         try {
@@ -134,6 +142,8 @@ public class SingleChoiceActivity extends MainActivity {
                                 checkCheckBox(R.id.selection2, 1);
                             } else if (result.contains("3")) {
                                 checkCheckBox(R.id.selection3, 2);
+                            } else if (result.contains("4")) {
+                                checkCheckBox(R.id.selection4, 3);
                             }
                             return;
                         }
