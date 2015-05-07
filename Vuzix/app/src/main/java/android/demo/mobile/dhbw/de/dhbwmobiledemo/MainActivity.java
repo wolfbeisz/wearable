@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -220,11 +221,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    protected void checkCheckBox(int id, int nr) {
+    protected void checkCheckBox(int id, int nr, String type) {
         try {
             View v = findViewById(id);
             if (v.isEnabled()) {
-                ((CompoundButton) v).setChecked(true);
+                if (type =="Multiple"){
+                    CheckBox c = (CheckBox)findViewById(id);
+                    if(c.isChecked()){
+                        c.setChecked(false);
+                    } else {c.setChecked(true);}
+                }
+                else if (type =="Single"){
+                    ((CompoundButton) v).setChecked(true);
+                }
             }
             View f = findViewById(R.id.buttonForward);
             f.setEnabled(true);
