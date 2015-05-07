@@ -15,13 +15,9 @@ public class MultipleChoiceActivity extends MainActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_multiplechoice);
         setNode((MultipleChoiceNode) Node.getNodeById(Node.activeNode));
         setContentView(R.layout.activity_multiplechoice);
         setData();
-/*
-
-*/
     }
 
     public void setNode(MultipleChoiceNode node) {
@@ -31,11 +27,11 @@ public class MultipleChoiceActivity extends MainActivity {
     public void setData() {
         CheckBox c = null;
         try {
-            c = (CheckBox) findViewById(R.id.selection1);
             c.setText(node.getEdgeList().get(0).text);
         } catch (Exception e) {
 
         }
+            c = (CheckBox) findViewById(R.id.selection1);
 
         try {
             c = (CheckBox) findViewById(R.id.selection2);
@@ -84,8 +80,6 @@ public class MultipleChoiceActivity extends MainActivity {
     public void myOnRecognition(String result) {
         try {
             Log.i("Recognition", "Recognition: " + result);
-
-
                 /*
                 Checking for recognized keyword to select a line
                  */
@@ -155,6 +149,5 @@ public class MultipleChoiceActivity extends MainActivity {
 
     @Override
     public void initializeFiles() {
-
     }
 }
