@@ -30,6 +30,8 @@ public class MainActivity extends Activity {
     protected static final String nextWords[] = {"move right", "forward", "next", "go right"};
     protected static final String selectWords[] = {"select", "choose"};
     protected static final String backWords[] = {"go back", "previous", "move left", "go left"};
+    protected static final String scrollUpWords[] = {"scroll up", "move up"};
+    protected static final String scrollDownWords[] = {"scroll down", "move down"};
     private static final String folderName = "MobileDemo";
 
 
@@ -139,10 +141,24 @@ public class MainActivity extends Activity {
                             }
                         }
                     }
+                    boolean scrollUp = false;
+                    boolean scrollDown = false;
+                    for (String selectWord : scrollUpWords) {
+                        if (result.contains(selectWord)) {
+                            scrollUp = true;
+                            break;
+                        }
+                    }
+                    for (String selectWord : scrollDownWords) {
+                        if (result.contains(selectWord)) {
+                            scrollDown = true;
+                            break;
+                        }
+                    }
 
-                    if(result.contains("move up") || result.contains("go up")){
+                    if(scrollUp){
                         scroll(v, -3);
-                    } else if(result.contains("move down") || result.contains("go down")){
+                    } else if(scrollDown){
                         scroll(v, 3);
                     }
                 } catch (Exception e) {
