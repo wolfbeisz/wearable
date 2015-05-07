@@ -91,7 +91,7 @@ public class MultipleChoiceActivity extends MainActivity {
                     if (result.contains("1")) {
                         checkCheckBox(R.id.selection1, 0,"Multiple");
                     } else if (result.contains("2")) {
-                        checkCheckBox(R.id.selection2, 1, "Multiple");
+                        checkCheckBox(R.id.selection2, 1,"Multiple");
                     } else if (result.contains("3")) {
                         checkCheckBox(R.id.selection3, 2,"Multiple");
                     } else if (result.contains("4")) {
