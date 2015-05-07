@@ -1,6 +1,5 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,18 +13,9 @@ import com.vuzix.speech.VoiceControl;
  */
 public class SingleChoiceActivity extends MainActivity {
     private static SingleChoiceNode node;
-    private Edge edge;
-    private int previousActiveNode;
-
-    public int getCheckedSelection() {
-        return checkedSelection;
-    }
-
-    public void setCheckedSelection(int checkedSelection) {
-        this.checkedSelection = checkedSelection;
-    }
-
     private int checkedSelection = -1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +31,6 @@ public class SingleChoiceActivity extends MainActivity {
         this.node = node;
     }
 
-    public void setEdge(Edge edge) {
-        this.edge = edge;
-    }
 
     public void setData() {
         final Button b = (Button) findViewById(R.id.buttonForward);
@@ -81,7 +68,6 @@ public class SingleChoiceActivity extends MainActivity {
 
 
         Button bb = (Button) findViewById(R.id.buttonBack);
-        final Activity that = this;
         try {
             bb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,6 +78,13 @@ public class SingleChoiceActivity extends MainActivity {
         } catch (NullPointerException e) {
             //This is ok, no back button on current page
         }
+    }
+
+    public int getCheckedSelection() {
+        return checkedSelection;
+    }
+    public void setCheckedSelection(int checkedSelection) {
+        this.checkedSelection = checkedSelection;
     }
 
     @Override
@@ -182,6 +175,7 @@ public class SingleChoiceActivity extends MainActivity {
 
     @Override
     public void onBackPressed(){
+        Log.d("Back", "SingleChoice, NodeId: " + Node.activeNode);
         if (!Node.listOfNodesVisited.empty()) {
             Node.activeNode = Node.listOfNodesVisited.pop();
         } else {

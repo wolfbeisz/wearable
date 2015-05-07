@@ -76,9 +76,9 @@ public abstract class Node {
                         String text = viewCursor.getString(1);
 
                         Cursor edgeCursor = mdh.executeRawQuery("SELECT SUCCESSORID FROM EDGE WHERE NODEID = '" + nodeId + "';");
-                        edgeCursor.moveToFirst();
                         String succIdString = null;
                         try{
+                            edgeCursor.moveToFirst();
                             succIdString = edgeCursor.getString(0);
                         } catch (Exception e){
 

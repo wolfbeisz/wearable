@@ -1,6 +1,5 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +50,6 @@ public class MultipleChoiceActivity extends MainActivity {
         });
 
         Button bb = (Button) findViewById(R.id.buttonBack);
-        final Activity that = this;
         try {
             bb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,7 +135,10 @@ public class MultipleChoiceActivity extends MainActivity {
 
     @Override
     public void onBackPressed() {
-        Node.activeNode = Node.listOfNodesVisited.pop();
+        Log.d("Back", "MultipleChoice, NodeId: " + Node.activeNode);
+        if (!Node.listOfNodesVisited.empty()) {
+            Node.activeNode = Node.listOfNodesVisited.pop();
+        }
         if (vc != null) {
             vc.off();
             vc.destroy();

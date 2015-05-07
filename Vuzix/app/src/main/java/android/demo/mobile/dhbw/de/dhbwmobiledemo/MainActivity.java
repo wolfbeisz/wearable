@@ -39,6 +39,8 @@ public class MainActivity extends Activity {
 
     protected ArrayList<File> cFiles;
 
+    private int scrollPosition = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,16 +139,33 @@ public class MainActivity extends Activity {
                             }
                         }
                     }
+
                     if(result.contains("move up") || result.contains("go up")){
-                        v.scrollBy(0,-1);
+                        scroll(v, -3);
                     } else if(result.contains("move down") || result.contains("go down")){
-                        v.scrollBy(0,1);
+                        scroll(v, 3);
                     }
                 } catch (Exception e) {
                 }
-
             }
         };
+    }
+
+    private void scroll(ListView v, int step){
+        int maxPosition = v.getCount() - 1;
+        if(scrollPosition == 0 && step < 0){
+            scrollPosition = maxPosition;
+        } else if(scrollPosition == maxPosition && step > 0){
+            scrollPosition = 0;
+        } else {
+            scrollPosition += step;
+            if(scrollPosition < 0){
+                scrollPosition = 0;
+            } else if(scrollPosition > maxPosition){
+                scrollPosition = maxPosition;
+            }
+        }
+        v.setSelection(scrollPosition);
     }
 
     protected void initializeDBFile(File myFile) {
@@ -293,7 +312,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         if (vc != null) {
-
            vc.off();
         }
         super.onPause();
@@ -303,6 +321,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (vc != null) {
+
             vc.off();
             vc.destroy();
             vc = null;
@@ -312,7 +331,6 @@ public class MainActivity extends Activity {
                 dbh.close();
             }
         super.onDestroy();
-        //Node.destroy();
     }
 
 

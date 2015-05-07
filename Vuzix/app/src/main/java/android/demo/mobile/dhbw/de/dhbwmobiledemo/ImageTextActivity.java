@@ -1,6 +1,5 @@
 package android.demo.mobile.dhbw.de.dhbwmobiledemo;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,9 +15,7 @@ import com.vuzix.speech.VoiceControl;
  * Created by Silke on 14.04.2015.
  */
 public class ImageTextActivity extends MainActivity {
-
     private static ImageTextNode node;
-    VoiceControl vc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +49,6 @@ public class ImageTextActivity extends MainActivity {
         });
 
         Button bb = (Button) findViewById(R.id.buttonBack);
-        final Activity that = this;
         try {
             bb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,7 +116,11 @@ public class ImageTextActivity extends MainActivity {
 
     @Override
     public void onBackPressed() {
-        Node.activeNode = Node.listOfNodesVisited.pop();
+
+        Log.d("Back", "ImageText, NodeId: " + Node.activeNode);
+        if (!Node.listOfNodesVisited.empty()) {
+            Node.activeNode = Node.listOfNodesVisited.pop();
+        }
         if (vc != null) {
             vc.off();
             vc.destroy();
