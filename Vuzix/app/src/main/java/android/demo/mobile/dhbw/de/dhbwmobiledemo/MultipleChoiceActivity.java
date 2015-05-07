@@ -29,14 +29,34 @@ public class MultipleChoiceActivity extends MainActivity {
     }
 
     public void setData() {
-        CheckBox c = (CheckBox) findViewById(R.id.selection1);
-        c.setText(node.getEdgeList().get(0).text);
+        CheckBox c = null;
+        try {
+            c = (CheckBox) findViewById(R.id.selection1);
+            c.setText(node.getEdgeList().get(0).text);
+        } catch (Exception e) {
 
-        c = (CheckBox) findViewById(R.id.selection2);
-        c.setText(node.getEdgeList().get(1).text);
+        }
 
-        c = (CheckBox) findViewById(R.id.selection3);
-        c.setText(node.getEdgeList().get(2).text);
+        try {
+            c = (CheckBox) findViewById(R.id.selection2);
+            c.setText(node.getEdgeList().get(1).text);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            c = (CheckBox) findViewById(R.id.selection3);
+            c.setText(node.getEdgeList().get(2).text);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            c = (CheckBox) findViewById(R.id.selection4);
+            c.setText(node.getEdgeList().get(3).text);
+        } catch (Exception e) {
+
+        }
 
         Button b = (Button) findViewById(R.id.buttonForward);
         b.setText(node.getForwardText());
@@ -60,77 +80,6 @@ public class MultipleChoiceActivity extends MainActivity {
         }
     }
 
-//
-//    @Override
-//    public void initializeVoiceControl() {
-//        if (vc != null) {
-//            vc.off();
-//            vc.destroy();
-//        }
-//
-//        /*
-//        * anonymous class extending VoiceControl
-//        * Create a new object for voice control
-//         */
-//        vc = new VoiceControl(this) {
-//            @Override
-//            protected void onRecognition(String result) {
-//                try {
-//                    Log.i("Recognition", "Recognition: " + result);
-//
-//
-//                /*
-//                Checking for recognized keyword to select a line
-//                 */
-//                    for (String selectWord : selectWords) {
-//                        if (result.contains(selectWord)) {
-//
-//                            Log.i("Recognition", "Select: " + result);
-//                            if (result.contains("1")) {
-//                                checkCheckBox(R.id.selection1, 0);
-//                            } else if (result.contains("2")) {
-//                                checkCheckBox(R.id.selection2, 1);
-//                            } else if (result.contains("3")) {
-//                                checkCheckBox(R.id.selection3, 2);
-//                            }
-//                            return;
-//                        }
-//                    }
-//
-//                    for (String nextWord : nextWords) {
-//                        if (result.contains(nextWord)) {
-//                            Log.i("Recognition", "Button: " + result);
-//                            try {
-//                                Button b = (Button) findViewById(R.id.buttonForward);
-//                                if (b.isEnabled()) {
-//                                    b.callOnClick();
-//                                }
-//                            } catch (Exception e) {
-//
-//                            }
-//                            return;
-//                        }
-//                    }
-//                    for (String backWord : backWords) {
-//                        if (result.contains(backWord)) {
-//                            try {
-//                                Button bb = (Button) findViewById(R.id.buttonBack);
-//                                if (bb.getVisibility() == View.VISIBLE) {
-//                                    bb.callOnClick();
-//                                }
-//                            } catch (NullPointerException e) {
-//                                //this is ok, no back button to click on current page
-//                            }
-//                        }
-//                    }
-//
-//
-//                } catch (Exception e) {
-//                }
-//            }
-//        };
-//    }
-
     @Override
     public void myOnRecognition(String result) {
         try {
@@ -140,6 +89,7 @@ public class MultipleChoiceActivity extends MainActivity {
                 /*
                 Checking for recognized keyword to select a line
                  */
+
             for (String selectWord : selectWords) {
                 if (result.contains(selectWord)) {
 
@@ -150,6 +100,8 @@ public class MultipleChoiceActivity extends MainActivity {
                         checkCheckBox(R.id.selection2, 1);
                     } else if (result.contains("3")) {
                         checkCheckBox(R.id.selection3, 2);
+                    } else if (result.contains("4")) {
+                        checkCheckBox(R.id.selection4, 3);
                     }
                     return;
                 }

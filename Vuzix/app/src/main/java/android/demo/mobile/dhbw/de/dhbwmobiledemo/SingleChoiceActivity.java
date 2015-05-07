@@ -14,7 +14,6 @@ public class SingleChoiceActivity extends MainActivity {
     private int checkedSelection = -1;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +41,14 @@ public class SingleChoiceActivity extends MainActivity {
         b.setEnabled(false);
 
 
-        RadioButton r = (RadioButton) findViewById(R.id.selection1);
-        r.setText(node.getEdgeList().get(0).text);
-        setSelectionOnClicklistener(r, b, 0);
+        RadioButton r = null;
+        try {
+            r = (RadioButton) findViewById(R.id.selection1);
+            r.setText(node.getEdgeList().get(0).text);
+            setSelectionOnClicklistener(r, b, 0);
+        } catch (Exception e) {
+            ((RadioButton) findViewById(R.id.selection1)).setVisibility(View.INVISIBLE);
+        }
 
 
         try {
@@ -64,6 +68,14 @@ public class SingleChoiceActivity extends MainActivity {
             ((RadioButton) findViewById(R.id.selection3)).setVisibility(View.INVISIBLE);
         }
 
+        try {
+            r = (RadioButton) findViewById(R.id.selection4);
+            r.setText(node.getEdgeList().get(3).text);
+            setSelectionOnClicklistener(r, b, 3);
+        } catch (Exception e) {
+            ((RadioButton) findViewById(R.id.selection4)).setVisibility(View.INVISIBLE);
+        }
+
 
         Button bb = (Button) findViewById(R.id.buttonBack);
         try {
@@ -81,6 +93,7 @@ public class SingleChoiceActivity extends MainActivity {
     public int getCheckedSelection() {
         return checkedSelection;
     }
+
     public void setCheckedSelection(int checkedSelection) {
         this.checkedSelection = checkedSelection;
     }
@@ -101,76 +114,6 @@ public class SingleChoiceActivity extends MainActivity {
         });
     }
 
-//    @Override
-//    public void initializeVoiceControl() {
-//        if (vc != null) {
-//            vc.off();
-//            vc.destroy();
-//        }
-//
-//        /*
-//        * anonymous class extending VoiceControl
-//        * Create a new object for voice control
-//         */
-//        vc = new VoiceControl(this) {
-//            @Override
-//            protected void onRecognition(String result) {
-//                try {
-//                    Log.i("Recognition", "Recognition: " + result);
-//
-//
-//                /*
-//                Checking for recognized keyword to select a line
-//                 */
-//                    for (String selectWord : selectWords) {
-//                        if (result.contains(selectWord)) {
-//
-//                            Log.i("Recognition", "Select: " + result);
-//                            if (result.contains("1")) {
-//                                checkCheckBox(R.id.selection1, 0);
-//                            } else if (result.contains("2")) {
-//                                checkCheckBox(R.id.selection2, 1);
-//                            } else if (result.contains("3")) {
-//                                checkCheckBox(R.id.selection3, 2);
-//                            }
-//                            return;
-//                        }
-//                    }
-//
-//                    for (String nextWord : nextWords) {
-//                        if (result.contains(nextWord)) {
-//                            Log.i("Recognition", "Button: " + result);
-//                            try {
-//                                Button b = (Button) findViewById(R.id.buttonForward);
-//                                if (b.isEnabled()) {
-//                                    b.callOnClick();
-//                                }
-//                            } catch (Exception e) {
-//
-//                            }
-//                            return;
-//                        }
-//                    }
-//                    for (String backWord : backWords) {
-//                        if (result.contains(backWord)) {
-//                            try {
-//                                Button bb = (Button) findViewById(R.id.buttonBack);
-//                                if (bb.getVisibility() == View.VISIBLE) {
-//                                    bb.callOnClick();
-//                                }
-//                            } catch (NullPointerException e) {
-//                                //this is ok, no back button to click on current page
-//                            }
-//                        }
-//                    }
-//
-//
-//                } catch (Exception e) {
-//                }
-//            }
-//        };
-//    }
-
     @Override
     public void myOnRecognition(String result) {
         try {
@@ -190,6 +133,8 @@ public class SingleChoiceActivity extends MainActivity {
                         checkCheckBox(R.id.selection2, 1);
                     } else if (result.contains("3")) {
                         checkCheckBox(R.id.selection3, 2);
+                    } else if (result.contains("4")) {
+                        checkCheckBox(R.id.selection4, 3);
                     }
                     return;
                 }
@@ -228,7 +173,7 @@ public class SingleChoiceActivity extends MainActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         Log.d("Back", "SingleChoice, NodeId: " + Node.activeNode);
         if (!Node.listOfNodesVisited.empty()) {
             Node.activeNode = Node.listOfNodesVisited.pop();
