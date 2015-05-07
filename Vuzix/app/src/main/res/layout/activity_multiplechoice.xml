@@ -22,7 +22,8 @@
         android:id="@+id/selection2"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/selection1"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="@+id/selection1"/>
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -31,7 +32,8 @@
         android:id="@+id/selection3"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/selection2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="@+id/selection2"/>
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +41,8 @@
         android:id="@+id/selection4"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/selection3"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="@+id/selection3"/>
 
     <Button
         android:layout_width="wrap_content"

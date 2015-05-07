@@ -99,8 +99,8 @@ public class SingleChoiceActivity extends MainActivity {
     }
 
     @Override
-    protected void checkCheckBox(int id, int nr) {
-        super.checkCheckBox(id, nr);
+    protected void checkCheckBox(int id, int nr,String type) {
+        super.checkCheckBox(id, nr,type);
         this.setCheckedSelection(nr);
     }
 
@@ -128,13 +128,13 @@ public class SingleChoiceActivity extends MainActivity {
 
                     Log.i("Recognition", "Select: " + result);
                     if (result.contains("1")) {
-                        checkCheckBox(R.id.selection1, 0);
+                        checkCheckBox(R.id.selection1, 0, "Single");
                     } else if (result.contains("2")) {
-                        checkCheckBox(R.id.selection2, 1);
+                        checkCheckBox(R.id.selection2, 1, "Single");
                     } else if (result.contains("3")) {
-                        checkCheckBox(R.id.selection3, 2);
+                        checkCheckBox(R.id.selection3, 2, "Single");
                     } else if (result.contains("4")) {
-                        checkCheckBox(R.id.selection4, 3);
+                        checkCheckBox(R.id.selection4, 3, "Single");
                     }
                     return;
                 }
