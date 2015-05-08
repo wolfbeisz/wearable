@@ -109,14 +109,29 @@ public class MainActivity extends Activity {
                         });
                     } else {
                         Toast.makeText(getApplicationContext(), "No sqlite files found in folder " + folderName + ".", Toast.LENGTH_LONG);
+                        displayErrorFileChooserView("No sqlite files found in folder " + folderName + ".");
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "No files found in folder " + folderName + ".", Toast.LENGTH_LONG);
+                    displayErrorFileChooserView("No sqlite files found in folder " + folderName + ".");
                 }
             } else {
                 Log.i("Info", "Storage not available for any reason.");
+                displayErrorFileChooserView( "Please ensure storage is mounted and available for device.");
                 Toast.makeText(getApplicationContext(), "Please ensure storage is mounted and available for device.", Toast.LENGTH_LONG);
             }
+        }
+    }
+
+    public void displayErrorFileChooserView(String text){
+        try {
+            final ListView listView = (ListView) findViewById(R.id.filesListView);
+            final ArrayList<String> fileNameStringList = new ArrayList<String>();
+            fileNameStringList.add(text);
+            final ArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, fileNameStringList);
+            listView.setAdapter(adapter);
+        } catch(Exception e1){
+
         }
     }
 
@@ -199,12 +214,15 @@ public class MainActivity extends Activity {
             Log.i("Log", "Database opened successfully");
         } catch (IOException e) {
             Log.e("Error", "Database could not be copied: " + e.getMessage());
+            displayErrorFileChooserView("Database could not be copied: Access problem. " + e.getMessage());
             Toast.makeText(getApplicationContext(), "Database could not be copied: Access problem. " + e.getMessage() + e.getMessage(), Toast.LENGTH_LONG);
         } catch (SQLException e) {
             Log.e("Error", "Database could not be opened: File does not fit to application. " + e.getMessage());
+            displayErrorFileChooserView("Database could not be opened: File does not fit to application. " + e.getMessage());
             Toast.makeText(getApplicationContext(), "Database could not be opened: File does not fit to application. " + e.getMessage(), Toast.LENGTH_LONG);
         } catch (Exception e) {
             e.printStackTrace();
+            displayErrorFileChooserView("Database could not be opened: File does not fit to application. " + e.getMessage());
             Toast.makeText(getApplicationContext(), "Database could not be opened: File does not fit to application. " + e.getMessage(), Toast.LENGTH_LONG);
         }
         try {
