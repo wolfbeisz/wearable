@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Rapidprototyping-Client</string>
+    <string name="app_name">DHBWMobileDemo</string>
     <string name="action_settings">Settings</string>
     <string name="selectionHeader">Select file to load</string>
 </resources>

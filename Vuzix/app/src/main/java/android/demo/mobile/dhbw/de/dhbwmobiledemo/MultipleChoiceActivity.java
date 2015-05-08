@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
 /**
@@ -30,7 +31,7 @@ public class MultipleChoiceActivity extends MainActivity {
         try {
             c.setText(node.getEdgeList().get(0).text);
         } catch (Exception e) {
-            ((RadioButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
 
         }
             c = (CheckBox) findViewById(R.id.selection1);
@@ -39,7 +40,7 @@ public class MultipleChoiceActivity extends MainActivity {
             c = (CheckBox) findViewById(R.id.selection2);
             c.setText(node.getEdgeList().get(1).text);
         } catch (Exception e) {
-            ((RadioButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
 
         }
 
@@ -47,7 +48,7 @@ public class MultipleChoiceActivity extends MainActivity {
             c = (CheckBox) findViewById(R.id.selection3);
             c.setText(node.getEdgeList().get(2).text);
         } catch (Exception e) {
-            ((RadioButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
 
         }
 
@@ -55,7 +56,7 @@ public class MultipleChoiceActivity extends MainActivity {
             c = (CheckBox) findViewById(R.id.selection4);
             c.setText(node.getEdgeList().get(3).text);
         } catch (Exception e) {
-            ((RadioButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
 
         }
 
