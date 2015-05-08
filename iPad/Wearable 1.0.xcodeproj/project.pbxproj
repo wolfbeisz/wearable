@@ -1,0 +1,504 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		680E01471AFBDF9E00D26756 /* RadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 680E01461AFBDF9E00D26756 /* RadioButton.m */; };
+		680E01561AFBE25D00D26756 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 680E01521AFBE25D00D26756 /* checked.png */; };
+		680E01571AFBE25D00D26756 /* checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 680E01531AFBE25D00D26756 /* checked@2x.png */; };
+		680E01581AFBE25D00D26756 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 680E01541AFBE25D00D26756 /* unchecked.png */; };
+		680E01591AFBE25D00D26756 /* unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 680E01551AFBE25D00D26756 /* unchecked@2x.png */; };
+		688433941AF7CB6500E1C81D /* SingleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 688433931AF7CB6500E1C81D /* SingleViewController.m */; };
+		688433971AF7CB8700E1C81D /* MultipleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 688433961AF7CB8700E1C81D /* MultipleViewController.m */; };
+		6884339A1AF7CBA300E1C81D /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 688433991AF7CBA300E1C81D /* ImageViewController.m */; };
+		68ADE9651AF57BB000A7D8C1 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 68ADE9641AF57BB000A7D8C1 /* libsqlite3.dylib */; };
+		68C0F8C11AF7A74300A4E1DC /* DataTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C0F8BE1AF7A74300A4E1DC /* DataTable.m */; };
+		68C0F8C21AF7A74300A4E1DC /* DBController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C0F8C01AF7A74300A4E1DC /* DBController.m */; };
+		68C0F8C41AF7A8CB00A4E1DC /* DHBW_Logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 68C0F8C31AF7A8CB00A4E1DC /* DHBW_Logo.jpg */; };
+		68E322BB1AF3CA81003945E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E322BA1AF3CA81003945E8 /* main.m */; };
+		68E322BE1AF3CA81003945E8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E322BD1AF3CA81003945E8 /* AppDelegate.m */; };
+		68E322C11AF3CA81003945E8 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E322C01AF3CA81003945E8 /* MasterViewController.m */; };
+		68E322C41AF3CA81003945E8 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E322C31AF3CA81003945E8 /* DetailViewController.m */; };
+		68E322C71AF3CA81003945E8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68E322C51AF3CA81003945E8 /* Main.storyboard */; };
+		68E322C91AF3CA81003945E8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68E322C81AF3CA81003945E8 /* Images.xcassets */; };
+		68E322CC1AF3CA81003945E8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68E322CA1AF3CA81003945E8 /* LaunchScreen.xib */; };
+		68E322D81AF3CA81003945E8 /* Wearable_1_0Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E322D71AF3CA81003945E8 /* Wearable_1_0Tests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		68E322D21AF3CA81003945E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 68E322AD1AF3CA81003945E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 68E322B41AF3CA81003945E8;
+			remoteInfo = "Wearable 1.0";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		680E01451AFBDF9E00D26756 /* RadioButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadioButton.h; sourceTree = "<group>"; };
+		680E01461AFBDF9E00D26756 /* RadioButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadioButton.m; sourceTree = "<group>"; };
+		680E01521AFBE25D00D26756 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
+		680E01531AFBE25D00D26756 /* checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked@2x.png"; sourceTree = "<group>"; };
+		680E01541AFBE25D00D26756 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
+		680E01551AFBE25D00D26756 /* unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unchecked@2x.png"; sourceTree = "<group>"; };
+		688433931AF7CB6500E1C81D /* SingleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleViewController.m; sourceTree = "<group>"; };
+		688433951AF7CB7600E1C81D /* SingleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SingleViewController.h; sourceTree = "<group>"; };
+		688433961AF7CB8700E1C81D /* MultipleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultipleViewController.m; sourceTree = "<group>"; };
+		688433981AF7CB9200E1C81D /* MultipleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultipleViewController.h; sourceTree = "<group>"; };
+		688433991AF7CBA300E1C81D /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
+		6884339B1AF7CBB100E1C81D /* ImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
+		68ADE9641AF57BB000A7D8C1 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		68C0F8BD1AF7A74300A4E1DC /* DataTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataTable.h; sourceTree = "<group>"; };
+		68C0F8BE1AF7A74300A4E1DC /* DataTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataTable.m; sourceTree = "<group>"; };
+		68C0F8BF1AF7A74300A4E1DC /* DBController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBController.h; sourceTree = "<group>"; };
+		68C0F8C01AF7A74300A4E1DC /* DBController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBController.m; sourceTree = "<group>"; };
+		68C0F8C31AF7A8CB00A4E1DC /* DHBW_Logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DHBW_Logo.jpg; sourceTree = "<group>"; };
+		68E322B51AF3CA81003945E8 /* Wearable 1.0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wearable 1.0.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		68E322B91AF3CA81003945E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		68E322BA1AF3CA81003945E8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		68E322BC1AF3CA81003945E8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		68E322BD1AF3CA81003945E8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		68E322BF1AF3CA81003945E8 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		68E322C01AF3CA81003945E8 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		68E322C21AF3CA81003945E8 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		68E322C31AF3CA81003945E8 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		68E322C61AF3CA81003945E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		68E322C81AF3CA81003945E8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		68E322CB1AF3CA81003945E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		68E322D11AF3CA81003945E8 /* Wearable 1.0Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Wearable 1.0Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		68E322D61AF3CA81003945E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		68E322D71AF3CA81003945E8 /* Wearable_1_0Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Wearable_1_0Tests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		68E322B21AF3CA81003945E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68ADE9651AF57BB000A7D8C1 /* libsqlite3.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68E322CE1AF3CA81003945E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		68E322AC1AF3CA81003945E8 = {
+			isa = PBXGroup;
+			children = (
+				68ADE9641AF57BB000A7D8C1 /* libsqlite3.dylib */,
+				68E322B71AF3CA81003945E8 /* Wearable 1.0 */,
+				68E322D41AF3CA81003945E8 /* Wearable 1.0Tests */,
+				68E322B61AF3CA81003945E8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		68E322B61AF3CA81003945E8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				68E322B51AF3CA81003945E8 /* Wearable 1.0.app */,
+				68E322D11AF3CA81003945E8 /* Wearable 1.0Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		68E322B71AF3CA81003945E8 /* Wearable 1.0 */ = {
+			isa = PBXGroup;
+			children = (
+				68C0F8BD1AF7A74300A4E1DC /* DataTable.h */,
+				68C0F8BE1AF7A74300A4E1DC /* DataTable.m */,
+				68C0F8BF1AF7A74300A4E1DC /* DBController.h */,
+				68C0F8C01AF7A74300A4E1DC /* DBController.m */,
+				68E322BC1AF3CA81003945E8 /* AppDelegate.h */,
+				68E322BD1AF3CA81003945E8 /* AppDelegate.m */,
+				68E322BF1AF3CA81003945E8 /* MasterViewController.h */,
+				68E322C01AF3CA81003945E8 /* MasterViewController.m */,
+				68E322C21AF3CA81003945E8 /* DetailViewController.h */,
+				68E322C31AF3CA81003945E8 /* DetailViewController.m */,
+				688433951AF7CB7600E1C81D /* SingleViewController.h */,
+				688433931AF7CB6500E1C81D /* SingleViewController.m */,
+				688433981AF7CB9200E1C81D /* MultipleViewController.h */,
+				688433961AF7CB8700E1C81D /* MultipleViewController.m */,
+				6884339B1AF7CBB100E1C81D /* ImageViewController.h */,
+				688433991AF7CBA300E1C81D /* ImageViewController.m */,
+				680E01451AFBDF9E00D26756 /* RadioButton.h */,
+				680E01461AFBDF9E00D26756 /* RadioButton.m */,
+				68E322C51AF3CA81003945E8 /* Main.storyboard */,
+				68E322C81AF3CA81003945E8 /* Images.xcassets */,
+				68E322CA1AF3CA81003945E8 /* LaunchScreen.xib */,
+				68C0F8C31AF7A8CB00A4E1DC /* DHBW_Logo.jpg */,
+				680E01521AFBE25D00D26756 /* checked.png */,
+				680E01531AFBE25D00D26756 /* checked@2x.png */,
+				680E01541AFBE25D00D26756 /* unchecked.png */,
+				680E01551AFBE25D00D26756 /* unchecked@2x.png */,
+				68E322B81AF3CA81003945E8 /* Supporting Files */,
+			);
+			path = "Wearable 1.0";
+			sourceTree = "<group>";
+		};
+		68E322B81AF3CA81003945E8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				68E322B91AF3CA81003945E8 /* Info.plist */,
+				68E322BA1AF3CA81003945E8 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		68E322D41AF3CA81003945E8 /* Wearable 1.0Tests */ = {
+			isa = PBXGroup;
+			children = (
+				68E322D71AF3CA81003945E8 /* Wearable_1_0Tests.m */,
+				68E322D51AF3CA81003945E8 /* Supporting Files */,
+			);
+			path = "Wearable 1.0Tests";
+			sourceTree = "<group>";
+		};
+		68E322D51AF3CA81003945E8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				68E322D61AF3CA81003945E8 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		68E322B41AF3CA81003945E8 /* Wearable 1.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 68E322DB1AF3CA81003945E8 /* Build configuration list for PBXNativeTarget "Wearable 1.0" */;
+			buildPhases = (
+				68E322B11AF3CA81003945E8 /* Sources */,
+				68E322B21AF3CA81003945E8 /* Frameworks */,
+				68E322B31AF3CA81003945E8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Wearable 1.0";
+			productName = "Wearable 1.0";
+			productReference = 68E322B51AF3CA81003945E8 /* Wearable 1.0.app */;
+			productType = "com.apple.product-type.application";
+		};
+		68E322D01AF3CA81003945E8 /* Wearable 1.0Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 68E322DE1AF3CA81003945E8 /* Build configuration list for PBXNativeTarget "Wearable 1.0Tests" */;
+			buildPhases = (
+				68E322CD1AF3CA81003945E8 /* Sources */,
+				68E322CE1AF3CA81003945E8 /* Frameworks */,
+				68E322CF1AF3CA81003945E8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				68E322D31AF3CA81003945E8 /* PBXTargetDependency */,
+			);
+			name = "Wearable 1.0Tests";
+			productName = "Wearable 1.0Tests";
+			productReference = 68E322D11AF3CA81003945E8 /* Wearable 1.0Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		68E322AD1AF3CA81003945E8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Michael Gutbier";
+				TargetAttributes = {
+					68E322B41AF3CA81003945E8 = {
+						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = H7KD7DW36N;
+					};
+					68E322D01AF3CA81003945E8 = {
+						CreatedOnToolsVersion = 6.3.1;
+						TestTargetID = 68E322B41AF3CA81003945E8;
+					};
+				};
+			};
+			buildConfigurationList = 68E322B01AF3CA81003945E8 /* Build configuration list for PBXProject "Wearable 1.0" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 68E322AC1AF3CA81003945E8;
+			productRefGroup = 68E322B61AF3CA81003945E8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				68E322B41AF3CA81003945E8 /* Wearable 1.0 */,
+				68E322D01AF3CA81003945E8 /* Wearable 1.0Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		68E322B31AF3CA81003945E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				680E01561AFBE25D00D26756 /* checked.png in Resources */,
+				68C0F8C41AF7A8CB00A4E1DC /* DHBW_Logo.jpg in Resources */,
+				680E01571AFBE25D00D26756 /* checked@2x.png in Resources */,
+				68E322C71AF3CA81003945E8 /* Main.storyboard in Resources */,
+				68E322CC1AF3CA81003945E8 /* LaunchScreen.xib in Resources */,
+				68E322C91AF3CA81003945E8 /* Images.xcassets in Resources */,
+				680E01581AFBE25D00D26756 /* unchecked.png in Resources */,
+				680E01591AFBE25D00D26756 /* unchecked@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68E322CF1AF3CA81003945E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		68E322B11AF3CA81003945E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68C0F8C11AF7A74300A4E1DC /* DataTable.m in Sources */,
+				68E322BE1AF3CA81003945E8 /* AppDelegate.m in Sources */,
+				68E322C11AF3CA81003945E8 /* MasterViewController.m in Sources */,
+				688433941AF7CB6500E1C81D /* SingleViewController.m in Sources */,
+				68E322BB1AF3CA81003945E8 /* main.m in Sources */,
+				680E01471AFBDF9E00D26756 /* RadioButton.m in Sources */,
+				68E322C41AF3CA81003945E8 /* DetailViewController.m in Sources */,
+				6884339A1AF7CBA300E1C81D /* ImageViewController.m in Sources */,
+				688433971AF7CB8700E1C81D /* MultipleViewController.m in Sources */,
+				68C0F8C21AF7A74300A4E1DC /* DBController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68E322CD1AF3CA81003945E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68E322D81AF3CA81003945E8 /* Wearable_1_0Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		68E322D31AF3CA81003945E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 68E322B41AF3CA81003945E8 /* Wearable 1.0 */;
+			targetProxy = 68E322D21AF3CA81003945E8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		68E322C51AF3CA81003945E8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				68E322C61AF3CA81003945E8 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		68E322CA1AF3CA81003945E8 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				68E322CB1AF3CA81003945E8 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		68E322D91AF3CA81003945E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		68E322DA1AF3CA81003945E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		68E322DC1AF3CA81003945E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Wearable 1.0/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		68E322DD1AF3CA81003945E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Wearable 1.0/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		68E322DF1AF3CA81003945E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Wearable 1.0Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wearable 1.0.app/Wearable 1.0";
+			};
+			name = Debug;
+		};
+		68E322E01AF3CA81003945E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Wearable 1.0Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wearable 1.0.app/Wearable 1.0";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		68E322B01AF3CA81003945E8 /* Build configuration list for PBXProject "Wearable 1.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68E322D91AF3CA81003945E8 /* Debug */,
+				68E322DA1AF3CA81003945E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		68E322DB1AF3CA81003945E8 /* Build configuration list for PBXNativeTarget "Wearable 1.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68E322DC1AF3CA81003945E8 /* Debug */,
+				68E322DD1AF3CA81003945E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		68E322DE1AF3CA81003945E8 /* Build configuration list for PBXNativeTarget "Wearable 1.0Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68E322DF1AF3CA81003945E8 /* Debug */,
+				68E322E01AF3CA81003945E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 68E322AD1AF3CA81003945E8 /* Project object */;
+}
