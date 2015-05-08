@@ -62,7 +62,6 @@
         self.db = [DBController sharedDatabaseController:dbName];
         self.edges = [self getEdgesForNode:self.nodeID];
         self.nodeDetails = [self getNodeDetails:self.nodeID];
-        self.selected = -1;
         self.prevNode = prev;
     }
     return self;
@@ -87,6 +86,7 @@
 }
 
 -(int)getSuccessorForEdge:(int) edgeID{
+    NSLog(@"%@",[[self.edges objectAtIndex:edgeID] objectAtIndex:1]);
     return [[[self.edges objectAtIndex:edgeID] objectAtIndex:1] intValue];
 }
 
@@ -99,6 +99,7 @@
                                                 otherButtonTitles: nil];
         [message show];
     }else{
+        NSLog(@"Get Next Node for ID: %d", self.selected);
         [self createNewView:[self getSuccessorForEdge: self.selected]];
     }
     //[self createNewView:1]; //STATIC TEST
@@ -109,7 +110,19 @@
 }
 
 -(void)showNextNode{
-    [self createNewView:[self getSuccessorForEdge: [[[self.edges objectAtIndex:0] objectAtIndex:0] intValue]]];
+    if(self.selected == -1){
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Failure"
+                                                          message:@"Please select a item!"
+                                                         delegate:self
+                                                cancelButtonTitle:@"Ok"
+                                                otherButtonTitles: nil];
+        [message show];
+    }else{
+        NSLog(@"Get Next Node for ID: %d", self.selected);
+        [self createNewView:[self getSuccessorForEdge: self.selected]];
+    }
+
+    //[self createNewView:[self getSuccessorForEdge: self.selected]];
 }
 -(void)getBack{
     [self createNewView:self.prevNode];
@@ -238,7 +251,7 @@
     [buttons[0] setGroupButtons:buttons]; // Setting buttons into the group
     
     //[buttons[0] setSelected:YES]; // Making the first button initially selected
-    
+    self.selected = -1;
     
     // Do any additional setup after loading the view.
     [nextButton setTitle: [[self.nodeDetails objectAtIndex:0] objectAtIndex:2] forState: UIControlStateNormal];

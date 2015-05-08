@@ -187,7 +187,7 @@
     titleNode.text = [[self.nodeDetails objectAtIndex:0] objectAtIndex:0];
     NSArray *edgeTitles = @[firstEdge, secondEdge, thirdEdge];
 
-    for(int i = 0; i < self.edges.count; i++){
+    for(int i = 0; i < self.edges.count-1; i++){
         UILabel *temp = [edgeTitles objectAtIndex:i];
         temp.text = [[self.edges objectAtIndex:i] objectAtIndex:2];
     }
