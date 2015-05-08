@@ -29,12 +29,12 @@ public class MultipleChoiceActivity extends MainActivity {
     public void setData() {
         CheckBox c = null;
         try {
+            c = (CheckBox)findViewById(R.id.selection1);
             c.setText(node.getEdgeList().get(0).text);
         } catch (Exception e) {
-            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection1)).setVisibility(View.INVISIBLE);
 
         }
-            c = (CheckBox) findViewById(R.id.selection1);
 
         try {
             c = (CheckBox) findViewById(R.id.selection2);
@@ -48,7 +48,7 @@ public class MultipleChoiceActivity extends MainActivity {
             c = (CheckBox) findViewById(R.id.selection3);
             c.setText(node.getEdgeList().get(2).text);
         } catch (Exception e) {
-            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection3)).setVisibility(View.INVISIBLE);
 
         }
 
@@ -56,7 +56,7 @@ public class MultipleChoiceActivity extends MainActivity {
             c = (CheckBox) findViewById(R.id.selection4);
             c.setText(node.getEdgeList().get(3).text);
         } catch (Exception e) {
-            ((CompoundButton) findViewById(R.id.selection2)).setVisibility(View.INVISIBLE);
+            ((CompoundButton) findViewById(R.id.selection4)).setVisibility(View.INVISIBLE);
 
         }
 
