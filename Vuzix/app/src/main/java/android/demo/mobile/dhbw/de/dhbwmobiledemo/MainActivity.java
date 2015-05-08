@@ -127,6 +127,9 @@ public class MainActivity extends Activity {
         * anonymous class extending VoiceControl
         * Create a new object for voice control
          */
+
+
+
         vc = new VoiceControl(this) {
             @Override
             protected void onRecognition(String result) {
