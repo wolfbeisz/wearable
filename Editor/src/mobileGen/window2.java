@@ -401,22 +401,22 @@ public class window2 implements ActionListener,ComponentListener{
 					propertiesAnswerSlideFieldB1.setVisible(false);
 					propertiesAnswerSlideFieldC1.setVisible(false);
 					propertiesAnswerSlideFieldD1.setVisible(false);
-					if(propertiesAnswerSlideFieldA1.getText()!=null){
+					if(propertiesAnswerSlideFieldA1.getText()!=null && p2.length()>0){
 						try{
 							s.setAnswer1Successor(Integer.parseInt(p8));
-							if(propertiesAnswerSlideFieldB1.getText()!=null){
+							if(propertiesAnswerSlideFieldB1.getText()!=null && p3.length()>0){
 								s.setAnswer2Successor(Integer.parseInt(p8));
 								propertiesAnswerSlideFieldB1.setText("");
 							}else{
 								s.setAnswer2Successor(-1);
 							}
-							if(propertiesAnswerSlideFieldC1.getText()!=null){
+							if(propertiesAnswerSlideFieldC1.getText()!=null && p4.length()>0){
 								s.setAnswer3Successor(Integer.parseInt(p8));
 								propertiesAnswerSlideFieldC1.setText("");
 							}else{
 								s.setAnswer3Successor(-1);
 							}
-							if(propertiesAnswerSlideFieldD1.getText()!=null){
+							if(propertiesAnswerSlideFieldD1.getText()!=null && p5.length()>0){
 								s.setAnswer4Successor(Integer.parseInt(p8));
 								propertiesAnswerSlideFieldD1.setText("");
 							}else{
